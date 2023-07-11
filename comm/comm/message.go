@@ -1,7 +1,13 @@
 package comm
 
+type ReceivedMessage struct {
+	*SignedMessage
+	sender *RemotePeer
+}
+
 type SignedMessage struct {
 	*Message
+	Signature []byte
 }
 
 // Message define the message sent in the network

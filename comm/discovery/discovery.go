@@ -1,6 +1,8 @@
 package discovery
 
-import "github.com/wisecoach/ml_chain/comm"
+import (
+	"github.com/wisecoach/ml_chain/comm/comm"
+)
 
 // Discovery is the interface that represents a discovery module
 type Discovery interface {

@@ -1,20 +1,20 @@
 package peer
 
 import (
-	"github.com/wisecoach/ml_chain/comm"
+	comm2 "github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/discovery"
 	"net/rpc"
 )
 
 type Peer struct {
 	ChainId   string
-	comm      comm.Comm
+	comm      comm2.Comm
 	discovery discovery.Discovery
 }
 
-func New(config comm.Config, server *rpc.Server) *Peer {
+func New(config comm2.Config, server *rpc.Server) *Peer {
 	peer := &Peer{
-		comm:      comm.New(server),
+		comm:      comm2.New(server),
 		discovery: nil,
 	}
 

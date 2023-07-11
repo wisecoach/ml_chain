@@ -1,5 +1,7 @@
 package block
 
+// Payload
+// @Description: represent the payload of transaction
 type Payload struct {
 }
 
