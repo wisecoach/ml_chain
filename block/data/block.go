@@ -1,4 +1,4 @@
-package block
+package data
 
 // Block is the block of task shard chain
 type Block struct {

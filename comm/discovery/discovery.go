@@ -1,7 +1,9 @@
 package discovery
 
 import (
+	"bytes"
 	"github.com/wisecoach/ml_chain/comm/comm"
+	"sync"
 )
 
 // Discovery is the interface that represents a discovery module
@@ -20,29 +22,46 @@ type Discovery interface {
 }
 
 type discoveryImpl struct {
-	me    *comm.RemotePeer
-	peers []*comm.RemotePeer
+	lock  *sync.RWMutex
+	self  *comm.RemotePeer
+	peers map[string]*comm.RemotePeer
 }
 
-func New(me *comm.RemotePeer) Discovery {
+func New(self *comm.RemotePeer) Discovery {
 	return &discoveryImpl{
-		me: me,
+		self: self,
+		lock: &sync.RWMutex{},
 	}
 }
 
 func (d discoveryImpl) Lookup(pk []byte) *comm.RemotePeer {
-	// TODO implement me
-	panic("implement me")
+	d.lock.RLock()
+	defer d.lock.RUnlock()
+
+	return d.peers[string(pk)]
 }
 
 func (d discoveryImpl) Register(peer *comm.RemotePeer) {
-	d.peers = append(d.peers, peer)
+	if bytes.Equal(peer.PublicKey, d.self.PublicKey) {
+		return
+	}
+	d.lock.Lock()
+	defer d.lock.Unlock()
+
+	d.peers[string(peer.PublicKey)] = peer
 }
 
 func (d discoveryImpl) Self() *comm.RemotePeer {
-	return d.me
+	return d.self
 }
 
 func (d discoveryImpl) GetMembership() []*comm.RemotePeer {
-	return d.peers
+	d.lock.RLock()
+	defer d.lock.RUnlock()
+
+	membership := make([]*comm.RemotePeer, len(d.peers))
+	for _, peer := range d.peers {
+		membership = append(membership, peer)
+	}
+	return membership
 }

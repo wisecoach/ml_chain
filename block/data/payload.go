@@ -1,4 +1,4 @@
-package block
+package data
 
 // Payload
 // @Description: represent the payload of transaction

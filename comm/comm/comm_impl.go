@@ -14,18 +14,24 @@ type MessageHandler struct {
 }
 
 type subscription struct {
-	ch   chan ReceivedMessage
+	ch   chan *ReceivedMessage
 	pred MessageAcceptor
 }
 
-func (mh *MessageHandler) HandleMessage(message ReceivedMessage) {
+// HandleMessage
+//
+//	@Description:
+//	@receiver mh
+//	@param message
+//	@param reply	it's always be nil, and shouldn't be operated
+func (mh *MessageHandler) HandleMessage(message *ReceivedMessage, reply *ReceivedMessage) {
 	mh.comm.HandleMessage(message)
 }
 
-func New(server *rpc.Server, me []byte, timeoutRPC time.Duration) Comm {
+func New(server *rpc.Server, self *RemotePeer, timeoutRPC time.Duration) Comm {
 	commInst := &commImpl{
 		server:     server,
-		me:         me,
+		self:       self,
 		exitChan:   make(chan struct{}),
 		stopping:   int32(0),
 		timeoutRPC: timeoutRPC,
@@ -43,7 +49,7 @@ func New(server *rpc.Server, me []byte, timeoutRPC time.Duration) Comm {
 
 type commImpl struct {
 	server          *rpc.Server
-	me              []byte
+	self            *RemotePeer
 	subscriptions   []*subscription
 	lock            *sync.Mutex
 	stopping        int32
@@ -53,11 +59,11 @@ type commImpl struct {
 	timeoutRPC      time.Duration
 }
 
-func (c *commImpl) HandleMessage(message ReceivedMessage) {
+func (c *commImpl) HandleMessage(message *ReceivedMessage) {
 	c.deMultiplex(message)
 }
 
-func (c *commImpl) deMultiplex(message ReceivedMessage) {
+func (c *commImpl) deMultiplex(message *ReceivedMessage) {
 	c.lock.Lock()
 	if c.isStopping() {
 		c.lock.Unlock()
@@ -80,8 +86,8 @@ func (c *commImpl) deMultiplex(message ReceivedMessage) {
 	c.deMuxInProgress.Done()
 }
 
-func (c *commImpl) GetPublicKey() []byte {
-	return c.me
+func (c *commImpl) Self() *RemotePeer {
+	return c.self
 }
 
 func (c *commImpl) Send(msg *SignedMessage, peers ...*RemotePeer) {
@@ -105,6 +111,10 @@ func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *SignedMessage) {
 		logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error())
 		return
 	}
+	var msgToSend = &ReceivedMessage{
+		SignedMessage: msg,
+		sender:        c.self,
+	}
 	var reply ReceivedMessage
 
 	defer func(conn *rpc.Client) {
@@ -112,18 +122,22 @@ func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *SignedMessage) {
 	}(conn)
 	errChan := make(chan error)
 	go func() {
-		errChan <- conn.Call("MessageHandler.HandleMessage", msg, &reply)
-		// handle the message replied
-		c.HandleMessage(reply)
+		errChan <- conn.Call("MessageHandler.HandleMessage", msgToSend, &reply)
 	}()
+
+	select {
+	case err = <-errChan:
+		if err != nil {
+			logger.Error("rpc failed, err: " + err.Error())
+		}
+	case <-time.After(c.timeoutRPC):
+		logger.Error("connection to " + peer.Endpoint + " failed, timeout")
+	}
+
 }
 
-func (c *commImpl) name() {
-
-}
-
-func (c *commImpl) Accept(acceptor MessageAcceptor) <-chan ReceivedMessage {
-	messageChan := make(chan ReceivedMessage, 10)
+func (c *commImpl) Accept(acceptor MessageAcceptor) <-chan *ReceivedMessage {
+	messageChan := make(chan *ReceivedMessage, 10)
 
 	if c.isStopping() {
 		fmt.Printf("return an empty channel because of the comm is stopped")

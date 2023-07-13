@@ -1,4 +1,4 @@
-package peer
+package trainer
 
 import (
 	"fmt"
