@@ -78,7 +78,7 @@ func (n *Node) RegisterListener(contentType reflect.Type, listener MessageListen
 	defer n.lock.Unlock()
 
 	listeners := n.messageListeners[contentType]
-	listeners = append(listeners, listener)
+	n.messageListeners[contentType] = append(listeners, listener)
 }
 
 func (n *Node) start() {

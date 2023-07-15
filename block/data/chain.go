@@ -5,7 +5,7 @@ type BlockChain struct {
 	Number int
 }
 
-func New() *BlockChain {
+func NewBlockChain() *BlockChain {
 	chain := &BlockChain{Blocks: make([]*Block, 0), Number: 0}
 	return chain
 }

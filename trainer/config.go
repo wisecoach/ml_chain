@@ -1,0 +1,12 @@
+package trainer
+
+import (
+	"github.com/wisecoach/ml_chain/comm/comm"
+	"time"
+)
+
+type Config struct {
+	Self           *comm.RemotePeer
+	BootstrapPeers []*comm.RemotePeer
+	timeoutRPC     time.Duration
+}

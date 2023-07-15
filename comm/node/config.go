@@ -10,3 +10,11 @@ type Config struct {
 	BootstrapPeers []*comm.RemotePeer
 	timeoutRPC     time.Duration
 }
+
+func NewConfig(self *comm.RemotePeer, bootstrapPeers []*comm.RemotePeer, timeoutRPC time.Duration) *Config {
+	return &Config{
+		Self:           self,
+		BootstrapPeers: bootstrapPeers,
+		timeoutRPC:     timeoutRPC,
+	}
+}

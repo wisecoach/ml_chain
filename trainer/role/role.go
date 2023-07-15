@@ -1,4 +1,4 @@
-package trainer
+package role
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"reflect"
 )
 
-// RoleSelector used for select the verifiers from all trainers
-type RoleSelector struct {
+// Selector used for select the verifiers from all trainers
+type Selector struct {
 	verifierSk vrf.PrivateKey // Used for the verifier
 	verifierPk vrf.PublicKey
 }
 
 // init the selector
-func (rs *RoleSelector) init() {
+func (rs *Selector) init() {
 	var err error
 	rs.verifierSk, err = vrf.GenerateKey(nil)
 	if err != nil {
@@ -32,7 +32,7 @@ func (rs *RoleSelector) init() {
 //	@return [][]byte		the pk list of verifiers
 //	@return []byte			the output of vrf
 //	@return []byte			the proof of output
-func (rs *RoleSelector) SelectVerifiers(trainers [][]byte, input []byte, numRequested int) ([][]byte, *SelectionProof) {
+func (rs *Selector) SelectVerifiers(trainers [][]byte, input []byte, numRequested int) ([][]byte, *SelectionProof) {
 	// we should snapshot the trainers
 	currentTrainers := make([][]byte, len(trainers))
 	copy(currentTrainers, trainers)
@@ -51,7 +51,7 @@ func (rs *RoleSelector) SelectVerifiers(trainers [][]byte, input []byte, numRequ
 	}
 }
 
-func (rs *RoleSelector) selectVerifierByProve(trainers [][]byte, prove []byte, numRequested int) [][]byte {
+func (rs *Selector) selectVerifierByProve(trainers [][]byte, prove []byte, numRequested int) [][]byte {
 	verifiers := make([][]byte, numRequested)
 	nodeMap := make(map[int]bool)
 
@@ -73,7 +73,7 @@ func (rs *RoleSelector) selectVerifierByProve(trainers [][]byte, prove []byte, n
 //
 //	@Description:	verify the vrf random result
 //	@return bool	if valid
-func (rs *RoleSelector) Verify(proof *SelectionProof) bool {
+func (rs *Selector) Verify(proof *SelectionProof) bool {
 	if !proof.pk.Verify(proof.input, proof.prove, proof.proof) {
 		return false
 	}

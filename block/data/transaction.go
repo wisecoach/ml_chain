@@ -3,8 +3,8 @@ package data
 import "time"
 
 type SignedTransaction struct {
-	payload   *Transaction
-	signature []byte
+	Payload   *Transaction
+	Signature []byte
 }
 
 // Transaction represent the operation for state machine
