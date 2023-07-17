@@ -1,6 +1,7 @@
 package role
 
 import (
+	set "github.com/deckarep/golang-set/v2"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"sync"
 )
@@ -8,20 +9,20 @@ import (
 type Manager interface {
 	//
 	// SelectVerifiers
-	//  @Description: select the verifiers
+	//  @Description: select the verifierSelectionResults
 	//
 	SelectVerifiers(candidates []*comm.RemotePeer, number int)
 
 	//
 	// GetVerifiers
-	//  @Description: get the selected verifiers
-	//  @return []*comm.RemotePeer
+	//  @Description: get the selected verifierSelectionResults
+	//  @return *SelectionResult
 	//
-	GetVerifiers() []*comm.RemotePeer
+	GetVerifiers() *SelectionResult
 
 	//
 	// AmVerifier
-	//  @Description: if self is verifier
+	//  @Description: if self is verifierSelectionResult
 	//  @return bool
 	//
 	AmVerifier() bool
@@ -30,7 +31,10 @@ type Manager interface {
 type roleMgr struct {
 	lock sync.RWMutex
 
-	verifiers []*comm.RemotePeer
+	self *comm.RemotePeer
+
+	verifierSelectionResult *SelectionResult
+	verifierSet             set.Set[*comm.RemotePeer]
 
 	selector *Selector
 }
@@ -39,15 +43,20 @@ func (r *roleMgr) SelectVerifiers(candidates []*comm.RemotePeer, input []byte, n
 	r.lock.Lock()
 	defer r.lock.Unlock()
 
-	r.verifiers = r.selector.SelectVerifiers(candidates, input, number)
+	r.verifierSelectionResult = r.selector.SelectVerifiers(candidates, input, number)
+	r.verifierSet = set.NewSet(r.verifierSelectionResult.winners...)
 }
 
-func (r *roleMgr) GetVerifiers() []*comm.RemotePeer {
-	// TODO implement me
-	panic("implement me")
+func (r *roleMgr) GetVerifiers() *SelectionResult {
+	r.lock.RLock()
+	defer r.lock.RUnlock()
+
+	return r.verifierSelectionResult
 }
 
 func (r *roleMgr) AmVerifier() bool {
-	// TODO implement me
-	panic("implement me")
+	r.lock.RLock()
+	defer r.lock.RUnlock()
+
+	return r.verifierSet.Contains(r.self)
 }

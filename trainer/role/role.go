@@ -3,6 +3,7 @@ package role
 import (
 	"fmt"
 	"github.com/coniks-sys/coniks-go/crypto/vrf"
+	"github.com/wisecoach/ml_chain/comm/comm"
 	"reflect"
 )
 
@@ -29,19 +30,19 @@ func (rs *Selector) init() {
 //	@param trainers 		the pk list of trainers
 //	@param input			the input of vrf
 //	@param numRequested		the number of verifiers to be selected
-//	@return [][]byte		the pk list of verifiers
+//	@return []*comm.RemotePeer		the pk list of verifiers
 //	@return []byte			the output of vrf
 //	@return []byte			the proof of output
-func (rs *Selector) SelectVerifiers(trainers [][]byte, input []byte, numRequested int) ([][]byte, *SelectionProof) {
+func (rs *Selector) SelectVerifiers(trainers []*comm.RemotePeer, input []byte, numRequested int) *SelectionResult {
 	// we should snapshot the trainers
-	currentTrainers := make([][]byte, len(trainers))
+	currentTrainers := make([]*comm.RemotePeer, len(trainers))
 	copy(currentTrainers, trainers)
 
 	// generate the vrf prove and select the verifiers according to every two bytes of vrf prove
 	prove, proof := rs.verifierSk.Prove(input)
 	verifiers := rs.selectVerifierByProve(currentTrainers, prove, numRequested)
 
-	return trainers[:numRequested], &SelectionProof{
+	return &SelectionResult{
 		candidates: currentTrainers,
 		winners:    verifiers,
 		input:      input,
@@ -51,8 +52,8 @@ func (rs *Selector) SelectVerifiers(trainers [][]byte, input []byte, numRequeste
 	}
 }
 
-func (rs *Selector) selectVerifierByProve(trainers [][]byte, prove []byte, numRequested int) [][]byte {
-	verifiers := make([][]byte, numRequested)
+func (rs *Selector) selectVerifierByProve(trainers []*comm.RemotePeer, prove []byte, numRequested int) []*comm.RemotePeer {
+	verifiers := make([]*comm.RemotePeer, numRequested)
 	nodeMap := make(map[int]bool)
 
 	i := 0
@@ -73,7 +74,7 @@ func (rs *Selector) selectVerifierByProve(trainers [][]byte, prove []byte, numRe
 //
 //	@Description:	verify the vrf random result
 //	@return bool	if valid
-func (rs *Selector) Verify(proof *SelectionProof) bool {
+func (rs *Selector) Verify(proof *SelectionResult) bool {
 	if !proof.pk.Verify(proof.input, proof.prove, proof.proof) {
 		return false
 	}
@@ -81,11 +82,11 @@ func (rs *Selector) Verify(proof *SelectionProof) bool {
 	return reflect.DeepEqual(proof.winners, gotted)
 }
 
-// SelectionProof
+// SelectionResult
 // @Description: used for other peer to verify our random selection
-type SelectionProof struct {
-	candidates [][]byte
-	winners    [][]byte
+type SelectionResult struct {
+	candidates []*comm.RemotePeer // TODO 该字段考虑删除
+	winners    []*comm.RemotePeer
 	input      []byte
 	prove      []byte
 	proof      []byte
