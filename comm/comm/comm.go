@@ -1,12 +1,14 @@
 package comm
 
+import "github.com/wisecoach/ml_chain/proto"
+
 // Comm is an object that enables to communicate with other peers
 // that also embed a CommModule.
 type Comm interface {
 	Self() *RemotePeer
 
 	// Send sends a message to remote peers asynchronously
-	Send(msg *SignedMessage, peers ...*RemotePeer)
+	Send(msg *proto.Envelope[*Message], peers ...*RemotePeer)
 
 	// Accept returns a dedicated read-only channel for messages sent by other nodes that match a certain predicate.
 	// Each message from the channel can be used to send a reply back to the sender

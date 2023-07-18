@@ -1,4 +1,4 @@
-package data
+package proto
 
 // Payload
 // @Description: represent the payload of transaction

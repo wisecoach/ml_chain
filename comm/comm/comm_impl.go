@@ -2,6 +2,7 @@ package comm
 
 import (
 	"fmt"
+	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/util/logger"
 	"net/rpc"
 	"sync"
@@ -90,7 +91,7 @@ func (c *commImpl) Self() *RemotePeer {
 	return c.self
 }
 
-func (c *commImpl) Send(msg *SignedMessage, peers ...*RemotePeer) {
+func (c *commImpl) Send(msg *proto.Envelope[*Message], peers ...*RemotePeer) {
 	if c.isStopping() || len(peers) == 0 {
 		return
 	}
@@ -98,13 +99,13 @@ func (c *commImpl) Send(msg *SignedMessage, peers ...*RemotePeer) {
 
 	c.sendInProgress.Add(len(peers))
 	for _, peer := range peers {
-		go func(peer *RemotePeer, msg *SignedMessage) {
+		go func(peer *RemotePeer, msg *proto.Envelope[*Message]) {
 			c.sendToEndpoint(peer, msg)
 		}(peer, msg)
 	}
 }
 
-func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *SignedMessage) {
+func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*Message]) {
 	defer c.sendInProgress.Done()
 	conn, err := rpc.Dial("tcp", peer.Endpoint)
 	if err != nil {
@@ -112,8 +113,8 @@ func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *SignedMessage) {
 		return
 	}
 	var msgToSend = &ReceivedMessage{
-		SignedMessage: msg,
-		sender:        c.self,
+		Envelope: msg,
+		Sender:   c.self,
 	}
 	var reply ReceivedMessage
 

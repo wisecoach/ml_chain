@@ -1,13 +1,13 @@
 package consensus
 
-import "github.com/wisecoach/ml_chain/block/data"
+import "github.com/wisecoach/ml_chain/proto"
 
 type Consensus interface {
 	//
 	// Order
 	//  @Description: order a transaction
 	//
-	Order(transaction *data.SignedTransaction)
+	Order(transaction *proto.Envelope[proto.Transaction])
 
 	//
 	// Start

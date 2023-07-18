@@ -1,8 +1,11 @@
 package node
 
 import (
+	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/comm/comm"
+	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/discovery"
+	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/util/logger"
 	"net/rpc"
 	"reflect"
@@ -17,6 +20,8 @@ type MessageListener interface {
 }
 
 type Node struct {
+	self   *comm.RemotePeer
+	mcs    crypto.MessageCryptoService
 	disc   discovery.Discovery
 	comm   comm.Comm
 	config *Config
@@ -31,8 +36,9 @@ type Node struct {
 
 func New(config *Config, server *rpc.Server) *Node {
 	node := &Node{
+		self:             config.Self,
 		disc:             discovery.New(config.Self),
-		comm:             comm.New(server, config.Self, config.timeoutRPC),
+		comm:             comm.New(server, config.Self, config.TimeoutRPC),
 		config:           config,
 		messageListeners: make(map[reflect.Type][]MessageListener),
 		lock:             sync.RWMutex{},
@@ -40,6 +46,13 @@ func New(config *Config, server *rpc.Server) *Node {
 		stopFlag:         int32(0),
 		stopSignal:       sync.WaitGroup{},
 	}
+
+	// init the mcs
+	bccsp, err := sw.NewBCCSP()
+	if err != nil {
+		logger.Error("create bccsp failed: " + err.Error())
+	}
+	node.mcs = crypto.New(bccsp, config.Self, config.KeyImportOpts, config.HashOpts, config.SignerOpts)
 
 	// init the discovery, register the bootstrapPeers
 	for _, peer := range config.BootstrapPeers {
@@ -59,15 +72,38 @@ func (n *Node) Peers() []*comm.RemotePeer {
 	return n.disc.GetMembership()
 }
 
-// Send
+// GetDiscovery
+//
+//	@Description: get the discovery
+func (n *Node) GetDiscovery() discovery.Discovery {
+	return n.disc
+}
+
+func (n *Node) signMessage(message *comm.Message) (*proto.Envelope[*comm.Message], error) {
+	panic("impl me")
+}
+
+// SendWithFilter
 //
 //	@Description: send msg to peers filtered by filter
 //	@param msg
 //	@param filter
 //	@return error
-func (n *Node) Send(msg *comm.SignedMessage, filter PeerFilter) {
+func (n *Node) SendWithFilter(msg *comm.Message, filter PeerFilter) {
 	peersToSend := filterPeers(n.Peers(), filter)
-	n.comm.Send(msg, peersToSend...)
+	envelope, err := n.signMessage(msg)
+	if err != nil {
+		logger.Error("sign the message failed, err:" + err.Error())
+	}
+	n.comm.Send(envelope, peersToSend...)
+}
+
+func (n *Node) SendToPeers(msg *comm.Message, peers []*comm.RemotePeer) {
+	envelope, err := n.signMessage(msg)
+	if err != nil {
+		logger.Error("sign the message failed, err:" + err.Error())
+	}
+	n.comm.Send(envelope, peers...)
 }
 
 // RegisterListener
@@ -108,7 +144,7 @@ func (n *Node) handleMessage(msg *comm.ReceivedMessage) {
 	n.lock.RLock()
 	defer n.lock.RUnlock()
 
-	contentType := reflect.TypeOf(msg.Content)
+	contentType := reflect.TypeOf(msg.Envelope.Payload.Content)
 	listeners := n.messageListeners[contentType]
 	for _, listener := range listeners {
 		listener.HandleMessage(msg)
