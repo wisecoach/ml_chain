@@ -30,7 +30,11 @@ type Trainer struct {
 }
 
 func New(config *Config) *Trainer {
-	t := &Trainer{}
+	t := &Trainer{
+		self:    config.Self,
+		config:  config,
+		chainId: config.ChainId,
+	}
 	t.server = rpc.NewServer()
 	t.blockchain = chain.NewBlockChain()
 	t.config = config
@@ -44,6 +48,7 @@ func New(config *Config) *Trainer {
 	t.registerNodeListener()
 	// begin to listen the messages
 	go t.messageListener(t.server)
+	go t.announceToNetwork()
 
 	return t
 }
@@ -77,6 +82,14 @@ func (t *Trainer) announceToNetwork() {
 		Content: &comm.TrainerRegisterMessage{Trainer: t.self},
 		Header:  &proto.Header{ChainId: t.chainId, Timestamp: time.Now(), Creator: t.self.PublicKey},
 	}
-	bootstrapPeers := t.config.BootstrapPeers
-	t.node.SendToPeers(peerRegisterMsg, bootstrapPeers)
+	peersToSend := make([]*comm.RemotePeer, len(t.config.BootstrapPeers))
+
+	for _, peer := range t.config.BootstrapPeers {
+		if !reflect.DeepEqual(peer, t.self) {
+			peersToSend = append(peersToSend, peer)
+			logger.Debug("will announce to peer:" + peer.Endpoint)
+		}
+	}
+
+	t.node.SendToPeers(peerRegisterMsg, peersToSend)
 }

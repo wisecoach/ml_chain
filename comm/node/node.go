@@ -1,6 +1,7 @@
 package node
 
 import (
+	"encoding/json"
 	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
@@ -54,11 +55,6 @@ func New(config *Config, server *rpc.Server) *Node {
 	}
 	node.mcs = crypto.New(bccsp, config.Self, config.KeyImportOpts, config.HashOpts, config.SignerOpts)
 
-	// init the discovery, register the bootstrapPeers
-	for _, peer := range config.BootstrapPeers {
-		node.disc.Register(peer)
-	}
-
 	go node.start()
 
 	return node
@@ -80,7 +76,18 @@ func (n *Node) GetDiscovery() discovery.Discovery {
 }
 
 func (n *Node) signMessage(message *comm.Message) (*proto.Envelope[*comm.Message], error) {
-	panic("impl me")
+	payload, err := json.Marshal(message)
+	if err != nil {
+		return nil, err
+	}
+	sign, err := n.mcs.Sign(payload)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.Envelope[*comm.Message]{
+		Payload:   message,
+		Signature: sign,
+	}, nil
 }
 
 // SendWithFilter

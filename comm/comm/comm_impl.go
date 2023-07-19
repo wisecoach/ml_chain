@@ -25,17 +25,22 @@ type subscription struct {
 //	@receiver mh
 //	@param message
 //	@param reply	it's always be nil, and shouldn't be operated
-func (mh *MessageHandler) HandleMessage(message *ReceivedMessage, reply *ReceivedMessage) {
+func (mh *MessageHandler) HandleMessage(message *ReceivedMessage, reply *ReceivedMessage) error {
 	mh.comm.HandleMessage(message)
+	return nil
 }
 
 func New(server *rpc.Server, self *RemotePeer, timeoutRPC time.Duration) Comm {
 	commInst := &commImpl{
-		server:     server,
-		self:       self,
-		exitChan:   make(chan struct{}),
-		stopping:   int32(0),
-		timeoutRPC: timeoutRPC,
+		server:          server,
+		self:            self,
+		subscriptions:   make([]*subscription, 0),
+		lock:            sync.Mutex{},
+		stopping:        int32(0),
+		exitChan:        make(chan struct{}),
+		deMuxInProgress: sync.WaitGroup{},
+		sendInProgress:  sync.WaitGroup{},
+		timeoutRPC:      timeoutRPC,
 	}
 
 	// register the message handler to rpcServer
@@ -52,7 +57,7 @@ type commImpl struct {
 	server          *rpc.Server
 	self            *RemotePeer
 	subscriptions   []*subscription
-	lock            *sync.Mutex
+	lock            sync.Mutex
 	stopping        int32
 	exitChan        chan struct{}
 	deMuxInProgress sync.WaitGroup

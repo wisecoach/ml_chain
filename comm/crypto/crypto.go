@@ -21,6 +21,7 @@ func New(csp bccsp.BCCSP, self *comm.RemotePeer,
 		hashOpts:      hashOpts,
 		signerOpts:    signerOpts,
 	}
+	print(self.Endpoint + " " + string(self.PublicKey))
 	m.self, _ = csp.KeyImport(self.PublicKey, importOpts)
 	return m
 }

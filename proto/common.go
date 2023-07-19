@@ -11,5 +11,5 @@ type Header struct {
 
 type Envelope[T any] struct {
 	Payload   T
-	signature []byte
+	Signature []byte
 }
