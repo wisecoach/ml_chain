@@ -1,16 +1,16 @@
-package comm
+package proto
 
-import "github.com/wisecoach/ml_chain/proto"
+import "github.com/wisecoach/ml_chain/comm/comm"
 
 type ReceivedMessage struct {
-	Envelope *proto.Envelope[*Message]
-	Sender   *RemotePeer
+	Envelope *Envelope[*Message]
+	Sender   *comm.RemotePeer
 }
 
 // Message define the message sent in the network
 type Message struct {
 	Content isMessage_Content
-	Header  *proto.Header
+	Header  *Header
 }
 
 // isMessage_Content is the interface of the message content
@@ -21,7 +21,7 @@ type isMessage_Content interface {
 // TrainerRegisterMessage
 // @Description: message for discovery, register self to the network
 type TrainerRegisterMessage struct {
-	Trainer *RemotePeer
+	Trainer *comm.RemotePeer
 }
 
 func (t *TrainerRegisterMessage) isMessage_Content() {}

@@ -59,7 +59,7 @@ func New(config *Config) *Trainer {
 
 func (t *Trainer) registerNodeListener() {
 	// register the TrainerRegisterMessage
-	t.node.RegisterListener(&comm.TrainerRegisterMessage{}, message.NewTrainerRegisterListener(t.node.GetDiscovery()))
+	t.node.RegisterListener(&proto.TrainerRegisterMessage{}, message.NewTrainerRegisterListener(t.node.GetDiscovery()))
 }
 
 func (t *Trainer) messageListener(server *rpc.Server) {
@@ -82,8 +82,8 @@ func (t *Trainer) messageListener(server *rpc.Server) {
 }
 
 func (t *Trainer) announceToNetwork() {
-	peerRegisterMsg := &comm.Message{
-		Content: &comm.TrainerRegisterMessage{Trainer: t.self},
+	peerRegisterMsg := &proto.Message{
+		Content: &proto.TrainerRegisterMessage{Trainer: t.self},
 		Header:  &proto.Header{ChainId: t.chainId, Timestamp: time.Now(), Creator: t.self.PublicKey},
 	}
 	peersToSend := make([]*comm.RemotePeer, 0)

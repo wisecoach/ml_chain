@@ -19,7 +19,7 @@ import (
 type PeerFilter func(peer *comm.RemotePeer) bool
 
 type MessageListener interface {
-	HandleMessage(message *comm.ReceivedMessage)
+	HandleMessage(message *proto.ReceivedMessage)
 }
 
 type Node struct {
@@ -79,7 +79,7 @@ func (n *Node) GetDiscovery() discovery.Discovery {
 	return n.disc
 }
 
-func (n *Node) signMessage(message *comm.Message) (*proto.Envelope[*comm.Message], error) {
+func (n *Node) signMessage(message *proto.Message) (*proto.Envelope[*proto.Message], error) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (n *Node) signMessage(message *comm.Message) (*proto.Envelope[*comm.Message
 	if err != nil {
 		return nil, err
 	}
-	return &proto.Envelope[*comm.Message]{
+	return &proto.Envelope[*proto.Message]{
 		Payload:   message,
 		Signature: sign,
 	}, nil
@@ -100,7 +100,7 @@ func (n *Node) signMessage(message *comm.Message) (*proto.Envelope[*comm.Message
 //	@param msg
 //	@param filter
 //	@return error
-func (n *Node) SendWithFilter(msg *comm.Message, filter PeerFilter) {
+func (n *Node) SendWithFilter(msg *proto.Message, filter PeerFilter) {
 	peersToSend := filterPeers(n.Peers(), filter)
 	envelope, err := n.signMessage(msg)
 	if err != nil {
@@ -109,7 +109,7 @@ func (n *Node) SendWithFilter(msg *comm.Message, filter PeerFilter) {
 	n.comm.Send(envelope, peersToSend...)
 }
 
-func (n *Node) SendToPeers(msg *comm.Message, peers []*comm.RemotePeer) {
+func (n *Node) SendToPeers(msg *proto.Message, peers []*comm.RemotePeer) {
 	envelope, err := n.signMessage(msg)
 	if err != nil {
 		n.logger.Error("sign the message failed, err:" + err.Error())
@@ -135,7 +135,7 @@ func (n *Node) RegisterListener(content any, listener MessageListener) {
 }
 
 func (n *Node) start() {
-	msgSelector := func(message *comm.ReceivedMessage) bool {
+	msgSelector := func(message *proto.ReceivedMessage) bool {
 		return true
 	}
 	messages := n.comm.Accept(msgSelector)
@@ -144,7 +144,7 @@ func (n *Node) start() {
 	go n.acceptMessages(messages)
 }
 
-func (n *Node) acceptMessages(messages <-chan *comm.ReceivedMessage) {
+func (n *Node) acceptMessages(messages <-chan *proto.ReceivedMessage) {
 	defer n.stopSignal.Done()
 
 	for {
@@ -158,7 +158,7 @@ func (n *Node) acceptMessages(messages <-chan *comm.ReceivedMessage) {
 	}
 }
 
-func (n *Node) handleMessage(msg *comm.ReceivedMessage) {
+func (n *Node) handleMessage(msg *proto.ReceivedMessage) {
 	n.lock.RLock()
 	defer n.lock.RUnlock()
 

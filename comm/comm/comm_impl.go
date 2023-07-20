@@ -16,7 +16,7 @@ type MessageHandler struct {
 }
 
 type subscription struct {
-	ch   chan *ReceivedMessage
+	ch   chan *proto.ReceivedMessage
 	pred MessageAcceptor
 }
 
@@ -26,7 +26,7 @@ type subscription struct {
 //	@receiver mh
 //	@param message
 //	@param reply	it's always be nil, and shouldn't be operated
-func (mh *MessageHandler) HandleMessage(message *ReceivedMessage, reply *ReceivedMessage) error {
+func (mh *MessageHandler) HandleMessage(message *proto.ReceivedMessage, reply *proto.ReceivedMessage) error {
 	mh.comm.HandleMessage(message)
 	return nil
 }
@@ -68,11 +68,11 @@ type commImpl struct {
 	logger          *zap.Logger
 }
 
-func (c *commImpl) HandleMessage(message *ReceivedMessage) {
+func (c *commImpl) HandleMessage(message *proto.ReceivedMessage) {
 	c.deMultiplex(message)
 }
 
-func (c *commImpl) deMultiplex(message *ReceivedMessage) {
+func (c *commImpl) deMultiplex(message *proto.ReceivedMessage) {
 	c.lock.Lock()
 	if c.isStopping() {
 		c.lock.Unlock()
@@ -99,7 +99,7 @@ func (c *commImpl) Self() *RemotePeer {
 	return c.self
 }
 
-func (c *commImpl) Send(msg *proto.Envelope[*Message], peers ...*RemotePeer) {
+func (c *commImpl) Send(msg *proto.Envelope[*proto.Message], peers ...*RemotePeer) {
 	if c.isStopping() || len(peers) == 0 {
 		return
 	}
@@ -107,24 +107,24 @@ func (c *commImpl) Send(msg *proto.Envelope[*Message], peers ...*RemotePeer) {
 
 	c.sendInProgress.Add(len(peers))
 	for _, peer := range peers {
-		go func(peer *RemotePeer, msg *proto.Envelope[*Message]) {
+		go func(peer *RemotePeer, msg *proto.Envelope[*proto.Message]) {
 			c.sendToEndpoint(peer, msg)
 		}(peer, msg)
 	}
 }
 
-func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*Message]) {
+func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*proto.Message]) {
 	defer c.sendInProgress.Done()
 	conn, err := rpc.Dial("tcp", peer.Endpoint)
 	if err != nil {
 		c.logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error())
 		return
 	}
-	var msgToSend = &ReceivedMessage{
+	var msgToSend = &proto.ReceivedMessage{
 		Envelope: msg,
 		Sender:   c.self,
 	}
-	var reply ReceivedMessage
+	var reply proto.ReceivedMessage
 
 	defer func(conn *rpc.Client) {
 		_ = conn.Close()
@@ -146,8 +146,8 @@ func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*Message
 
 }
 
-func (c *commImpl) Accept(acceptor MessageAcceptor) <-chan *ReceivedMessage {
-	messageChan := make(chan *ReceivedMessage, 10)
+func (c *commImpl) Accept(acceptor MessageAcceptor) <-chan *proto.ReceivedMessage {
+	messageChan := make(chan *proto.ReceivedMessage, 10)
 
 	if c.isStopping() {
 		fmt.Printf("return an empty channel because of the comm is stopped")
