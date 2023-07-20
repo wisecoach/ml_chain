@@ -24,10 +24,62 @@ type TrainerRegisterMessage struct {
 	Trainer *comm.RemotePeer
 }
 
+// SubmitLocalityWeightMessage
+// @Description: message for trainer to submit its locality model to the aggregator
+type SubmitLocalityWeightMessage struct {
+	Iteration          int
+	WeightVector       []float64
+	Trainer            []byte
+	ValidatorSelection *SelectionResult
+}
+
+// RequestLossMessage
+// @Description: message for aggregator to request the loss，为什么不是trainer自己找validator
+type RequestLossMessage struct {
+	Iteration    int
+	WeightVector []float64
+	Trainer      []byte
+}
+
+// ResponseLossMessage
+// @Description: message for validator to response loss to the aggregator
+type ResponseLossMessage struct {
+	Iteration int
+	Trainer   []byte
+	Losses    []*Envelope[*ValidateLoss]
+}
+
 func (t *TrainerRegisterMessage) isMessage_Content() {}
 
 func (m *Message) GetTrainerRegister() *TrainerRegisterMessage {
 	if msg, ok := m.Content.(*TrainerRegisterMessage); ok {
+		return msg
+	}
+	return nil
+}
+
+func (s *SubmitLocalityWeightMessage) isMessage_Content() {}
+
+func (m *Message) GetSubmitLocalityWeight() *SubmitLocalityWeightMessage {
+	if msg, ok := m.Content.(*SubmitLocalityWeightMessage); ok {
+		return msg
+	}
+	return nil
+}
+
+func (s *RequestLossMessage) isMessage_Content() {}
+
+func (m *Message) GetRequestLoss() *RequestLossMessage {
+	if msg, ok := m.Content.(*RequestLossMessage); ok {
+		return msg
+	}
+	return nil
+}
+
+func (s *ResponseLossMessage) isMessage_Content() {}
+
+func (m *Message) GetResponseLoss() *ResponseLossMessage {
+	if msg, ok := m.Content.(*ResponseLossMessage); ok {
 		return msg
 	}
 	return nil

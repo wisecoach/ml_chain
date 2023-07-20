@@ -78,7 +78,7 @@ shardchain for FL
 - [x] bccsp：负责提供所有加密功能
 - [ ] block：区块链相关
   - [x] chain：区块链定义
-  - [ ] consensus：共识的接口
+  - [x] consensus：共识的接口
   - [x] manager：区块链的管理器，区块链对外接口，查询区块，区块增加，触发区块、交易监听器等
 - [x] comm：通信模块
   - [x] comm：通信相关，负责对外通信

@@ -38,14 +38,6 @@ func init() {
 		OutputPaths:      []string{"stdout", "./logs/spikeProxy.log"},         // 输出到指定文件 stdout（标准输出，正常颜色） stderr（错误输出，红色）
 		ErrorOutputPaths: []string{"stderr"},
 	}
-
-	// 构建日志
-	// var err error
-	// logger, err = config.Build()
-	// if err != nil {
-	// 	panic(fmt.Sprintf("log 初始化失败: %v", err))
-	// }
-	// logger.Info("log 初始化成功")
 }
 
 func GetLogger() *zap.Logger {
@@ -55,27 +47,3 @@ func GetLogger() *zap.Logger {
 	}
 	return logger
 }
-
-// func Debug(message string, fields ...zap.Field) {
-// 	logger.Debug(message, fields...)
-// }
-//
-// func Info(message string, fields ...zap.Field) {
-// 	logger.Info(message, fields...)
-// }
-//
-// func Warn(message string, fields ...zap.Field) {
-// 	logger.Warn(message, fields...)
-// }
-//
-// func Error(message string, fields ...zap.Field) {
-// 	logger.Error(message, fields...)
-// }
-//
-// func Panic(message string, fields ...zap.Field) {
-// 	logger.Panic(message, fields...)
-// }
-//
-// func Fatal(message string, fields ...zap.Field) {
-// 	logger.Fatal(message, fields...)
-// }

@@ -3,29 +3,30 @@ package role
 import (
 	set "github.com/deckarep/golang-set/v2"
 	"github.com/wisecoach/ml_chain/comm/comm"
+	"github.com/wisecoach/ml_chain/proto"
 	"sync"
 )
 
 type Manager interface {
 	//
-	// SelectVerifiers
-	//  @Description: select the verifierSelectionResults
+	// SelectValidators
+	//  @Description: select the validatorSelectionResults
 	//
-	SelectVerifiers(candidates []*comm.RemotePeer, number int)
+	SelectValidators(candidates []*comm.RemotePeer, number int)
 
 	//
-	// GetVerifiers
-	//  @Description: get the selected verifierSelectionResults
+	// GetValidators
+	//  @Description: get the selected validatorSelectionResults
 	//  @return *SelectionResult
 	//
-	GetVerifiers() *SelectionResult
+	GetValidators() *proto.SelectionResult
 
 	//
-	// AmVerifier
-	//  @Description: if self is verifierSelectionResult
+	// AmValidator
+	//  @Description: if self is validatorSelectionResult
 	//  @return bool
 	//
-	AmVerifier() bool
+	AmValidator() bool
 }
 
 type roleMgr struct {
@@ -33,30 +34,30 @@ type roleMgr struct {
 
 	self *comm.RemotePeer
 
-	verifierSelectionResult *SelectionResult
-	verifierSet             set.Set[*comm.RemotePeer]
+	validatorSelectionResult *proto.SelectionResult
+	validatorSet             set.Set[*comm.RemotePeer]
 
 	selector *Selector
 }
 
-func (r *roleMgr) SelectVerifiers(candidates []*comm.RemotePeer, input []byte, number int) {
+func (r *roleMgr) SelectValidators(candidates []*comm.RemotePeer, input []byte, number int) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 
-	r.verifierSelectionResult = r.selector.SelectVerifiers(candidates, input, number)
-	r.verifierSet = set.NewSet(r.verifierSelectionResult.winners...)
+	r.validatorSelectionResult = r.selector.SelectValidators(candidates, input, number)
+	r.validatorSet = set.NewSet(r.validatorSelectionResult.Winners...)
 }
 
-func (r *roleMgr) GetVerifiers() *SelectionResult {
+func (r *roleMgr) GetValidators() *proto.SelectionResult {
 	r.lock.RLock()
 	defer r.lock.RUnlock()
 
-	return r.verifierSelectionResult
+	return r.validatorSelectionResult
 }
 
-func (r *roleMgr) AmVerifier() bool {
+func (r *roleMgr) AmValidator() bool {
 	r.lock.RLock()
 	defer r.lock.RUnlock()
 
-	return r.verifierSet.Contains(r.self)
+	return r.validatorSet.Contains(r.self)
 }

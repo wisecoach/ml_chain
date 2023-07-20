@@ -5,12 +5,25 @@ package proto
 type Payload struct {
 }
 
-// TaskGenesis 任务的创世区块
+// TaskGenesis represent the genesis transaction of a taskchain
 type TaskGenesis struct {
 	Payload
+
+	ModelStructure *ModelStructure
+	ManagerList    [][]byte
+	InitWeight     *Envelope[*GlobalWeight]
 }
 
-// ModelIteration 一轮全局模型的迭代
+// ModelIteration represent a iteration of global model
 type ModelIteration struct {
 	Payload
+
+	Iteration       int
+	Accuracy        float64 // need?
+	GlobalWeight    *Envelope[*GlobalWeight]
+	LocalityWeights []*Envelope[*LocalityWeight]
+}
+
+type ModelStructure struct {
+	// TODO
 }
