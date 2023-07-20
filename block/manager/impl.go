@@ -3,7 +3,7 @@ package manager
 import (
 	"github.com/wisecoach/ml_chain/block/chain"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/util/logger"
+	"go.uber.org/zap"
 	"reflect"
 	"sync"
 )
@@ -15,6 +15,7 @@ type blockMgr struct {
 	blockHandlers  []BlockHandler
 	txHandlers     map[reflect.Type][]TxHandler
 
+	logger      *zap.Logger
 	handlerLock sync.RWMutex
 	bcLock      sync.RWMutex
 }
@@ -59,13 +60,13 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 func (b *blockMgr) validateBlock(block *proto.Block) error {
 	err := b.blockValidator.ValidateBlock(block)
 	if err != nil {
-		logger.Error("区块不合法")
+		b.logger.Error("区块不合法")
 		return err
 	}
 	for _, signedTransaction := range block.Data.Transactions {
 		err := b.txValidator.ValidateTx(signedTransaction)
 		if err != nil {
-			logger.Error("交易不合法")
+			b.logger.Error("交易不合法")
 			return err
 		}
 	}

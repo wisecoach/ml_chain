@@ -1,13 +1,15 @@
 package node
 
 import (
+	"encoding/gob"
 	"encoding/json"
 	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/discovery"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/util/logger"
+	"github.com/wisecoach/ml_chain/util/log"
+	"go.uber.org/zap"
 	"net/rpc"
 	"reflect"
 	"sync"
@@ -29,6 +31,7 @@ type Node struct {
 
 	messageListeners map[reflect.Type][]MessageListener
 
+	logger     *zap.Logger
 	lock       sync.RWMutex
 	toDieChan  chan struct{}
 	stopFlag   int32
@@ -42,6 +45,7 @@ func New(config *Config, server *rpc.Server) *Node {
 		comm:             comm.New(server, config.Self, config.TimeoutRPC),
 		config:           config,
 		messageListeners: make(map[reflect.Type][]MessageListener),
+		logger:           log.GetLogger(),
 		lock:             sync.RWMutex{},
 		toDieChan:        make(chan struct{}),
 		stopFlag:         int32(0),
@@ -51,9 +55,9 @@ func New(config *Config, server *rpc.Server) *Node {
 	// init the mcs
 	bccsp, err := sw.NewBCCSP()
 	if err != nil {
-		logger.Error("create bccsp failed: " + err.Error())
+		node.logger.Error("create bccsp failed: " + err.Error())
 	}
-	node.mcs = crypto.New(bccsp, config.Self, config.KeyImportOpts, config.HashOpts, config.SignerOpts)
+	node.mcs = crypto.New(bccsp, config.Sk, config.Self, config.KeyImportOpts, config.HashOpts, config.SignerOpts)
 
 	go node.start()
 
@@ -100,7 +104,7 @@ func (n *Node) SendWithFilter(msg *comm.Message, filter PeerFilter) {
 	peersToSend := filterPeers(n.Peers(), filter)
 	envelope, err := n.signMessage(msg)
 	if err != nil {
-		logger.Error("sign the message failed, err:" + err.Error())
+		n.logger.Error("sign the message failed, err:" + err.Error())
 	}
 	n.comm.Send(envelope, peersToSend...)
 }
@@ -108,7 +112,7 @@ func (n *Node) SendWithFilter(msg *comm.Message, filter PeerFilter) {
 func (n *Node) SendToPeers(msg *comm.Message, peers []*comm.RemotePeer) {
 	envelope, err := n.signMessage(msg)
 	if err != nil {
-		logger.Error("sign the message failed, err:" + err.Error())
+		n.logger.Error("sign the message failed, err:" + err.Error())
 	}
 	n.comm.Send(envelope, peers...)
 }
@@ -116,11 +120,17 @@ func (n *Node) SendToPeers(msg *comm.Message, peers []*comm.RemotePeer) {
 // RegisterListener
 //
 //	@Description: register listener to node
-func (n *Node) RegisterListener(contentType reflect.Type, listener MessageListener) {
+func (n *Node) RegisterListener(content any, listener MessageListener) {
 	n.lock.Lock()
 	defer n.lock.Unlock()
 
+	// register the type to gob
+	gob.Register(content)
+	contentType := reflect.TypeOf(content)
 	listeners := n.messageListeners[contentType]
+	if listeners == nil {
+		listeners = make([]MessageListener, 0)
+	}
 	n.messageListeners[contentType] = append(listeners, listener)
 }
 
@@ -142,6 +152,7 @@ func (n *Node) acceptMessages(messages <-chan *comm.ReceivedMessage) {
 		case <-n.toDieChan:
 			return
 		case msg := <-messages:
+			n.logger.Info("get the message from: " + msg.Sender.Endpoint)
 			n.handleMessage(msg)
 		}
 	}
@@ -173,8 +184,8 @@ func (n *Node) Stop() {
 	if n.toDie() {
 		return
 	}
-	logger.Info("node is stopping")
-	defer logger.Info("node stopped")
+	n.logger.Info("node is stopping")
+	defer n.logger.Info("node stopped")
 	atomic.StoreInt32(&n.stopFlag, int32(1))
 	n.stopSignal.Wait()
 	close(n.toDieChan)

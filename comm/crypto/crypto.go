@@ -13,22 +13,24 @@ type MessageCryptoService interface {
 	Verify(pk, msg, signature []byte) (bool, error)
 }
 
-func New(csp bccsp.BCCSP, self *comm.RemotePeer,
+func New(csp bccsp.BCCSP, sk bccsp.Key, self *comm.RemotePeer,
 	importOpts bccsp.KeyImportOpts, hashOpts bccsp.HashOpts, signerOpts bccsp.SignerOpts) MessageCryptoService {
 	m := &messageCryptoServiceImpl{
+		sk:            sk,
 		bccsp:         csp,
 		keyImportOpts: importOpts,
 		hashOpts:      hashOpts,
 		signerOpts:    signerOpts,
 	}
 	print(self.Endpoint + " " + string(self.PublicKey))
-	m.self, _ = csp.KeyImport(self.PublicKey, importOpts)
+	m.pk, _ = csp.KeyImport(self.PublicKey, importOpts)
 	return m
 }
 
 type messageCryptoServiceImpl struct {
 	bccsp bccsp.BCCSP
-	self  bccsp.Key
+	sk    bccsp.Key
+	pk    bccsp.Key
 
 	keyImportOpts bccsp.KeyImportOpts
 	hashOpts      bccsp.HashOpts
@@ -40,7 +42,7 @@ func (m *messageCryptoServiceImpl) Sign(msg []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return m.bccsp.Sign(m.self, digest, m.signerOpts)
+	return m.bccsp.Sign(m.sk, digest, m.signerOpts)
 }
 
 func (m *messageCryptoServiceImpl) Verify(pk, msg, signature []byte) (bool, error) {

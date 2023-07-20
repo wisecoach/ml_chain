@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	Sk             bccsp.Key
 	Self           *comm.RemotePeer
 	BootstrapPeers []*comm.RemotePeer
 	TimeoutRPC     time.Duration
@@ -15,10 +16,11 @@ type Config struct {
 	SignerOpts     bccsp.SignerOpts
 }
 
-func NewConfig(self *comm.RemotePeer, bootstrapPeers []*comm.RemotePeer, timeoutRPC time.Duration,
+func NewConfig(sk bccsp.Key, self *comm.RemotePeer, bootstrapPeers []*comm.RemotePeer, timeoutRPC time.Duration,
 	keyImportOpts bccsp.KeyImportOpts, hashOpts bccsp.HashOpts, signerOpts bccsp.SignerOpts,
 ) *Config {
 	return &Config{
+		Sk:             sk,
 		Self:           self,
 		BootstrapPeers: bootstrapPeers,
 		TimeoutRPC:     timeoutRPC,

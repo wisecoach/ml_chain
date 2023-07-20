@@ -29,8 +29,9 @@ type discoveryImpl struct {
 
 func New(self *comm.RemotePeer) Discovery {
 	return &discoveryImpl{
-		self: self,
-		lock: &sync.RWMutex{},
+		lock:  &sync.RWMutex{},
+		self:  self,
+		peers: make(map[string]*comm.RemotePeer),
 	}
 }
 

@@ -1,4 +1,4 @@
-package logger
+package log
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	logger *zap.Logger
+	config zap.Config
 )
 
 func init() {
@@ -29,7 +29,7 @@ func init() {
 	// 设置日志级别
 	atom := zap.NewAtomicLevelAt(zap.DebugLevel)
 
-	config := zap.Config{
+	config = zap.Config{
 		Level:            atom,                                                // 日志级别
 		Development:      true,                                                // 开发模式，堆栈跟踪
 		Encoding:         "json",                                              // 输出格式 console 或 json
@@ -40,34 +40,42 @@ func init() {
 	}
 
 	// 构建日志
-	var err error
-	logger, err = config.Build()
+	// var err error
+	// logger, err = config.Build()
+	// if err != nil {
+	// 	panic(fmt.Sprintf("log 初始化失败: %v", err))
+	// }
+	// logger.Info("log 初始化成功")
+}
+
+func GetLogger() *zap.Logger {
+	logger, err := config.Build()
 	if err != nil {
 		panic(fmt.Sprintf("log 初始化失败: %v", err))
 	}
-	logger.Info("log 初始化成功")
+	return logger
 }
 
-func Debug(message string, fields ...zap.Field) {
-	logger.Debug(message, fields...)
-}
-
-func Info(message string, fields ...zap.Field) {
-	logger.Info(message, fields...)
-}
-
-func Warn(message string, fields ...zap.Field) {
-	logger.Warn(message, fields...)
-}
-
-func Error(message string, fields ...zap.Field) {
-	logger.Error(message, fields...)
-}
-
-func Panic(message string, fields ...zap.Field) {
-	logger.Panic(message, fields...)
-}
-
-func Fatal(message string, fields ...zap.Field) {
-	logger.Fatal(message, fields...)
-}
+// func Debug(message string, fields ...zap.Field) {
+// 	logger.Debug(message, fields...)
+// }
+//
+// func Info(message string, fields ...zap.Field) {
+// 	logger.Info(message, fields...)
+// }
+//
+// func Warn(message string, fields ...zap.Field) {
+// 	logger.Warn(message, fields...)
+// }
+//
+// func Error(message string, fields ...zap.Field) {
+// 	logger.Error(message, fields...)
+// }
+//
+// func Panic(message string, fields ...zap.Field) {
+// 	logger.Panic(message, fields...)
+// }
+//
+// func Fatal(message string, fields ...zap.Field) {
+// 	logger.Fatal(message, fields...)
+// }

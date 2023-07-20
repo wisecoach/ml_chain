@@ -3,7 +3,8 @@ package comm
 import (
 	"fmt"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/util/logger"
+	"github.com/wisecoach/ml_chain/util/log"
+	"go.uber.org/zap"
 	"net/rpc"
 	"sync"
 	"sync/atomic"
@@ -41,6 +42,7 @@ func New(server *rpc.Server, self *RemotePeer, timeoutRPC time.Duration) Comm {
 		deMuxInProgress: sync.WaitGroup{},
 		sendInProgress:  sync.WaitGroup{},
 		timeoutRPC:      timeoutRPC,
+		logger:          log.GetLogger(),
 	}
 
 	// register the message handler to rpcServer
@@ -48,7 +50,7 @@ func New(server *rpc.Server, self *RemotePeer, timeoutRPC time.Duration) Comm {
 		comm: commInst,
 	})
 	if err != nil {
-		logger.Error("register rpc service failed")
+		commInst.logger.Error("register rpc service failed")
 	}
 	return commInst
 }
@@ -63,6 +65,7 @@ type commImpl struct {
 	deMuxInProgress sync.WaitGroup
 	sendInProgress  sync.WaitGroup
 	timeoutRPC      time.Duration
+	logger          *zap.Logger
 }
 
 func (c *commImpl) HandleMessage(message *ReceivedMessage) {
@@ -100,7 +103,7 @@ func (c *commImpl) Send(msg *proto.Envelope[*Message], peers ...*RemotePeer) {
 	if c.isStopping() || len(peers) == 0 {
 		return
 	}
-	logger.Debug(fmt.Sprintf("begin to send message to %d peers", len(peers)))
+	c.logger.Debug(fmt.Sprintf("begin to send message to %d peers", len(peers)))
 
 	c.sendInProgress.Add(len(peers))
 	for _, peer := range peers {
@@ -114,7 +117,7 @@ func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*Message
 	defer c.sendInProgress.Done()
 	conn, err := rpc.Dial("tcp", peer.Endpoint)
 	if err != nil {
-		logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error())
+		c.logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error())
 		return
 	}
 	var msgToSend = &ReceivedMessage{
@@ -128,16 +131,17 @@ func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*Message
 	}(conn)
 	errChan := make(chan error)
 	go func() {
+		c.logger.Info("call MessageHandler.HandleMessage with " + peer.Endpoint)
 		errChan <- conn.Call("MessageHandler.HandleMessage", msgToSend, &reply)
 	}()
 
 	select {
 	case err = <-errChan:
 		if err != nil {
-			logger.Error("rpc failed, err: " + err.Error())
+			c.logger.Error("rpc failed, err: " + err.Error())
 		}
 	case <-time.After(c.timeoutRPC):
-		logger.Error("connection to " + peer.Endpoint + " failed, timeout")
+		c.logger.Error("connection to " + peer.Endpoint + " failed, timeout")
 	}
 
 }
