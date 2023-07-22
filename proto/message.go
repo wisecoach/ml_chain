@@ -46,7 +46,7 @@ type RequestLossMessage struct {
 type ResponseLossMessage struct {
 	Iteration int
 	Trainer   []byte
-	Losses    []*Envelope[*ValidateLoss]
+	Loss      *Envelope[*ValidateLoss]
 }
 
 func (t *TrainerRegisterMessage) isMessage_Content() {}

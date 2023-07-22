@@ -64,6 +64,10 @@ func New(config *Config, server *rpc.Server) *Node {
 	return node
 }
 
+func (n *Node) Lookup(pk []byte) *comm.RemotePeer {
+	return n.disc.Lookup(pk)
+}
+
 // Peers
 //
 //	@Description: get the peers discovered in the network
@@ -79,7 +83,7 @@ func (n *Node) GetDiscovery() discovery.Discovery {
 	return n.disc
 }
 
-func (n *Node) signMessage(message *proto.Message) (*proto.Envelope[*proto.Message], error) {
+func (n *Node) SignMessage(message *proto.Message) (*proto.Envelope[*proto.Message], error) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		return nil, err
@@ -102,15 +106,15 @@ func (n *Node) signMessage(message *proto.Message) (*proto.Envelope[*proto.Messa
 //	@return error
 func (n *Node) SendWithFilter(msg *proto.Message, filter PeerFilter) {
 	peersToSend := filterPeers(n.Peers(), filter)
-	envelope, err := n.signMessage(msg)
+	envelope, err := n.SignMessage(msg)
 	if err != nil {
 		n.logger.Error("sign the message failed, err:" + err.Error())
 	}
 	n.comm.Send(envelope, peersToSend...)
 }
 
-func (n *Node) SendToPeers(msg *proto.Message, peers []*comm.RemotePeer) {
-	envelope, err := n.signMessage(msg)
+func (n *Node) SendToPeers(msg *proto.Message, peers ...*comm.RemotePeer) {
+	envelope, err := n.SignMessage(msg)
 	if err != nil {
 		n.logger.Error("sign the message failed, err:" + err.Error())
 	}
