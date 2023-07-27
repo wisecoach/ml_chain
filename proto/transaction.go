@@ -4,5 +4,5 @@ package proto
 type Transaction struct {
 	Parent  *Block
 	Header  *Header
-	Payload *Payload
+	Payload Payload
 }

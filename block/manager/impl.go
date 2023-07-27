@@ -1,6 +1,8 @@
 package manager
 
 import (
+	"errors"
+	"fmt"
 	"github.com/wisecoach/ml_chain/block/chain"
 	"github.com/wisecoach/ml_chain/proto"
 	"go.uber.org/zap"
@@ -18,6 +20,13 @@ type blockMgr struct {
 	logger      *zap.Logger
 	handlerLock sync.RWMutex
 	bcLock      sync.RWMutex
+}
+
+func (b *blockMgr) GetLatestBlock() (*proto.Block, error) {
+	if b.bc.Number == 0 {
+		return nil, errors.New("now, the blockchain don't have any block")
+	}
+	return b.GetBlock(b.bc.Number)
 }
 
 func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
@@ -60,24 +69,28 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 func (b *blockMgr) validateBlock(block *proto.Block) error {
 	err := b.blockValidator.ValidateBlock(block)
 	if err != nil {
-		b.logger.Error("区块不合法")
+		b.logger.Error("block is not valid")
 		return err
 	}
-	for _, signedTransaction := range block.Data.Transactions {
+	for i, signedTransaction := range block.Data.Transactions {
 		err := b.txValidator.ValidateTx(signedTransaction)
 		if err != nil {
-			b.logger.Error("交易不合法")
+			b.logger.Error(fmt.Sprintf("transaction is not valid, index is %d", i))
 			return err
 		}
 	}
 	return nil
 }
 
-func (b *blockMgr) GetBlock(number int) *proto.Block {
+func (b *blockMgr) GetBlock(number int) (*proto.Block, error) {
 	b.bcLock.RLock()
 	defer b.bcLock.RUnlock()
 
-	return b.bc.GetBlock(number)
+	block := b.bc.GetBlock(number)
+	if block == nil {
+		return nil, errors.New(fmt.Sprintf("the height of blockchain is just %d, but you want get %d", b.bc.Number, number))
+	}
+	return block, nil
 }
 
 func (b *blockMgr) GetChain() *chain.BlockChain {

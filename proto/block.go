@@ -10,6 +10,7 @@ type BlockHeader struct {
 	DataHash    []byte
 	PrevHash    []byte
 	BlockNumber int
+	Miner       []byte
 }
 
 type BlockData struct {

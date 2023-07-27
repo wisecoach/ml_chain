@@ -15,6 +15,9 @@ type LocalityWeight struct {
 }
 
 type ValidateLoss struct {
+	Iteration int
+	Trainer   []byte
 	Validator []byte
+	ModelHash []byte
 	Loss      []float64 // loss vector
 }

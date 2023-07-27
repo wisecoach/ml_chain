@@ -1,6 +1,7 @@
 package role
 
 import (
+	"errors"
 	"fmt"
 	"github.com/coniks-sys/coniks-go/crypto/vrf"
 	"github.com/wisecoach/ml_chain/comm/comm"
@@ -10,19 +11,19 @@ import (
 
 // Selector used for select the validators from all trainers
 type Selector struct {
-	validatorsk vrf.PrivateKey // Used for the validator
+	validatorSk vrf.PrivateKey // Used for the validator
 	validatorPk vrf.PublicKey
 }
 
 // init the selector
 func (rs *Selector) init() {
 	var err error
-	rs.validatorsk, err = vrf.GenerateKey(nil)
+	rs.validatorSk, err = vrf.GenerateKey(nil)
 	if err != nil {
 		fmt.Println("Error! Could not generate secret key for roles")
 	}
 
-	rs.validatorPk, _ = rs.validatorsk.Public()
+	rs.validatorPk, _ = rs.validatorSk.Public()
 }
 
 // SelectValidators
@@ -40,7 +41,7 @@ func (rs *Selector) SelectValidators(trainers []*comm.RemotePeer, input []byte, 
 	copy(currentTrainers, trainers)
 
 	// generate the vrf prove and select the validators according to every two bytes of vrf prove
-	prove, proof := rs.validatorsk.Prove(input)
+	prove, proof := rs.validatorSk.Prove(input)
 	validators := rs.selectValidatorByProve(currentTrainers, prove, numRequested)
 
 	return &proto.SelectionResult{
@@ -71,14 +72,14 @@ func (rs *Selector) selectValidatorByProve(trainers []*comm.RemotePeer, prove []
 	return validators
 }
 
-// Verify
-//
-//	@Description:	verify the vrf random result
-//	@return bool	if valid
-func (rs *Selector) Verify(proof *proto.SelectionResult) bool {
+func (rs *Selector) VerifyValidatorSelection(proof *proto.SelectionResult) error {
 	if !proof.Pk.Verify(proof.Input, proof.Prove, proof.Proof) {
-		return false
+		return errors.New("the vrf result is not valid")
 	}
 	gotted := rs.selectValidatorByProve(proof.Candidates, proof.Input, len(proof.Winners))
-	return reflect.DeepEqual(proof.Winners, gotted)
+	if reflect.DeepEqual(proof.Winners, gotted) {
+		return nil
+	} else {
+		return errors.New("the vrf result is not valid")
+	}
 }

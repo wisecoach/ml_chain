@@ -95,5 +95,5 @@ func (t *Trainer) announceToNetwork() {
 		}
 	}
 
-	t.node.SendToPeers(peerRegisterMsg, peersToSend)
+	t.node.SendToPeers(peerRegisterMsg, peersToSend...)
 }

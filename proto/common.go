@@ -5,7 +5,7 @@ import "time"
 type Header struct {
 	Creator   []byte // public key
 	ChainId   string
-	TxId      []byte
+	TxId      string
 	Timestamp time.Time
 }
 

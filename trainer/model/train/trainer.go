@@ -7,4 +7,8 @@ type LocalTrainer interface {
 	//  @Description: train the global model and begin to send the model to validator selected by vrf for validating,
 	//				  with the prove of validating, send the local model to aggregator committee
 	Train(weight *proto.GlobalWeight)
+
+	// CollectionLoss
+	//  @Description: collect the loss to the local model
+	CollectionLoss(loss *proto.Envelope[*proto.ValidateLoss])
 }

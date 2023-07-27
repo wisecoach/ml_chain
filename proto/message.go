@@ -18,6 +18,18 @@ type isMessage_Content interface {
 	isMessage_Content()
 }
 
+// TransactionMessage
+// @Description: message for propose transaction to consensus
+type TransactionMessage struct {
+	Transaction *Envelope[*Transaction]
+}
+
+// BlockMessage
+// @Description: message for deliver block
+type BlockMessage struct {
+	Block *Envelope[*Block]
+}
+
 // TrainerRegisterMessage
 // @Description: message for discovery, register self to the network
 type TrainerRegisterMessage struct {
@@ -27,26 +39,40 @@ type TrainerRegisterMessage struct {
 // SubmitLocalityWeightMessage
 // @Description: message for trainer to submit its locality model to the aggregator
 type SubmitLocalityWeightMessage struct {
+	LocalityWeight *LocalityWeight
+}
+
+// RequestLossMessage
+// @Description: message for aggregator to request the loss，为什么不是trainer自己找validator
+type RequestLossMessage struct {
 	Iteration          int
 	WeightVector       []float64
 	Trainer            []byte
 	ValidatorSelection *SelectionResult
 }
 
-// RequestLossMessage
-// @Description: message for aggregator to request the loss，为什么不是trainer自己找validator
-type RequestLossMessage struct {
-	Iteration    int
-	WeightVector []float64
-	Trainer      []byte
-}
-
 // ResponseLossMessage
 // @Description: message for validator to response loss to the aggregator
 type ResponseLossMessage struct {
-	Iteration int
-	Trainer   []byte
-	Loss      *Envelope[*ValidateLoss]
+	Loss *Envelope[*ValidateLoss]
+}
+
+func (t *TransactionMessage) isMessage_Content() {}
+
+func (m *Message) GetTransaction() *TransactionMessage {
+	if msg, ok := m.Content.(*TransactionMessage); ok {
+		return msg
+	}
+	return nil
+}
+
+func (b *BlockMessage) isMessage_Content() {}
+
+func (m *Message) GetBlock() *BlockMessage {
+	if msg, ok := m.Content.(*BlockMessage); ok {
+		return msg
+	}
+	return nil
 }
 
 func (t *TrainerRegisterMessage) isMessage_Content() {}

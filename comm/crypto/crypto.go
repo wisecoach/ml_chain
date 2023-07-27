@@ -6,6 +6,8 @@ import (
 )
 
 type MessageCryptoService interface {
+	Hash(msg []byte) ([]byte, error)
+
 	// Sign sign the msg
 	Sign(msg []byte) ([]byte, error)
 
@@ -35,6 +37,10 @@ type messageCryptoServiceImpl struct {
 	keyImportOpts bccsp.KeyImportOpts
 	hashOpts      bccsp.HashOpts
 	signerOpts    bccsp.SignerOpts
+}
+
+func (m *messageCryptoServiceImpl) Hash(msg []byte) ([]byte, error) {
+	return m.bccsp.Hash(msg, m.hashOpts)
 }
 
 func (m *messageCryptoServiceImpl) Sign(msg []byte) ([]byte, error) {

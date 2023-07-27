@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/coniks-sys/coniks-go v0.0.0-20180722014011-11acf4819b71
 	github.com/deckarep/golang-set/v2 v2.3.0
+	github.com/google/uuid v1.3.0
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.24.0
 )

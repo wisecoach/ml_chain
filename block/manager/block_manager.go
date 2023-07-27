@@ -31,7 +31,19 @@ type BlockManager interface {
 	//  @Description: confirm a block, it means the block has been confirmed by consensus and will be invoked by consensus module
 	// 				  confirm a block will add block to the blockchain and signal all the blockhandler and txhandler register in manager
 	ConfirmBlock(block *proto.Block) error
-	GetBlock(number int) *proto.Block
+
+	//
+	// GetBlock
+	//  @Description: get the block which BlockNumber is number
+	//
+	GetBlock(number int) (*proto.Block, error)
+
+	//
+	// GetLatestBlock
+	//  @Description:
+	//  @return *proto.Block
+	//
+	GetLatestBlock() (*proto.Block, error)
 
 	//
 	// CreateBlock

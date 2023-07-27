@@ -2,13 +2,10 @@ package proto
 
 // Payload
 // @Description: represent the payload of transaction
-type Payload struct {
-}
+type Payload interface{}
 
 // TaskGenesis represent the genesis transaction of a taskchain
 type TaskGenesis struct {
-	Payload
-
 	ModelStructure *ModelStructure
 	ManagerList    [][]byte
 	InitWeight     *Envelope[*GlobalWeight]
@@ -16,12 +13,9 @@ type TaskGenesis struct {
 
 // ModelIteration represent a iteration of global model
 type ModelIteration struct {
-	Payload
-
 	Iteration       int
-	Accuracy        float64 // need?
-	GlobalWeight    *Envelope[*GlobalWeight]
-	LocalityWeights []*Envelope[*LocalityWeight]
+	GlobalWeight    *GlobalWeight
+	LocalityWeights []*LocalityWeight
 }
 
 type ModelStructure struct {

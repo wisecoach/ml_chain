@@ -64,6 +64,10 @@ func New(config *Config, server *rpc.Server) *Node {
 	return node
 }
 
+func (n *Node) Self() *comm.RemotePeer {
+	return n.self
+}
+
 func (n *Node) Lookup(pk []byte) *comm.RemotePeer {
 	return n.disc.Lookup(pk)
 }
