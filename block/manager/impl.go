@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/wisecoach/ml_chain/block/chain"
 	"github.com/wisecoach/ml_chain/proto"
+	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"reflect"
 	"sync"
@@ -22,6 +23,21 @@ type blockMgr struct {
 	bcLock      sync.RWMutex
 }
 
+func New(bc *chain.BlockChain) BlockManager {
+	// TODO, implement the block validator, tx validator
+	blockManager := &blockMgr{
+		bc:             bc,
+		blockValidator: nil,
+		txValidator:    nil,
+		blockHandlers:  make([]BlockHandler, 0),
+		txHandlers:     make(map[reflect.Type][]TxHandler),
+		logger:         log.GetLogger(),
+		handlerLock:    sync.RWMutex{},
+		bcLock:         sync.RWMutex{},
+	}
+	return blockManager
+}
+
 func (b *blockMgr) GetLatestBlock() (*proto.Block, error) {
 	if b.bc.Number == 0 {
 		return nil, errors.New("now, the blockchain don't have any block")
@@ -37,10 +53,10 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	}
 
 	// handle the block and txs in the block
+	// TODO if need to deep copy the array to avoid long time locking
 	b.handlerLock.RLock()
 	blockHandlers := b.blockHandlers
 	txHandlers := b.txHandlers
-	b.handlerLock.RUnlock()
 
 	for _, blockHandler := range blockHandlers {
 		blockHandler.HandleBlock(block)
@@ -56,6 +72,8 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 			}
 		}
 	}
+
+	b.handlerLock.RUnlock()
 
 	b.bcLock.Lock()
 	// add block to blockchain

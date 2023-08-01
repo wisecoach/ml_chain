@@ -3,7 +3,6 @@ package node
 import (
 	"encoding/gob"
 	"encoding/json"
-	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/discovery"
@@ -38,7 +37,7 @@ type Node struct {
 	stopSignal sync.WaitGroup // wait for stop acceptMessage
 }
 
-func New(config *Config, server *rpc.Server) *Node {
+func New(config *Config, server *rpc.Server, mcs crypto.MessageCryptoService) *Node {
 	node := &Node{
 		self:             config.Self,
 		disc:             discovery.New(config.Self),
@@ -50,14 +49,8 @@ func New(config *Config, server *rpc.Server) *Node {
 		toDieChan:        make(chan struct{}),
 		stopFlag:         int32(0),
 		stopSignal:       sync.WaitGroup{},
+		mcs:              mcs,
 	}
-
-	// init the mcs
-	bccsp, err := sw.NewBCCSP()
-	if err != nil {
-		node.logger.Error("create bccsp failed: " + err.Error())
-	}
-	node.mcs = crypto.New(bccsp, config.Sk, config.Self, config.KeyImportOpts, config.HashOpts, config.SignerOpts)
 
 	go node.start()
 

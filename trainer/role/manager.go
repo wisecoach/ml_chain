@@ -43,11 +43,24 @@ type Manager interface {
 	VerifyValidatorSelection(proof *proto.SelectionResult) error
 }
 
+func New(config *Config) Manager {
+	r := &roleMgr{
+		lock:            sync.RWMutex{},
+		config:          config,
+		self:            config.Self,
+		taskManagerList: config.TaskManagerList,
+		selector:        &Selector{},
+	}
+	r.selector.init()
+	return r
+}
+
 type roleMgr struct {
 	lock sync.RWMutex
 
 	self            *comm.RemotePeer
 	taskManagerList [][]byte
+	config          *Config
 
 	validatorSelectionResult *proto.SelectionResult
 	validatorSet             set.Set[*comm.RemotePeer]

@@ -9,6 +9,7 @@ import (
 	"github.com/wisecoach/ml_chain/trainer/iteration"
 	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/trainer/role"
+	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"reflect"
 	"sync"
@@ -22,13 +23,31 @@ type localTrainerImpl struct {
 	client           python.Client
 	roleManager      role.Manager
 	iterationManager iteration.Manager
-	logger           zap.Logger
+	logger           *zap.Logger
 	node             *node.Node
 	config           *Config
 
 	lock              sync.RWMutex
 	localModel        *proto.LocalityWeight
 	validateWaitGroup sync.WaitGroup
+}
+
+func New(config *Config, mcs crypto.MessageCryptoService, roleManager role.Manager, iterationManager iteration.Manager,
+	node *node.Node, client python.Client) LocalTrainer {
+	trainer := &localTrainerImpl{
+		taskId:            config.TaskId,
+		mcs:               mcs,
+		self:              node.Self(),
+		client:            client,
+		roleManager:       roleManager,
+		iterationManager:  iterationManager,
+		logger:            log.GetLogger(),
+		node:              node,
+		config:            config,
+		lock:              sync.RWMutex{},
+		validateWaitGroup: sync.WaitGroup{},
+	}
+	return trainer
 }
 
 func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {

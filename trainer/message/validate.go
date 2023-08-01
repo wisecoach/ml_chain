@@ -1,14 +1,23 @@
 package message
 
 import (
+	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer/model/validate"
+	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 )
 
 type ValidateRequestMessageListener struct {
 	logger    *zap.Logger
-	Validator validate.Validator
+	validator validate.Validator
+}
+
+func NewValidateRequestMessageListener(validator validate.Validator) node.MessageListener {
+	return &ValidateRequestMessageListener{
+		logger:    log.GetLogger(),
+		validator: validator,
+	}
 }
 
 func (v *ValidateRequestMessageListener) HandleMessage(message *proto.ReceivedMessage) {
@@ -23,5 +32,5 @@ func (v *ValidateRequestMessageListener) HandleMessage(message *proto.ReceivedMe
 		ValidatorSelection: req.ValidatorSelection,
 		Losses:             nil,
 	}
-	v.Validator.Validate(localWeight)
+	v.validator.Validate(localWeight)
 }

@@ -7,17 +7,33 @@ import (
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer/model/python"
+	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"time"
 )
 
 type validatorImpl struct {
 	TaskId string
-	mcs    crypto.MessageCryptoService
+	logger *zap.Logger
 	self   *comm.RemotePeer
+	config *Config
+
 	client python.Client
-	logger zap.Logger
+	mcs    crypto.MessageCryptoService
 	node   *node.Node
+}
+
+func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, node *node.Node) Validator {
+	v := &validatorImpl{
+		TaskId: config.TaskId,
+		logger: log.GetLogger(),
+		self:   node.Self(),
+		config: config,
+		client: client,
+		mcs:    mcs,
+		node:   node,
+	}
+	return v
 }
 
 func (v validatorImpl) Validate(weight *proto.LocalityWeight) {
@@ -66,7 +82,7 @@ func (v validatorImpl) Validate(weight *proto.LocalityWeight) {
 		Header: &proto.Header{
 			Creator:   v.self.PublicKey,
 			ChainId:   v.TaskId,
-			TxId:      nil,
+			TxId:      "",
 			Timestamp: time.Now(),
 		},
 	}

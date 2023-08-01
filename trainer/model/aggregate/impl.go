@@ -11,6 +11,7 @@ import (
 	"github.com/wisecoach/ml_chain/trainer/iteration"
 	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/trainer/role"
+	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"reflect"
 	"sync"
@@ -18,17 +19,34 @@ import (
 )
 
 type aggregatorImpl struct {
-	lock             sync.Locker
+	lock             sync.Mutex
 	trainerWaitGroup sync.WaitGroup
-	logger           zap.Logger
+	logger           *zap.Logger
 	config           *Config
 
 	client           python.Client
-	roleManager      role.Manager
 	mcs              crypto.MessageCryptoService
 	node             *node.Node
-	localModels      map[string]*proto.LocalityWeight
 	iterationManager iteration.Manager
+	roleManager      role.Manager
+	localModels      map[string]*proto.LocalityWeight
+}
+
+func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, node *node.Node,
+	iterationManager iteration.Manager, roleManager role.Manager) Aggregator {
+	a := &aggregatorImpl{
+		lock:             sync.Mutex{},
+		trainerWaitGroup: sync.WaitGroup{},
+		logger:           log.GetLogger(),
+		config:           config,
+		client:           client,
+		mcs:              mcs,
+		node:             node,
+		iterationManager: iterationManager,
+		roleManager:      roleManager,
+		localModels:      make(map[string]*proto.LocalityWeight),
+	}
+	return a
 }
 
 func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) error {

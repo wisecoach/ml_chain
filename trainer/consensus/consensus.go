@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"encoding/json"
+	"github.com/wisecoach/ml_chain/block/consensus"
 	"github.com/wisecoach/ml_chain/block/manager"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
@@ -9,13 +10,14 @@ import (
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer/iteration"
 	"github.com/wisecoach/ml_chain/trainer/role"
+	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"reflect"
 	"time"
 )
 
 type TaskConsensus struct {
-	logger   zap.Logger
+	logger   *zap.Logger
 	txChan   chan *proto.Envelope[*proto.Transaction]
 	stopChan chan struct{}
 	config   *Config
@@ -25,6 +27,22 @@ type TaskConsensus struct {
 	roleManager      role.Manager
 	mcs              crypto.MessageCryptoService
 	node             *node.Node
+}
+
+func New(config *Config, blockManager manager.BlockManager, iterationManager iteration.Manager, roleManager role.Manager,
+	mcs crypto.MessageCryptoService, node *node.Node) consensus.Consensus {
+	taskConsensus := &TaskConsensus{
+		logger:           log.GetLogger(),
+		txChan:           make(chan *proto.Envelope[*proto.Transaction]),
+		stopChan:         make(chan struct{}),
+		config:           config,
+		blockManager:     blockManager,
+		iterationManager: iterationManager,
+		roleManager:      roleManager,
+		mcs:              mcs,
+		node:             node,
+	}
+	return taskConsensus
 }
 
 func (t *TaskConsensus) Order(transaction *proto.Envelope[*proto.Transaction]) {

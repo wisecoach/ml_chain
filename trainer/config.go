@@ -3,16 +3,38 @@ package trainer
 import (
 	"github.com/wisecoach/ml_chain/bccsp"
 	"github.com/wisecoach/ml_chain/comm/comm"
+	"github.com/wisecoach/ml_chain/proto"
 	"time"
 )
 
 type Config struct {
-	ChainId        string
-	Sk             bccsp.Key
-	Self           *comm.RemotePeer
+	// --------------- task config ------------------------------------------------------
+	// task id for trainer
+	TaskId string
+	// validator number for a local model
+	ValidatorNum int
+	// task genesis block
+	GenesisBlock *proto.Block
+	// python server api base
+	ApiBaseUrl string
+
+	// --------------- crypto config ----------------------------------------------------
+	// private key for trainer
+	Sk bccsp.Key
+	// option for key import
+	KeyImportOpts bccsp.KeyImportOpts
+	// option for hash
+	HashOpts bccsp.HashOpts
+	// option for sign
+	SignerOpts bccsp.SignerOpts
+
+	// --------------- discovery config -------------------------------------------------
+	// peer for trainer
+	Self *comm.RemotePeer
+	// the bootstrap peers for the task
 	BootstrapPeers []*comm.RemotePeer
-	TimeoutRPC     time.Duration
-	KeyImportOpts  bccsp.KeyImportOpts
-	HashOpts       bccsp.HashOpts
-	SignerOpts     bccsp.SignerOpts
+
+	// --------------- rpc config -------------------------------------------------------
+	// timeout for rpc
+	TimeoutRPC time.Duration
 }
