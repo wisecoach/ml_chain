@@ -2,7 +2,6 @@ package trainer
 
 import (
 	"github.com/wisecoach/ml_chain/bccsp"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/proto"
 	"time"
 )
@@ -30,9 +29,9 @@ type Config struct {
 
 	// --------------- discovery config -------------------------------------------------
 	// peer for trainer
-	Self *comm.RemotePeer
+	Self *proto.RemotePeer
 	// the bootstrap peers for the task
-	BootstrapPeers []*comm.RemotePeer
+	BootstrapPeers []*proto.RemotePeer
 
 	// --------------- rpc config -------------------------------------------------------
 	// timeout for rpc

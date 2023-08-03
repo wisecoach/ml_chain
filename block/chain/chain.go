@@ -13,8 +13,12 @@ func NewBlockChain() *BlockChain {
 }
 
 func (chain *BlockChain) AddBlock(newBlock *proto.Block) {
-	prevBlock := chain.Blocks[len(chain.Blocks)-1]
-	newBlock.Header.PrevHash = prevBlock.Header.DataHash
+	if len(chain.Blocks) > 0 {
+		prevBlock := chain.Blocks[len(chain.Blocks)-1]
+		newBlock.Header.PrevHash = prevBlock.Header.DataHash
+	} else {
+		newBlock.Header.PrevHash = newBlock.Header.DataHash
+	}
 	chain.Blocks = append(chain.Blocks, newBlock)
 	chain.Number += 1
 }

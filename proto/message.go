@@ -1,10 +1,13 @@
 package proto
 
-import "github.com/wisecoach/ml_chain/comm/comm"
+type RemotePeer struct {
+	Endpoint  string
+	PublicKey []byte
+}
 
 type ReceivedMessage struct {
 	Envelope *Envelope[*Message]
-	Sender   *comm.RemotePeer
+	Sender   *RemotePeer
 }
 
 // Message define the message sent in the network
@@ -33,7 +36,7 @@ type BlockMessage struct {
 // TrainerRegisterMessage
 // @Description: message for discovery, register self to the network
 type TrainerRegisterMessage struct {
-	Trainer *comm.RemotePeer
+	Trainer *RemotePeer
 }
 
 // SubmitLocalityWeightMessage

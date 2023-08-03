@@ -4,17 +4,19 @@ import (
 	"encoding/json"
 	"github.com/wisecoach/ml_chain/block/consensus"
 	"github.com/wisecoach/ml_chain/block/manager"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/trainer/iteration"
 	"github.com/wisecoach/ml_chain/trainer/role"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"reflect"
 	"time"
 )
+
+type IterationMgrAdapter interface {
+	GetIteration() int
+}
 
 type TaskConsensus struct {
 	logger   *zap.Logger
@@ -23,13 +25,13 @@ type TaskConsensus struct {
 	config   *Config
 
 	blockManager     manager.BlockManager
-	iterationManager iteration.Manager
+	iterationManager IterationMgrAdapter
 	roleManager      role.Manager
 	mcs              crypto.MessageCryptoService
 	node             *node.Node
 }
 
-func New(config *Config, blockManager manager.BlockManager, iterationManager iteration.Manager, roleManager role.Manager,
+func New(config *Config, blockManager manager.BlockManager, iterationManager IterationMgrAdapter, roleManager role.Manager,
 	mcs crypto.MessageCryptoService, node *node.Node) consensus.Consensus {
 	taskConsensus := &TaskConsensus{
 		logger:           log.GetLogger(),
@@ -152,7 +154,7 @@ func (t *TaskConsensus) processTransaction(transaction *proto.Envelope[*proto.Tr
 			Timestamp: time.Time{},
 		},
 	}
-	t.node.SendWithFilter(blockMsg, func(peer *comm.RemotePeer) bool { return true })
+	t.node.SendWithFilter(blockMsg, func(peer *proto.RemotePeer) bool { return true })
 }
 
 func (t *TaskConsensus) createBlock(txs ...*proto.Envelope[*proto.Transaction]) (*proto.Block, error) {

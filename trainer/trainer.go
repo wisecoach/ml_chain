@@ -4,7 +4,6 @@ import (
 	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/block/chain"
 	"github.com/wisecoach/ml_chain/block/manager"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
@@ -20,7 +19,7 @@ import (
 )
 
 type Trainer struct {
-	self   *comm.RemotePeer
+	self   *proto.RemotePeer
 	config *Config
 	taskId string
 
@@ -75,12 +74,17 @@ func New(config *Config) *Trainer {
 
 	// begin to listen the messages
 	go t.messageListener(t.server)
+	// wait for launch up
+	select {
+	case <-time.After(time.Second * 1):
+	}
 	go t.announceToNetwork()
 
 	// wait for discovery
 	select {
 	case <-time.After(time.Second * 1):
 	}
+	t.logger.Info("init trainer success, and begin to handle the task")
 
 	// confirm genesis block to start the task
 	err = t.blockManager.ConfirmBlock(t.config.GenesisBlock)
@@ -107,6 +111,7 @@ func (t *Trainer) registerBlockchainHandlers() {
 func (t *Trainer) messageListener(server *rpc.Server) {
 	endpoint := t.self.Endpoint
 	l, err := net.Listen("tcp", endpoint)
+	t.logger.Info("begin to listen " + endpoint)
 	if err != nil {
 		t.logger.Panic("listen the endpoint failed")
 	}
@@ -128,7 +133,7 @@ func (t *Trainer) announceToNetwork() {
 		Content: &proto.TrainerRegisterMessage{Trainer: t.self},
 		Header:  &proto.Header{ChainId: t.taskId, Timestamp: time.Now(), Creator: t.self.PublicKey},
 	}
-	peersToSend := make([]*comm.RemotePeer, 0)
+	peersToSend := make([]*proto.RemotePeer, 0)
 
 	for _, peer := range t.config.BootstrapPeers {
 		if !reflect.DeepEqual(peer, t.self) {

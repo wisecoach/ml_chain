@@ -27,7 +27,7 @@ func init() {
 	}
 
 	// 设置日志级别
-	atom := zap.NewAtomicLevelAt(zap.DebugLevel)
+	atom := zap.NewAtomicLevelAt(zap.InfoLevel)
 
 	config = zap.Config{
 		Level:            atom,                                                // 日志级别

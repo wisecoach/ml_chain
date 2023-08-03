@@ -2,7 +2,6 @@ package validate
 
 import (
 	"encoding/json"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
@@ -15,7 +14,7 @@ import (
 type validatorImpl struct {
 	TaskId string
 	logger *zap.Logger
-	self   *comm.RemotePeer
+	self   *proto.RemotePeer
 	config *Config
 
 	client python.Client

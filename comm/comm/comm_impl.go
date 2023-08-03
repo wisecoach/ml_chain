@@ -31,7 +31,7 @@ func (mh *MessageHandler) HandleMessage(message *proto.ReceivedMessage, reply *p
 	return nil
 }
 
-func New(server *rpc.Server, self *RemotePeer, timeoutRPC time.Duration) Comm {
+func New(server *rpc.Server, self *proto.RemotePeer, timeoutRPC time.Duration) Comm {
 	commInst := &commImpl{
 		server:          server,
 		self:            self,
@@ -57,7 +57,7 @@ func New(server *rpc.Server, self *RemotePeer, timeoutRPC time.Duration) Comm {
 
 type commImpl struct {
 	server          *rpc.Server
-	self            *RemotePeer
+	self            *proto.RemotePeer
 	subscriptions   []*subscription
 	lock            sync.Mutex
 	stopping        int32
@@ -95,11 +95,11 @@ func (c *commImpl) deMultiplex(message *proto.ReceivedMessage) {
 	c.deMuxInProgress.Done()
 }
 
-func (c *commImpl) Self() *RemotePeer {
+func (c *commImpl) Self() *proto.RemotePeer {
 	return c.self
 }
 
-func (c *commImpl) Send(msg *proto.Envelope[*proto.Message], peers ...*RemotePeer) {
+func (c *commImpl) Send(msg *proto.Envelope[*proto.Message], peers ...*proto.RemotePeer) {
 	if c.isStopping() || len(peers) == 0 {
 		return
 	}
@@ -107,13 +107,13 @@ func (c *commImpl) Send(msg *proto.Envelope[*proto.Message], peers ...*RemotePee
 
 	c.sendInProgress.Add(len(peers))
 	for _, peer := range peers {
-		go func(peer *RemotePeer, msg *proto.Envelope[*proto.Message]) {
+		go func(peer *proto.RemotePeer, msg *proto.Envelope[*proto.Message]) {
 			c.sendToEndpoint(peer, msg)
 		}(peer, msg)
 	}
 }
 
-func (c *commImpl) sendToEndpoint(peer *RemotePeer, msg *proto.Envelope[*proto.Message]) {
+func (c *commImpl) sendToEndpoint(peer *proto.RemotePeer, msg *proto.Envelope[*proto.Message]) {
 	defer c.sendInProgress.Done()
 	conn, err := rpc.Dial("tcp", peer.Endpoint)
 	if err != nil {

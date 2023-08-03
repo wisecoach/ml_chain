@@ -2,47 +2,47 @@ package discovery
 
 import (
 	"bytes"
-	"github.com/wisecoach/ml_chain/comm/comm"
+	"github.com/wisecoach/ml_chain/proto"
 	"sync"
 )
 
 // Discovery is the interface that represents a discovery module
 type Discovery interface {
 	// Lookup returns a network member, or nil if not found
-	Lookup(pk []byte) *comm.RemotePeer
+	Lookup(pk []byte) *proto.RemotePeer
 
 	// Register register a remote peer
-	Register(peer *comm.RemotePeer)
+	Register(peer *proto.RemotePeer)
 
 	// Self returns this instance's membership information
-	Self() *comm.RemotePeer
+	Self() *proto.RemotePeer
 
 	// GetMembership returns the alive members in the view
-	GetMembership() []*comm.RemotePeer
+	GetMembership() []*proto.RemotePeer
 }
 
 type discoveryImpl struct {
 	lock  *sync.RWMutex
-	self  *comm.RemotePeer
-	peers map[string]*comm.RemotePeer
+	self  *proto.RemotePeer
+	peers map[string]*proto.RemotePeer
 }
 
-func New(self *comm.RemotePeer) Discovery {
+func New(self *proto.RemotePeer) Discovery {
 	return &discoveryImpl{
 		lock:  &sync.RWMutex{},
 		self:  self,
-		peers: make(map[string]*comm.RemotePeer),
+		peers: make(map[string]*proto.RemotePeer),
 	}
 }
 
-func (d discoveryImpl) Lookup(pk []byte) *comm.RemotePeer {
+func (d discoveryImpl) Lookup(pk []byte) *proto.RemotePeer {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
 
 	return d.peers[string(pk)]
 }
 
-func (d discoveryImpl) Register(peer *comm.RemotePeer) {
+func (d discoveryImpl) Register(peer *proto.RemotePeer) {
 	if bytes.Equal(peer.PublicKey, d.self.PublicKey) {
 		return
 	}
@@ -52,15 +52,15 @@ func (d discoveryImpl) Register(peer *comm.RemotePeer) {
 	d.peers[string(peer.PublicKey)] = peer
 }
 
-func (d discoveryImpl) Self() *comm.RemotePeer {
+func (d discoveryImpl) Self() *proto.RemotePeer {
 	return d.self
 }
 
-func (d discoveryImpl) GetMembership() []*comm.RemotePeer {
+func (d discoveryImpl) GetMembership() []*proto.RemotePeer {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
 
-	membership := make([]*comm.RemotePeer, len(d.peers))
+	membership := make([]*proto.RemotePeer, len(d.peers))
 	for _, peer := range d.peers {
 		membership = append(membership, peer)
 	}

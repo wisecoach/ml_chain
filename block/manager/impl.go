@@ -24,11 +24,10 @@ type blockMgr struct {
 }
 
 func New(bc *chain.BlockChain) BlockManager {
-	// TODO, implement the block validator, tx validator
 	blockManager := &blockMgr{
 		bc:             bc,
-		blockValidator: nil,
-		txValidator:    nil,
+		blockValidator: NewBlockValidator(),
+		txValidator:    NewTxValidator(),
 		blockHandlers:  make([]BlockHandler, 0),
 		txHandlers:     make(map[reflect.Type][]TxHandler),
 		logger:         log.GetLogger(),
@@ -55,6 +54,7 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	// handle the block and txs in the block
 	// TODO if need to deep copy the array to avoid long time locking
 	b.handlerLock.RLock()
+	b.logger.Info(fmt.Sprintf("begin to confirm and handle block: %d", block.Header.BlockNumber))
 	blockHandlers := b.blockHandlers
 	txHandlers := b.txHandlers
 

@@ -2,7 +2,7 @@ package crypto
 
 import (
 	"github.com/wisecoach/ml_chain/bccsp"
-	"github.com/wisecoach/ml_chain/comm/comm"
+	"github.com/wisecoach/ml_chain/proto"
 )
 
 type MessageCryptoService interface {
@@ -15,7 +15,7 @@ type MessageCryptoService interface {
 	Verify(pk, msg, signature []byte) (bool, error)
 }
 
-func New(csp bccsp.BCCSP, sk bccsp.Key, self *comm.RemotePeer,
+func New(csp bccsp.BCCSP, sk bccsp.Key, self *proto.RemotePeer,
 	importOpts bccsp.KeyImportOpts, hashOpts bccsp.HashOpts, signerOpts bccsp.SignerOpts) MessageCryptoService {
 	m := &messageCryptoServiceImpl{
 		sk:            sk,
@@ -24,7 +24,6 @@ func New(csp bccsp.BCCSP, sk bccsp.Key, self *comm.RemotePeer,
 		hashOpts:      hashOpts,
 		signerOpts:    signerOpts,
 	}
-	print(self.Endpoint + " " + string(self.PublicKey))
 	m.pk, _ = csp.KeyImport(self.PublicKey, importOpts)
 	return m
 }

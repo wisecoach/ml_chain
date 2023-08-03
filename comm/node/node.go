@@ -15,14 +15,14 @@ import (
 	"sync/atomic"
 )
 
-type PeerFilter func(peer *comm.RemotePeer) bool
+type PeerFilter func(peer *proto.RemotePeer) bool
 
 type MessageListener interface {
 	HandleMessage(message *proto.ReceivedMessage)
 }
 
 type Node struct {
-	self   *comm.RemotePeer
+	self   *proto.RemotePeer
 	mcs    crypto.MessageCryptoService
 	disc   discovery.Discovery
 	comm   comm.Comm
@@ -57,19 +57,19 @@ func New(config *Config, server *rpc.Server, mcs crypto.MessageCryptoService) *N
 	return node
 }
 
-func (n *Node) Self() *comm.RemotePeer {
+func (n *Node) Self() *proto.RemotePeer {
 	return n.self
 }
 
-func (n *Node) Lookup(pk []byte) *comm.RemotePeer {
+func (n *Node) Lookup(pk []byte) *proto.RemotePeer {
 	return n.disc.Lookup(pk)
 }
 
 // Peers
 //
 //	@Description: get the peers discovered in the network
-//	@return *comm.RemotePeer
-func (n *Node) Peers() []*comm.RemotePeer {
+//	@return *proto.RemotePeer
+func (n *Node) Peers() []*proto.RemotePeer {
 	return n.disc.GetMembership()
 }
 
@@ -110,7 +110,7 @@ func (n *Node) SendWithFilter(msg *proto.Message, filter PeerFilter) {
 	n.comm.Send(envelope, peersToSend...)
 }
 
-func (n *Node) SendToPeers(msg *proto.Message, peers ...*comm.RemotePeer) {
+func (n *Node) SendToPeers(msg *proto.Message, peers ...*proto.RemotePeer) {
 	envelope, err := n.SignMessage(msg)
 	if err != nil {
 		n.logger.Error("sign the message failed, err:" + err.Error())
@@ -170,8 +170,8 @@ func (n *Node) handleMessage(msg *proto.ReceivedMessage) {
 	}
 }
 
-func filterPeers(peers []*comm.RemotePeer, filter PeerFilter) []*comm.RemotePeer {
-	peersToSend := make([]*comm.RemotePeer, 0)
+func filterPeers(peers []*proto.RemotePeer, filter PeerFilter) []*proto.RemotePeer {
+	peersToSend := make([]*proto.RemotePeer, 0)
 	for _, peer := range peers {
 		if filter(peer) {
 			peersToSend = append(peersToSend, peer)

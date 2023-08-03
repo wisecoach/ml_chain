@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/coniks-sys/coniks-go/crypto/vrf"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/proto"
 	"reflect"
 )
@@ -32,12 +31,12 @@ func (rs *Selector) init() {
 //	@param trainers 		the pk list of trainers
 //	@param input			the input of vrf
 //	@param numRequested		the number of validators to be selected
-//	@return []*comm.RemotePeer		the pk list of validators
+//	@return []*proto.RemotePeer		the pk list of validators
 //	@return []byte			the output of vrf
 //	@return []byte			the proof of output
-func (rs *Selector) SelectValidators(trainers []*comm.RemotePeer, input []byte, numRequested int) *proto.SelectionResult {
+func (rs *Selector) SelectValidators(trainers []*proto.RemotePeer, input []byte, numRequested int) *proto.SelectionResult {
 	// we should snapshot the trainers
-	currentTrainers := make([]*comm.RemotePeer, len(trainers))
+	currentTrainers := make([]*proto.RemotePeer, len(trainers))
 	copy(currentTrainers, trainers)
 
 	// generate the vrf prove and select the validators according to every two bytes of vrf prove
@@ -54,8 +53,8 @@ func (rs *Selector) SelectValidators(trainers []*comm.RemotePeer, input []byte, 
 	}
 }
 
-func (rs *Selector) selectValidatorByProve(trainers []*comm.RemotePeer, prove []byte, numRequested int) []*comm.RemotePeer {
-	validators := make([]*comm.RemotePeer, numRequested)
+func (rs *Selector) selectValidatorByProve(trainers []*proto.RemotePeer, prove []byte, numRequested int) []*proto.RemotePeer {
+	validators := make([]*proto.RemotePeer, numRequested)
 	nodeMap := make(map[int]bool)
 
 	i := 0

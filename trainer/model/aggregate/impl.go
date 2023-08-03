@@ -8,7 +8,6 @@ import (
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/trainer/iteration"
 	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/trainer/role"
 	"github.com/wisecoach/ml_chain/util/log"
@@ -17,6 +16,10 @@ import (
 	"sync"
 	"time"
 )
+
+type IterationMgrAdapter interface {
+	GetIteration() int
+}
 
 type aggregatorImpl struct {
 	lock             sync.Mutex
@@ -27,13 +30,13 @@ type aggregatorImpl struct {
 	client           python.Client
 	mcs              crypto.MessageCryptoService
 	node             *node.Node
-	iterationManager iteration.Manager
+	iterationManager IterationMgrAdapter
 	roleManager      role.Manager
 	localModels      map[string]*proto.LocalityWeight
 }
 
 func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, node *node.Node,
-	iterationManager iteration.Manager, roleManager role.Manager) Aggregator {
+	iterationManager IterationMgrAdapter, roleManager role.Manager) Aggregator {
 	a := &aggregatorImpl{
 		lock:             sync.Mutex{},
 		trainerWaitGroup: sync.WaitGroup{},

@@ -1,6 +1,7 @@
 package iteration
 
 import (
+	"fmt"
 	"github.com/wisecoach/ml_chain/block/consensus"
 	"github.com/wisecoach/ml_chain/block/manager"
 	"github.com/wisecoach/ml_chain/comm/crypto"
@@ -80,6 +81,7 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	i.iteration = 0
 	i.locker.Unlock()
 
+	i.logger.Info(fmt.Sprintf("start to manage iteration: %d", i.iteration))
 	// init role manager
 	i.roleManager = role.New(&role.Config{
 		Self:            i.node.Self(),
@@ -125,10 +127,15 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	i.node.RegisterListener(&proto.TransactionMessage{}, message.NewTransactionMessageListener(i.consensus))
 
 	// start consensus
-	i.consensus.Start()
+	go i.consensus.Start()
 
 	// train new global weight
-	i.trainer.Train(genesis.InitWeight.Payload)
+	go i.trainer.Train(genesis.InitWeight.Payload)
+
+	// if self is aggregator, start aggregate
+	if i.roleManager.AmAggregator(i.iteration) {
+		go i.aggregator.StartAggregate()
+	}
 }
 
 func (i *iterationManagerImpl) GetIteration() int {

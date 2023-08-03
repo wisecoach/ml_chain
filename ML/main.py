@@ -1,7 +1,9 @@
 import tornado.ioloop
 import tornado.web
 import json
-
+import train
+import validate
+import aggregate
 
 class MainHandler(tornado.web.RequestHandler):
     # 10Task
@@ -62,8 +64,9 @@ class UserHandler(tornado.web.RequestHandler):
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
-        (r"/users", UserHandler),
-        (r"/users/(\d+)", UserHandler),
+        (r"/train/(.*)", train.TrainHandler),
+        (r"/validate/(.*)", validate.ValidateHandler),
+        (r"/aggregate/(.*)", aggregate.AggregateHandler),
     ])
 
 

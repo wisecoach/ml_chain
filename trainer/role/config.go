@@ -1,8 +1,8 @@
 package role
 
-import "github.com/wisecoach/ml_chain/comm/comm"
+import "github.com/wisecoach/ml_chain/proto"
 
 type Config struct {
-	Self            *comm.RemotePeer
+	Self            *proto.RemotePeer
 	TaskManagerList [][]byte
 }

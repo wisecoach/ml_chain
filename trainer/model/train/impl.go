@@ -2,11 +2,9 @@ package train
 
 import (
 	"fmt"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/trainer/iteration"
 	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/trainer/role"
 	"github.com/wisecoach/ml_chain/util/log"
@@ -16,13 +14,17 @@ import (
 	"time"
 )
 
+type IterationMgrAdapter interface {
+	GetIteration() int
+}
+
 type localTrainerImpl struct {
 	taskId           string
 	mcs              crypto.MessageCryptoService
-	self             *comm.RemotePeer
+	self             *proto.RemotePeer
 	client           python.Client
 	roleManager      role.Manager
-	iterationManager iteration.Manager
+	iterationManager IterationMgrAdapter
 	logger           *zap.Logger
 	node             *node.Node
 	config           *Config
@@ -32,7 +34,7 @@ type localTrainerImpl struct {
 	validateWaitGroup sync.WaitGroup
 }
 
-func New(config *Config, mcs crypto.MessageCryptoService, roleManager role.Manager, iterationManager iteration.Manager,
+func New(config *Config, mcs crypto.MessageCryptoService, roleManager role.Manager, iterationManager IterationMgrAdapter,
 	node *node.Node, client python.Client) LocalTrainer {
 	trainer := &localTrainerImpl{
 		taskId:            config.TaskId,

@@ -2,7 +2,6 @@ package role
 
 import (
 	set "github.com/deckarep/golang-set/v2"
-	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/proto"
 	"reflect"
 	"sync"
@@ -23,7 +22,7 @@ type Manager interface {
 	// SelectValidators
 	//  @Description: select the validatorSelectionResults
 	//
-	SelectValidators(candidates []*comm.RemotePeer, input []byte, number int)
+	SelectValidators(candidates []*proto.RemotePeer, input []byte, number int)
 
 	// GetValidators
 	//  @Description: get the selected validatorSelectionResults
@@ -58,12 +57,12 @@ func New(config *Config) Manager {
 type roleMgr struct {
 	lock sync.RWMutex
 
-	self            *comm.RemotePeer
+	self            *proto.RemotePeer
 	taskManagerList [][]byte
 	config          *Config
 
 	validatorSelectionResult *proto.SelectionResult
-	validatorSet             set.Set[*comm.RemotePeer]
+	validatorSet             set.Set[*proto.RemotePeer]
 
 	selector *Selector
 }
@@ -77,7 +76,7 @@ func (r *roleMgr) GetAggregator(iteration int) []byte {
 	return r.taskManagerList[iteration%num]
 }
 
-func (r *roleMgr) SelectValidators(candidates []*comm.RemotePeer, input []byte, number int) {
+func (r *roleMgr) SelectValidators(candidates []*proto.RemotePeer, input []byte, number int) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 

@@ -2,21 +2,21 @@ package node
 
 import (
 	"github.com/wisecoach/ml_chain/bccsp"
-	"github.com/wisecoach/ml_chain/comm/comm"
+	"github.com/wisecoach/ml_chain/proto"
 	"time"
 )
 
 type Config struct {
 	Sk             bccsp.Key
-	Self           *comm.RemotePeer
-	BootstrapPeers []*comm.RemotePeer
+	Self           *proto.RemotePeer
+	BootstrapPeers []*proto.RemotePeer
 	TimeoutRPC     time.Duration
 	KeyImportOpts  bccsp.KeyImportOpts
 	HashOpts       bccsp.HashOpts
 	SignerOpts     bccsp.SignerOpts
 }
 
-func NewConfig(sk bccsp.Key, self *comm.RemotePeer, bootstrapPeers []*comm.RemotePeer, timeoutRPC time.Duration,
+func NewConfig(sk bccsp.Key, self *proto.RemotePeer, bootstrapPeers []*proto.RemotePeer, timeoutRPC time.Duration,
 	keyImportOpts bccsp.KeyImportOpts, hashOpts bccsp.HashOpts, signerOpts bccsp.SignerOpts,
 ) *Config {
 	return &Config{
