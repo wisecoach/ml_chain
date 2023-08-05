@@ -41,7 +41,7 @@ func (b *blockMgr) GetLatestBlock() (*proto.Block, error) {
 	if b.bc.Number == 0 {
 		return nil, errors.New("now, the blockchain don't have any block")
 	}
-	return b.GetBlock(b.bc.Number)
+	return b.GetBlock(b.bc.Number - 1)
 }
 
 func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
@@ -50,6 +50,11 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	if err != nil {
 		return err
 	}
+
+	b.bcLock.Lock()
+	// add block to blockchain
+	b.bc.AddBlock(block)
+	b.bcLock.Unlock()
 
 	// handle the block and txs in the block
 	// TODO if need to deep copy the array to avoid long time locking
@@ -74,11 +79,6 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	}
 
 	b.handlerLock.RUnlock()
-
-	b.bcLock.Lock()
-	// add block to blockchain
-	b.bc.AddBlock(block)
-	b.bcLock.Unlock()
 
 	return nil
 

@@ -3,6 +3,7 @@ package node
 import (
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/discovery"
@@ -153,7 +154,7 @@ func (n *Node) acceptMessages(messages <-chan *proto.ReceivedMessage) {
 		case <-n.toDieChan:
 			return
 		case msg := <-messages:
-			n.logger.Info("get the message from: " + msg.Sender.Endpoint)
+			n.logger.Info(fmt.Sprintf("get the message from: %s, msg payload type: %T", msg.Sender.Endpoint, msg.Envelope.Payload.Content))
 			n.handleMessage(msg)
 		}
 	}

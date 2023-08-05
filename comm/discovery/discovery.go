@@ -3,6 +3,7 @@ package discovery
 import (
 	"bytes"
 	"github.com/wisecoach/ml_chain/proto"
+	"reflect"
 	"sync"
 )
 
@@ -35,14 +36,18 @@ func New(self *proto.RemotePeer) Discovery {
 	}
 }
 
-func (d discoveryImpl) Lookup(pk []byte) *proto.RemotePeer {
+func (d *discoveryImpl) Lookup(pk []byte) *proto.RemotePeer {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
+
+	if reflect.DeepEqual(d.self.PublicKey, pk) {
+		return d.self
+	}
 
 	return d.peers[string(pk)]
 }
 
-func (d discoveryImpl) Register(peer *proto.RemotePeer) {
+func (d *discoveryImpl) Register(peer *proto.RemotePeer) {
 	if bytes.Equal(peer.PublicKey, d.self.PublicKey) {
 		return
 	}
@@ -52,15 +57,15 @@ func (d discoveryImpl) Register(peer *proto.RemotePeer) {
 	d.peers[string(peer.PublicKey)] = peer
 }
 
-func (d discoveryImpl) Self() *proto.RemotePeer {
+func (d *discoveryImpl) Self() *proto.RemotePeer {
 	return d.self
 }
 
-func (d discoveryImpl) GetMembership() []*proto.RemotePeer {
+func (d *discoveryImpl) GetMembership() []*proto.RemotePeer {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
 
-	membership := make([]*proto.RemotePeer, len(d.peers))
+	membership := make([]*proto.RemotePeer, 0)
 	for _, peer := range d.peers {
 		membership = append(membership, peer)
 	}

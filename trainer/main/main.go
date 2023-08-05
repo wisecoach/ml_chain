@@ -75,7 +75,7 @@ func main() {
 			GenesisBlock:   genesis,
 			ApiBaseUrl:     "http://localhost:8999",
 			Sk:             privateKeys[i],
-			KeyImportOpts:  &bccsp.ECDSAPrivateKeyImportOpts{Temporary: false},
+			KeyImportOpts:  &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
 			HashOpts:       &bccsp.SHA256Opts{},
 			SignerOpts:     nil,
 			Self:           bootstrapPeers[i],

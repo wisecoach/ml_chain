@@ -69,7 +69,7 @@ func (t *TaskConsensus) Order(transaction *proto.Envelope[*proto.Transaction]) {
 	modelIteration, isModelIteration := transaction.Payload.Payload.(*proto.ModelIteration)
 	if isModelIteration {
 		// if current + 1 > transaction.Iteration, means transaction is expired
-		if current+1 > modelIteration.Iteration {
+		if current > modelIteration.Iteration {
 			return
 		} else if current+1 < modelIteration.Iteration {
 			// if current + 1 < transaction.Iteration, it won't occur because of the synchronization of federated learning
@@ -105,7 +105,7 @@ func (t *TaskConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
 	}
 	// check if miner is aggregator
 	current := t.iterationManager.GetIteration()
-	aggregator := t.node.Lookup(t.roleManager.GetAggregator(current))
+	aggregator := t.roleManager.GetAggregator(current)
 	if !reflect.DeepEqual(aggregator, miner) {
 		t.logger.Error("miner of block is not aggregator")
 		return
@@ -153,6 +153,11 @@ func (t *TaskConsensus) processTransaction(transaction *proto.Envelope[*proto.Tr
 			TxId:      "",
 			Timestamp: time.Time{},
 		},
+	}
+	err = t.blockManager.ConfirmBlock(block)
+	if err != nil {
+		t.logger.Error("confirm block failed, err: " + err.Error())
+		return
 	}
 	t.node.SendWithFilter(blockMsg, func(peer *proto.RemotePeer) bool { return true })
 }

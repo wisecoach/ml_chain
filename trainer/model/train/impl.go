@@ -1,6 +1,7 @@
 package train
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
@@ -56,10 +57,25 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 
 	// train the global model
 	l.logger.Info(fmt.Sprintf("begin to train the global model, iteration: %d", weight.Iteration))
-	trainResponse, err := l.client.Train(&python.TrainRequest{GlobalModel: weight})
-	if err != nil {
-		return
+
+	// TODO first just for test
+	// trainResponse, err := l.client.Train(&python.TrainRequest{GlobalModel: weight})
+	// if err != nil {
+	// 	return
+	// }
+	trainResponse := &python.TrainResponse{
+		LocalModel: &proto.LocalityWeight{
+			Iteration:          0,
+			WeightVector:       nil,
+			Trainer:            l.self.PublicKey,
+			ValidatorSelection: nil,
+			Losses:             nil,
+		},
 	}
+	select {
+	case <-time.After(time.Second * 1):
+	}
+
 	l.logger.Info(fmt.Sprintf("trainnging finished, %d", trainResponse.LocalModel.Iteration))
 	l.lock.Lock()
 	l.localModel = trainResponse.LocalModel
@@ -68,6 +84,7 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 
 	// get the validator selected by iterationManager
 	validatorSelection := l.roleManager.GetValidators()
+	l.localModel.ValidatorSelection = validatorSelection
 
 	// send request to the validators, and wait for the validate response
 	l.validateWaitGroup.Add(l.config.ValidatorNum)
@@ -94,7 +111,6 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 
 	l.lock.Lock()
 	defer l.lock.Unlock()
-	l.logger.Info(fmt.Sprintf("have colllected %d validate response, begin to send to the aggregator", l.config.ValidatorNum))
 
 	localModelSubmitMsg := &proto.Message{
 		Content: &proto.SubmitLocalityWeightMessage{
@@ -114,6 +130,9 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	if aggregator == nil {
 		l.logger.Error("cannot found aggregator")
 	}
+
+	l.logger.Info(fmt.Sprintf("have colllected %d validate response, begin to send to the aggregator: %s",
+		l.config.ValidatorNum, base64.StdEncoding.EncodeToString(aggregatorPk)))
 
 	l.node.SendToPeers(localModelSubmitMsg, aggregator)
 	l.localModel = nil

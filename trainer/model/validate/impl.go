@@ -2,6 +2,7 @@ package validate
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
@@ -35,12 +36,27 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 	return v
 }
 
-func (v validatorImpl) Validate(weight *proto.LocalityWeight) {
-	lossResp, err := v.client.Validate(&python.ValidateRequest{Model: weight})
-	if err != nil {
-		v.logger.Error("cannot validate the model from: " + string(weight.Trainer))
-		return
+func (v *validatorImpl) Validate(weight *proto.LocalityWeight) {
+	v.logger.Info(fmt.Sprintf("begin to validate the local model, iteration: %d", weight.Iteration))
+	// lossResp, err := v.client.Validate(&python.ValidateRequest{Model: weight})
+	// if err != nil {
+	// 	v.logger.Error("cannot validate the model from: " + string(weight.Trainer))
+	// 	return
+	// }
+	lossResp := &python.ValidateResponse{
+		Loss: &proto.ValidateLoss{
+			Iteration: 0,
+			Trainer:   nil,
+			Validator: nil,
+			ModelHash: nil,
+			Loss:      nil,
+		},
 	}
+	select {
+	case <-time.After(time.Millisecond * 500):
+	}
+	v.logger.Info(fmt.Sprintf("validating finished, %d", weight.Iteration))
+
 	loss := lossResp.Loss
 	loss.Validator = v.self.PublicKey
 

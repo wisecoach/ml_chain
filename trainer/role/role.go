@@ -54,7 +54,7 @@ func (rs *Selector) SelectValidators(trainers []*proto.RemotePeer, input []byte,
 }
 
 func (rs *Selector) selectValidatorByProve(trainers []*proto.RemotePeer, prove []byte, numRequested int) []*proto.RemotePeer {
-	validators := make([]*proto.RemotePeer, numRequested)
+	validators := make([]*proto.RemotePeer, 0)
 	nodeMap := make(map[int]bool)
 
 	i := 0

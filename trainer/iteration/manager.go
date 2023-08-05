@@ -1,6 +1,7 @@
 package iteration
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/wisecoach/ml_chain/block/consensus"
 	"github.com/wisecoach/ml_chain/block/manager"
@@ -77,8 +78,8 @@ type iterationManagerImpl struct {
 
 func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	i.locker.Lock()
-	// init iteration
-	i.iteration = 0
+	// init iteration, now global iteration is 0, so the iteration manager needs to iterate to 1
+	i.iteration = 1
 	i.locker.Unlock()
 
 	i.logger.Info(fmt.Sprintf("start to manage iteration: %d", i.iteration))
@@ -124,7 +125,16 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	i.node.RegisterListener(&proto.RequestLossMessage{}, message.NewValidateRequestMessageListener(i.validator))
 	// consensus
 	i.node.RegisterListener(&proto.BlockMessage{}, message.NewBlockMessageListener(i.consensus))
+	gob.Register(&proto.TaskGenesis{})
+	gob.Register(&proto.ModelIteration{})
 	i.node.RegisterListener(&proto.TransactionMessage{}, message.NewTransactionMessageListener(i.consensus))
+
+	// select validators
+	latestBlock, err := i.blockManager.GetLatestBlock()
+	if err != nil {
+		i.logger.Error(err.Error())
+	}
+	i.roleManager.SelectValidators(i.node.Peers(), latestBlock.Header.DataHash, i.config.ValidatorNum)
 
 	// start consensus
 	go i.consensus.Start()
