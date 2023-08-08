@@ -11,6 +11,7 @@ type BlockHeader struct {
 	PrevHash    []byte
 	BlockNumber int
 	Miner       []byte
+	Nonce       int
 }
 
 type BlockData struct {

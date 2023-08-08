@@ -5,17 +5,17 @@ import (
 	"github.com/wisecoach/ml_chain/proto"
 )
 
-type TrainerRegisterListener struct {
+type PeerRegitserListener struct {
 	disc discovery.Discovery
 }
 
-func NewTrainerRegisterListener(disc discovery.Discovery) *TrainerRegisterListener {
-	return &TrainerRegisterListener{
+func NewPeerRegitserListener(disc discovery.Discovery) *PeerRegitserListener {
+	return &PeerRegitserListener{
 		disc: disc,
 	}
 }
 
-func (t *TrainerRegisterListener) HandleMessage(message *proto.ReceivedMessage) {
-	trainerRegister := message.Envelope.Payload.GetTrainerRegister()
-	t.disc.Register(trainerRegister.Trainer)
+func (t *PeerRegitserListener) HandleMessage(message *proto.ReceivedMessage) {
+	PeerRegitser := message.Envelope.Payload.GetPeerRegitser()
+	t.disc.Register(PeerRegitser.Peer)
 }

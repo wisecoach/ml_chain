@@ -97,8 +97,8 @@ func New(config *Config) *Trainer {
 }
 
 func (t *Trainer) registerNodeListener() {
-	// register the TrainerRegisterMessage
-	t.node.RegisterListener(&proto.TrainerRegisterMessage{}, message.NewTrainerRegisterListener(t.node.GetDiscovery()))
+	// register the PeerRegisterMessage
+	t.node.RegisterListener(&proto.PeerRegisterMessage{}, message.NewPeerRegitserListener(t.node.GetDiscovery()))
 }
 
 func (t *Trainer) registerBlockchainHandlers() {
@@ -130,7 +130,7 @@ func (t *Trainer) messageListener(server *rpc.Server) {
 
 func (t *Trainer) announceToNetwork() {
 	peerRegisterMsg := &proto.Message{
-		Content: &proto.TrainerRegisterMessage{Trainer: t.self},
+		Content: &proto.PeerRegisterMessage{Peer: t.self},
 		Header:  &proto.Header{ChainId: t.taskId, Timestamp: time.Now(), Creator: t.self.PublicKey},
 	}
 	peersToSend := make([]*proto.RemotePeer, 0)

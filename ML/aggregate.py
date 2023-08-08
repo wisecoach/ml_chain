@@ -8,3 +8,4 @@ class AggregateHandler(tornado.web.RequestHandler):
 
     def post(self, task_id):
         print(task_id)
+        weight = self

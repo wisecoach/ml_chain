@@ -33,10 +33,10 @@ type BlockMessage struct {
 	Block *Envelope[*Block]
 }
 
-// TrainerRegisterMessage
+// PeerRegisterMessage
 // @Description: message for discovery, register self to the network
-type TrainerRegisterMessage struct {
-	Trainer *RemotePeer
+type PeerRegisterMessage struct {
+	Peer *RemotePeer
 }
 
 // SubmitLocalityWeightMessage
@@ -78,10 +78,10 @@ func (m *Message) GetBlock() *BlockMessage {
 	return nil
 }
 
-func (t *TrainerRegisterMessage) isMessage_Content() {}
+func (p *PeerRegisterMessage) isMessage_Content() {}
 
-func (m *Message) GetTrainerRegister() *TrainerRegisterMessage {
-	if msg, ok := m.Content.(*TrainerRegisterMessage); ok {
+func (m *Message) GetPeerRegitser() *PeerRegisterMessage {
+	if msg, ok := m.Content.(*PeerRegisterMessage); ok {
 		return msg
 	}
 	return nil
