@@ -34,7 +34,7 @@ type TaskConsensus struct {
 func New(config *Config, blockManager manager.BlockManager, iterationManager IterationMgrAdapter, roleManager role.Manager,
 	mcs crypto.MessageCryptoService, node *node.Node) consensus.Consensus {
 	taskConsensus := &TaskConsensus{
-		logger:           log.GetLogger(),
+		logger:           log.GetLogger(node.Self().Endpoint),
 		txChan:           make(chan *proto.Envelope[*proto.Transaction]),
 		stopChan:         make(chan struct{}),
 		config:           config,

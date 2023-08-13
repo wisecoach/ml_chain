@@ -41,7 +41,7 @@ func New(config *Config, blockManager manager.BlockManager, node *node.Node, mcs
 		changeBranchChan: make(chan struct{}),
 		lock:             sync.RWMutex{},
 		config:           config,
-		logger:           log.GetLogger(),
+		logger:           log.GetLogger(node.Self().Endpoint),
 	}
 }
 

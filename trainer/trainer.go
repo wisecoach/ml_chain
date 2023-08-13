@@ -38,7 +38,7 @@ func New(config *Config) *Trainer {
 		self:   config.Self,
 		config: config,
 		taskId: config.TaskId,
-		logger: log.GetLogger(),
+		logger: log.GetLogger(config.Self.Endpoint),
 	}
 	t.server = rpc.NewServer()
 	t.blockchain = chain.NewBlockChain()

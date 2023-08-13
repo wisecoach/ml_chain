@@ -45,7 +45,7 @@ func New(config *Config, server *rpc.Server, mcs crypto.MessageCryptoService) *N
 		comm:             comm.New(server, config.Self, config.TimeoutRPC),
 		config:           config,
 		messageListeners: make(map[reflect.Type][]MessageListener),
-		logger:           log.GetLogger(),
+		logger:           log.GetLogger(config.Self.Endpoint),
 		lock:             sync.RWMutex{},
 		toDieChan:        make(chan struct{}),
 		stopFlag:         int32(0),

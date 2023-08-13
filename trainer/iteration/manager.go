@@ -49,7 +49,7 @@ func New(config *Config, blockManager manager.BlockManager, node *node.Node, mcs
 	manager := &iterationManagerImpl{
 		iteration:    0,
 		locker:       sync.RWMutex{},
-		logger:       log.GetLogger(),
+		logger:       log.GetLogger(node.Self().Endpoint),
 		config:       config,
 		blockManager: blockManager,
 		node:         node,

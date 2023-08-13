@@ -40,7 +40,7 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 	a := &aggregatorImpl{
 		lock:             sync.Mutex{},
 		trainerWaitGroup: sync.WaitGroup{},
-		logger:           log.GetLogger(),
+		logger:           log.GetLogger(node.Self().Endpoint),
 		config:           config,
 		client:           client,
 		mcs:              mcs,

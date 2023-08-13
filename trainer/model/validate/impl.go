@@ -26,7 +26,7 @@ type validatorImpl struct {
 func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, node *node.Node) Validator {
 	v := &validatorImpl{
 		TaskId: config.TaskId,
-		logger: log.GetLogger(),
+		logger: log.GetLogger(node.Self().Endpoint),
 		self:   node.Self(),
 		config: config,
 		client: client,

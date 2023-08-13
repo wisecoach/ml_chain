@@ -24,7 +24,7 @@ func NewTaskClient(config *Config, mcs crypto.MessageCryptoService, node *node.N
 		config: config,
 		mcs:    mcs,
 		node:   node,
-		logger: log.GetLogger(),
+		logger: log.GetLogger(node.Self().Endpoint),
 	}
 }
 

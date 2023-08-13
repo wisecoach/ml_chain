@@ -42,7 +42,7 @@ func New(server *rpc.Server, self *proto.RemotePeer, timeoutRPC time.Duration) C
 		deMuxInProgress: sync.WaitGroup{},
 		sendInProgress:  sync.WaitGroup{},
 		timeoutRPC:      timeoutRPC,
-		logger:          log.GetLogger(),
+		logger:          log.GetLogger(self.Endpoint),
 	}
 
 	// register the message handler to rpcServer

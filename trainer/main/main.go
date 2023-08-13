@@ -5,7 +5,6 @@ import (
 	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer"
-	"github.com/wisecoach/ml_chain/util/log"
 	"strconv"
 	"time"
 )
@@ -15,8 +14,6 @@ func main() {
 	trainerNumber := 2
 	bootstrapPeers := make([]*proto.RemotePeer, 0)
 	privateKeys := make([]bccsp.Key, 0)
-	logger := log.GetLogger()
-	logger.Debug("sss")
 	for i := 0; i < trainerNumber; i++ {
 		sk, _ := csp.KeyGen(&bccsp.ECDSAP256KeyGenOpts{
 			Temporary: false,

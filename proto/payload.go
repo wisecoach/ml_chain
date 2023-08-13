@@ -20,7 +20,7 @@ type TaskGenesis struct {
 	InitWeight     *Envelope[*GlobalWeight]
 }
 
-// TaskFinish represent the finish transaction of a task
+// TaskResult represent the finish transaction of a task
 type TaskResult struct {
 	TaskId string
 }

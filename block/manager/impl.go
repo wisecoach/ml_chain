@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/wisecoach/ml_chain/block/chain"
 	"github.com/wisecoach/ml_chain/proto"
-	"github.com/wisecoach/ml_chain/util/log"
-	"go.uber.org/zap"
 	"reflect"
 	"sync"
 )
@@ -18,7 +16,6 @@ type blockMgr struct {
 	blockHandlers  []BlockHandler
 	txHandlers     map[reflect.Type][]TxHandler
 
-	logger      *zap.Logger
 	handlerLock sync.RWMutex
 	bcLock      sync.RWMutex
 }
@@ -30,7 +27,6 @@ func New(bc *chain.BlockChain) BlockManager {
 		txValidator:    NewTxValidator(),
 		blockHandlers:  make([]BlockHandler, 0),
 		txHandlers:     make(map[reflect.Type][]TxHandler),
-		logger:         log.GetLogger(),
 		handlerLock:    sync.RWMutex{},
 		bcLock:         sync.RWMutex{},
 	}
@@ -66,7 +62,6 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	// handle the block and txs in the block
 	// TODO if need to deep copy the array to avoid long time locking
 	b.handlerLock.RLock()
-	b.logger.Info(fmt.Sprintf("begin to confirm and handle block: %d", block.Header.BlockNumber))
 	blockHandlers := b.blockHandlers
 	txHandlers := b.txHandlers
 
@@ -94,13 +89,11 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 func (b *blockMgr) validateBlock(block *proto.Block) error {
 	err := b.blockValidator.ValidateBlock(block)
 	if err != nil {
-		b.logger.Error("block is not valid")
 		return err
 	}
-	for i, signedTransaction := range block.Data.Transactions {
+	for _, signedTransaction := range block.Data.Transactions {
 		err := b.txValidator.ValidateTx(signedTransaction)
 		if err != nil {
-			b.logger.Error(fmt.Sprintf("transaction is not valid, index is %d", i))
 			return err
 		}
 	}

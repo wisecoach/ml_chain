@@ -41,7 +41,7 @@ func New(config *Config) *Peer {
 	p := &Peer{
 		self:    config.Self,
 		config:  config,
-		logger:  log.GetLogger(),
+		logger:  log.GetLogger(config.Self.Endpoint),
 		chainId: config.ChainId,
 	}
 	p.server = rpc.NewServer()

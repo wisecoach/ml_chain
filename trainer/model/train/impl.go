@@ -44,7 +44,7 @@ func New(config *Config, mcs crypto.MessageCryptoService, roleManager role.Manag
 		client:            client,
 		roleManager:       roleManager,
 		iterationManager:  iterationManager,
-		logger:            log.GetLogger(),
+		logger:            log.GetLogger(node.Self().Endpoint),
 		node:              node,
 		config:            config,
 		lock:              sync.RWMutex{},
