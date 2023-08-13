@@ -37,6 +37,13 @@ func New(bc *chain.BlockChain) BlockManager {
 	return blockManager
 }
 
+func (b *blockMgr) GetHeight() int {
+	b.bcLock.RLock()
+	defer b.bcLock.RUnlock()
+
+	return b.bc.Number
+}
+
 func (b *blockMgr) GetLatestBlock() (*proto.Block, error) {
 	if b.bc.Number == 0 {
 		return nil, errors.New("now, the blockchain don't have any block")

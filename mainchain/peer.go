@@ -7,6 +7,7 @@ import (
 	"github.com/wisecoach/ml_chain/block/manager"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
+	consensus2 "github.com/wisecoach/ml_chain/mainchain/consensus"
 	"github.com/wisecoach/ml_chain/mainchain/message"
 	"github.com/wisecoach/ml_chain/mainchain/task"
 	"github.com/wisecoach/ml_chain/mainchain/txhandler"
@@ -24,6 +25,7 @@ type Peer struct {
 	config  *Config
 	chainId string
 
+	taskClient   task.Client
 	taskManager  task.Manager
 	consensus    consensus.Consensus
 	blockManager manager.BlockManager
@@ -61,7 +63,22 @@ func New(config *Config) *Peer {
 	// init the block manager
 	p.blockManager = manager.New(p.blockchain)
 
-	// init the iteration manager
+	// init the consensus
+	p.consensus = consensus2.New(&consensus2.Config{
+		ChainId:           p.config.ChainId,
+		HashInterval:      p.config.HashInterval,
+		MaxInterval:       p.config.MaxInterval,
+		MaxTxNum:          p.config.MaxTxNum,
+		NumToConfirm:      p.config.NumToConfirm,
+		DefaultDifficulty: p.config.DefaultDifficulty,
+	}, p.blockManager, p.node, p.mcs)
+
+	// init task manager
+	p.taskManager = task.NewTaskManager()
+	// init task client
+	p.taskClient = task.NewTaskClient(&task.Config{
+		ChainId: p.config.ChainId,
+	}, p.mcs, p.node)
 
 	// register the message listener to the node
 	p.registerNodeListener()
@@ -102,7 +119,13 @@ func (p *Peer) registerNodeListener() {
 
 func (p *Peer) registerBlockchainHandlers() {
 	// register the TaskGenesis transaction handler
-	p.blockManager.RegisterTxHandler(txhandler.NewTaskGenesisTxHandler())
+	p.blockManager.RegisterTxHandler(txhandler.NewTaskGenesisTxHandler(p.taskManager))
+	// register the TaskFinish transaction handler
+	p.blockManager.RegisterTxHandler(txhandler.NewTaskFinishTxHandler(p.taskManager))
+	// register the ManagerRegister transaction handler
+	p.blockManager.RegisterTxHandler(txhandler.NewManagerRegisterTxHandler(p.taskManager))
+	// register the ManagerRevoke transaction handler
+	p.blockManager.RegisterTxHandler(txhandler.NewManagerRevokeTxHandler(p.taskManager))
 }
 
 func (p *Peer) messageListener(server *rpc.Server) {

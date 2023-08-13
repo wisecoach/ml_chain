@@ -27,7 +27,14 @@ type Config struct {
 	// timeout for rpc
 	TimeoutRPC time.Duration
 
-	// --------------- chain config ---------------------------------------------------
+	// --------------- chain config -----------------------------------------------------
 	GenesisBlock *proto.Block
 	ChainId      string
+
+	// --------------- consensus config -------------------------------------------------
+	HashInterval      time.Duration
+	MaxInterval       time.Duration
+	MaxTxNum          int
+	NumToConfirm      int
+	DefaultDifficulty uint64
 }

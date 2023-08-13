@@ -26,6 +26,11 @@ type TxValidator interface {
 }
 
 type BlockManager interface {
+
+	// GetHeight
+	//  @Description: get the height of block
+	GetHeight() int
+
 	// ConfirmBlock
 	//  @Description: confirm a block, it means the block has been confirmed by consensus and will be invoked by consensus module
 	// 				  confirm a block will add block to the blockchain and signal all the blockhandler and txhandler register in manager

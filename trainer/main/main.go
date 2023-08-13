@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-
 	csp, _ := sw.NewBCCSP()
 	trainerNumber := 2
 	bootstrapPeers := make([]*proto.RemotePeer, 0)
