@@ -1,7 +1,7 @@
 package message
 
 import (
-	"github.com/wisecoach/ml_chain/comm/node"
+	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer/model/aggregate"
 )
@@ -10,7 +10,7 @@ type LocalWightMessageListener struct {
 	aggregator aggregate.Aggregator
 }
 
-func NewLocalWightMessageListener(aggregator aggregate.Aggregator) node.MessageListener {
+func NewLocalWightMessageListener(aggregator aggregate.Aggregator) comm.MessageListener {
 	return &LocalWightMessageListener{
 		aggregator: aggregator,
 	}

@@ -1,6 +1,7 @@
 package mainchain
 
 import (
+	"encoding/gob"
 	"github.com/wisecoach/ml_chain/bccsp/sw"
 	"github.com/wisecoach/ml_chain/block/chain"
 	"github.com/wisecoach/ml_chain/block/consensus"
@@ -57,7 +58,7 @@ func New(config *Config) *Peer {
 
 	// init node
 	p.node = node.New(
-		node.NewConfig(config.Sk, config.Self, config.BootstrapPeers, config.TimeoutRPC, config.KeyImportOpts, config.HashOpts, config.SignerOpts),
+		node.NewConfig(config.Sk, config.Self, config.BootstrapPeers, config.Notaries, config.TimeoutRPC, config.KeyImportOpts, config.HashOpts, config.SignerOpts),
 		p.server, p.mcs)
 
 	// init the block manager
@@ -71,10 +72,11 @@ func New(config *Config) *Peer {
 		MaxTxNum:          p.config.MaxTxNum,
 		NumToConfirm:      p.config.NumToConfirm,
 		DefaultDifficulty: p.config.DefaultDifficulty,
+		GenesisBlock:      p.config.GenesisBlock,
 	}, p.blockManager, p.node, p.mcs)
 
 	// init task manager
-	p.taskManager = task.NewTaskManager()
+	p.taskManager = task.NewTaskManager(p.config.Self)
 	// init task client
 	p.taskClient = task.NewTaskClient(&task.Config{
 		ChainId: p.config.ChainId,
@@ -99,6 +101,8 @@ func New(config *Config) *Peer {
 	}
 	p.logger.Info("init peer success, and begin to handle the task")
 
+	// start consensus
+	p.consensus.Start()
 	// confirm genesis block to start the task
 	err = p.blockManager.ConfirmBlock(p.config.GenesisBlock)
 	if err != nil {
@@ -119,12 +123,20 @@ func (p *Peer) registerNodeListener() {
 
 func (p *Peer) registerBlockchainHandlers() {
 	// register the TaskGenesis transaction handler
+	gob.Register(&proto.TaskGenesis{})
 	p.blockManager.RegisterTxHandler(txhandler.NewTaskGenesisTxHandler(p.taskManager))
+	p.blockManager.RegisterTxHandler(txhandler.NewTaskDeployManager(&txhandler.Config{
+		TrainerNum: 2,
+		Sk:         p.config.Sk,
+	}, p.node, p.mcs))
 	// register the TaskFinish transaction handler
+	gob.Register(&proto.TaskResult{})
 	p.blockManager.RegisterTxHandler(txhandler.NewTaskFinishTxHandler(p.taskManager))
 	// register the ManagerRegister transaction handler
+	gob.Register(&proto.ManagerRegister{})
 	p.blockManager.RegisterTxHandler(txhandler.NewManagerRegisterTxHandler(p.taskManager))
 	// register the ManagerRevoke transaction handler
+	gob.Register(&proto.ManagerRevoke{})
 	p.blockManager.RegisterTxHandler(txhandler.NewManagerRevokeTxHandler(p.taskManager))
 }
 
@@ -163,4 +175,20 @@ func (p *Peer) announceToNetwork() {
 	}
 
 	p.node.SendToPeers(peerRegisterMsg, peersToSend...)
+}
+
+func (p *Peer) CreateTask(task *task.Task) {
+	p.taskClient.CreateTask(task)
+}
+
+func (p *Peer) FinishTask(task *task.FinishedTask) {
+	p.taskClient.FinishTask(task)
+}
+
+func (p *Peer) RegisterManager(pk []byte) {
+	p.taskClient.RegisterManager(pk)
+}
+
+func (p *Peer) RevokeManager(pk []byte) {
+	p.taskClient.RevokeManager(pk)
 }

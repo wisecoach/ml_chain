@@ -54,7 +54,7 @@ func New(config *Config) *Trainer {
 
 	// init node
 	t.node = node.New(
-		node.NewConfig(config.Sk, config.Self, config.BootstrapPeers, config.TimeoutRPC, config.KeyImportOpts, config.HashOpts, config.SignerOpts),
+		node.NewConfig(config.Sk, config.Self, config.BootstrapPeers, config.Notaries, config.TimeoutRPC, config.KeyImportOpts, config.HashOpts, config.SignerOpts),
 		t.server, t.mcs)
 
 	// init the block manager

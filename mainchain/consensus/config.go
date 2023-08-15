@@ -1,6 +1,9 @@
 package consensus
 
-import "time"
+import (
+	"github.com/wisecoach/ml_chain/proto"
+	"time"
+)
 
 type Config struct {
 	ChainId           string
@@ -9,4 +12,5 @@ type Config struct {
 	MaxTxNum          int
 	NumToConfirm      int
 	DefaultDifficulty uint64
+	GenesisBlock      *proto.Block
 }

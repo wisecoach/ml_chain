@@ -103,7 +103,7 @@ func (c *commImpl) Send(msg *proto.Envelope[*proto.Message], peers ...*proto.Rem
 	if c.isStopping() || len(peers) == 0 {
 		return
 	}
-	c.logger.Debug(fmt.Sprintf("begin to send message to %d peers", len(peers)))
+	// c.logger.Debug(fmt.Sprintf("begin to send message to %d peers", len(peers)))
 
 	c.sendInProgress.Add(len(peers))
 	for _, peer := range peers {
@@ -131,7 +131,6 @@ func (c *commImpl) sendToEndpoint(peer *proto.RemotePeer, msg *proto.Envelope[*p
 	}(conn)
 	errChan := make(chan error)
 	go func() {
-		c.logger.Info("call MessageHandler.HandleMessage with " + peer.Endpoint)
 		errChan <- conn.Call("MessageHandler.HandleMessage", msgToSend, &reply)
 	}()
 

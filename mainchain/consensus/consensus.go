@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 	"reflect"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -25,12 +26,22 @@ type Branch struct {
 }
 
 func New(config *Config, blockManager manager.BlockManager, node *node.Node, mcs crypto.MessageCryptoService) consensus.Consensus {
+	blocks := make([]*proto.Block, 0)
+	blocks = append(blocks, config.GenesisBlock)
+	longestBranch := &Branch{
+		tipNum: 0,
+		tip:    config.GenesisBlock,
+		blocks: blocks,
+		txs:    make(map[string]*proto.Envelope[*proto.Transaction]),
+	}
+	branches := make([]*Branch, 0)
+	branches = append(branches, longestBranch)
 	return &MainChainConsensus{
 		blockManager:     blockManager,
 		node:             node,
 		mcs:              mcs,
-		longestBranch:    nil,
-		branches:         make([]*Branch, 0),
+		longestBranch:    longestBranch,
+		branches:         branches,
 		branchLock:       sync.RWMutex{},
 		orphanBlocks:     make(map[string]*proto.Block),
 		orphanLock:       sync.RWMutex{},
@@ -59,6 +70,7 @@ type MainChainConsensus struct {
 	enoughTxChan  chan struct{}
 	poolLock      sync.RWMutex
 
+	needRestartPow   atomic.Bool
 	stopPoWChan      chan struct{}
 	changeBranchChan chan struct{}
 
@@ -68,10 +80,12 @@ type MainChainConsensus struct {
 }
 
 func (m *MainChainConsensus) Order(transaction *proto.Envelope[*proto.Transaction]) {
-	m.lock.Lock()
-	defer m.lock.Unlock()
 
+	m.poolLock.Lock()
+	m.logger.Debug(fmt.Sprintf("receive transaction, %T", transaction.Payload.Payload))
 	m.txPool[transaction.Payload.Header.TxId] = transaction
+	m.poolLock.Unlock()
+
 	if len(m.txPool) >= m.config.MaxTxNum {
 		m.enoughTxChan <- struct{}{}
 	}
@@ -93,7 +107,7 @@ func (m *MainChainConsensus) consensus(block *proto.Block) {
 	blockNum := block.Header.BlockNumber
 	confirmHeight := m.blockManager.GetHeight()
 	// if block is older than confirm block
-	if blockNum <= confirmHeight {
+	if blockNum <= confirmHeight-1 {
 		m.logger.Debug(fmt.Sprintf("receive old block %d, but height of blockchain is %d", blockNum, confirmHeight))
 		return
 	}
@@ -107,7 +121,7 @@ func (m *MainChainConsensus) consensus(block *proto.Block) {
 	m.lock.RLock()
 	index := -1
 	for i, branch := range m.branches {
-		if reflect.DeepEqual(branch.tip.Header.DataHash, block.Header.PrevHash) {
+		if reflect.DeepEqual(branch.tip.Header.DataHash, block.Header.PrevHash) && branch.tipNum+1 == blockNum {
 			index = i
 		}
 	}
@@ -124,7 +138,7 @@ func (m *MainChainConsensus) consensus(block *proto.Block) {
 	// now, block may be orphan block, a new branch or a duplicated block
 
 	// check block is a duplicate block or a new branch
-	distance := blockNum - confirmHeight
+	distance := blockNum - (confirmHeight - 1)
 	m.lock.RLock()
 	branches := m.branches
 	m.lock.RUnlock()
@@ -162,6 +176,12 @@ func (m *MainChainConsensus) consensus(block *proto.Block) {
 //	 	3. if block is the prev block of orphan block, consensus the orphan block
 func (m *MainChainConsensus) appendToBranch(branch *Branch, block *proto.Block) {
 	m.branchLock.Lock()
+	// logStr := fmt.Sprintf("append to branch from %d to %d:", branch.tipNum-len(branch.blocks)+1, branch.tipNum)
+	// for _, b := range branch.blocks {
+	// 	logStr += strconv.Itoa(b.Header.BlockNumber) + "|"
+	// }
+	// m.logger.Debug(logStr)
+
 	// append block
 	branch.blocks = append(branch.blocks, block)
 	branch.tip = block
@@ -171,7 +191,11 @@ func (m *MainChainConsensus) appendToBranch(branch *Branch, block *proto.Block) 
 	}
 
 	// check if need to change longest branch
-	if branch != m.longestBranch && branch.tipNum >= m.longestBranch.tipNum {
+	if branch == m.longestBranch {
+		// if append to longest, need to change
+		m.changeLongestBranch(branch)
+	} else if branch.tipNum >= m.longestBranch.tipNum {
+		// if branch is longer than old longest or is equal to longest but datahash is smaller
 		if branch.tipNum == m.longestBranch.tipNum {
 			if m.longestBranch.tipNum == block.Header.BlockNumber && string(m.longestBranch.tip.Header.DataHash) > string(block.Header.DataHash) {
 				m.changeLongestBranch(branch)
@@ -180,20 +204,23 @@ func (m *MainChainConsensus) appendToBranch(branch *Branch, block *proto.Block) 
 			m.changeLongestBranch(branch)
 		}
 	}
-	m.branchLock.Unlock()
 
 	// check if length is enough to confirm
-	branchLen := len(branch.blocks)
-	if branchLen > m.config.NumToConfirm {
-		m.confirm(branch.blocks[0])
+	if branch == m.longestBranch {
+		branchLen := len(branch.blocks)
+		if branchLen > m.config.NumToConfirm {
+			m.logger.Info(fmt.Sprintf("confirm block %d", branch.blocks[0].Header.BlockNumber))
+			m.confirm(branch.blocks[0])
+		}
 	}
+	m.branchLock.Unlock()
 
 	// check if block is the prev block of orphan block
 	m.orphanLock.RLock()
 	dataHash := base64.StdEncoding.EncodeToString(block.Header.DataHash)
 	orphan, exists := m.orphanBlocks[dataHash]
 	m.orphanLock.RUnlock()
-	if exists {
+	if exists && orphan.Header.BlockNumber == block.Header.BlockNumber+1 {
 		m.consensus(orphan)
 	}
 }
@@ -240,6 +267,7 @@ func (m *MainChainConsensus) newBranch(prevBlocks []*proto.Block, newBlock *prot
 //	@Description: change the longest branch, it will restart pow
 //				Note: it's will be called synchronized, no need to lock
 func (m *MainChainConsensus) changeLongestBranch(branch *Branch) {
+	// m.logger.Debug("change longest branch, stop PoW")
 	m.longestBranch = branch
 	m.changeBranchChan <- struct{}{}
 }
@@ -254,12 +282,17 @@ func (m *MainChainConsensus) confirm(block *proto.Block) {
 			for _, tx := range block.Data.Transactions {
 				delete(branch.txs, tx.Payload.Header.TxId)
 			}
+			branch.blocks = branch.blocks[1:]
 			newBranches = append(newBranches, branch)
 		}
 	}
 	// remove duplicated tx in pool
 	for _, tx := range block.Data.Transactions {
 		delete(m.txPool, tx.Payload.Header.TxId)
+	}
+	err := m.blockManager.ConfirmBlock(block)
+	if err != nil {
+		return
 	}
 
 	m.lock.Unlock()
@@ -284,7 +317,7 @@ func (m *MainChainConsensus) start() {
 		case <-m.enoughTxChan:
 			block = m.createBlock()
 		case <-m.changeBranchChan:
-			m.stopPoWChan <- struct{}{}
+			m.needRestartPow.Store(true)
 		}
 
 		// if create block successfully, send to other peer
@@ -309,11 +342,6 @@ func (m *MainChainConsensus) start() {
 					TxId:      "",
 					Timestamp: time.Time{},
 				},
-			}
-			err = m.blockManager.ConfirmBlock(block)
-			if err != nil {
-				m.logger.Error("confirm block failed, err: " + err.Error())
-				return
 			}
 			m.node.SendWithFilter(blockMsg, func(peer *proto.RemotePeer) bool { return true })
 		}
@@ -355,8 +383,7 @@ func (m *MainChainConsensus) createBlock() *proto.Block {
 	}
 	m.lock.Unlock()
 
-	blockChan := m.pow(block)
-	minedBlock := <-blockChan
+	minedBlock := m.pow(block)
 	m.poolLock.Lock()
 	// when mining failed, revert the transactions
 	if minedBlock == nil {
@@ -374,32 +401,29 @@ func (m *MainChainConsensus) createBlock() *proto.Block {
 //	@Description: PoW, try to find and pad the nonce of block
 //	@param block block to mine
 //	@return <-chan block with nonce, nil means it's stopped
-func (m *MainChainConsensus) pow(block *proto.Block) <-chan *proto.Block {
-	blockChan := make(chan *proto.Block)
+func (m *MainChainConsensus) pow(block *proto.Block) *proto.Block {
+	m.needRestartPow.Store(false)
 	cnt := uint32(0)
-	go func() {
-		for {
-			// init difficulty
-			difficulty := m.config.DefaultDifficulty * uint64(len(block.Data.Transactions))
-			select {
-			case <-m.stopPoWChan:
-				blockChan <- nil
-			case <-time.After(m.config.HashInterval):
-				block.Header.Nonce = cnt
-				bytes, err := json.Marshal(block)
-				if err != nil {
-					return
-				}
-				hash, err := m.mcs.Hash(bytes)
-				if err != nil {
-					return
-				}
-				if binary.LittleEndian.Uint64(hash) < difficulty {
-					blockChan <- block
-					return
-				}
+	for !m.needRestartPow.Load() {
+		// init difficulty
+		difficulty := m.config.DefaultDifficulty * uint64(len(block.Data.Transactions)+1)
+		select {
+		case <-time.After(m.config.HashInterval):
+			block.Header.Nonce = cnt
+			bytes, err := json.Marshal(block)
+			if err != nil {
+				return nil
 			}
+			hash, err := m.mcs.Hash(bytes)
+			if err != nil {
+				return nil
+			}
+			hashInt := binary.LittleEndian.Uint64(hash)
+			if hashInt < difficulty {
+				return block
+			}
+			cnt += 1
 		}
-	}()
-	return blockChan
+	}
+	return nil
 }

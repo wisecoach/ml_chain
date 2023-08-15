@@ -66,6 +66,7 @@ func (d *discoveryImpl) GetMembership() []*proto.RemotePeer {
 	defer d.lock.RUnlock()
 
 	membership := make([]*proto.RemotePeer, 0)
+	membership = append(membership, d.self)
 	for _, peer := range d.peers {
 		membership = append(membership, peer)
 	}

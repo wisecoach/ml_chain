@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"time"
 )
 
 var (
 	firstPeer = ""
+	startTime = time.Now()
 )
 
 func GetLogger(id string) *zap.Logger {
@@ -26,16 +28,16 @@ func GetLogger(id string) *zap.Logger {
 		EncodeLevel:    zapcore.LowercaseLevelEncoder, // 小写编码器
 		EncodeTime:     zapcore.RFC3339TimeEncoder,    // ISO8601 UTC 时间格式
 		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder, // 全路径编码器
+		EncodeCaller:   zapcore.FullCallerEncoder, // 全路径编码器
 	}
 
 	// 设置日志级别
-	atom := zap.NewAtomicLevelAt(zap.InfoLevel)
+	atom := zap.NewAtomicLevelAt(zap.DebugLevel)
 	outputs := make([]string, 0)
 	if firstPeer == id {
 		outputs = append(outputs, "stdout")
 	}
-	outputs = append(outputs, fmt.Sprintf("./logs/%s.log", id))
+	outputs = append(outputs, fmt.Sprintf("./logs/%s-%s.log", startTime, id))
 
 	config := zap.Config{
 		Level:            atom,                             // 日志级别

@@ -23,6 +23,9 @@ type Config struct {
 	// the bootstrap peers for the task
 	BootstrapPeers []*proto.RemotePeer
 
+	// --------------- notary config ----------------------------------------------------
+	Notaries []*proto.RemotePeer
+
 	// --------------- rpc config -------------------------------------------------------
 	// timeout for rpc
 	TimeoutRPC time.Duration

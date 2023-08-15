@@ -65,7 +65,7 @@ func (t *taskClient) CreateTask(task *Task) {
 			Timestamp: time.Time{},
 		},
 	}
-	t.node.SendToPeers(msg, t.node.Self())
+	t.node.SendWithFilter(msg, func(peer *proto.RemotePeer) bool { return true })
 }
 
 func (t *taskClient) FinishTask(task *FinishedTask) {
@@ -104,7 +104,7 @@ func (t *taskClient) FinishTask(task *FinishedTask) {
 			Timestamp: time.Time{},
 		},
 	}
-	t.node.SendToPeers(msg, t.node.Self())
+	t.node.SendWithFilter(msg, func(peer *proto.RemotePeer) bool { return true })
 }
 
 func (t *taskClient) RegisterManager(pk []byte) {
@@ -143,7 +143,7 @@ func (t *taskClient) RegisterManager(pk []byte) {
 			Timestamp: time.Time{},
 		},
 	}
-	t.node.SendToPeers(msg, t.node.Self())
+	t.node.SendWithFilter(msg, func(peer *proto.RemotePeer) bool { return true })
 }
 
 func (t *taskClient) RevokeManager(pk []byte) {
@@ -182,5 +182,5 @@ func (t *taskClient) RevokeManager(pk []byte) {
 			Timestamp: time.Time{},
 		},
 	}
-	t.node.SendToPeers(msg, t.node.Self())
+	t.node.SendWithFilter(msg, func(peer *proto.RemotePeer) bool { return true })
 }

@@ -3,10 +3,10 @@ package node
 import (
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
 	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/discovery"
+	"github.com/wisecoach/ml_chain/comm/notary"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
@@ -18,18 +18,15 @@ import (
 
 type PeerFilter func(peer *proto.RemotePeer) bool
 
-type MessageListener interface {
-	HandleMessage(message *proto.ReceivedMessage)
-}
-
 type Node struct {
+	notary.NotaryManager
 	self   *proto.RemotePeer
 	mcs    crypto.MessageCryptoService
 	disc   discovery.Discovery
 	comm   comm.Comm
 	config *Config
 
-	messageListeners map[reflect.Type][]MessageListener
+	messageListeners map[reflect.Type][]comm.MessageListener
 
 	logger     *zap.Logger
 	lock       sync.RWMutex
@@ -44,7 +41,7 @@ func New(config *Config, server *rpc.Server, mcs crypto.MessageCryptoService) *N
 		disc:             discovery.New(config.Self),
 		comm:             comm.New(server, config.Self, config.TimeoutRPC),
 		config:           config,
-		messageListeners: make(map[reflect.Type][]MessageListener),
+		messageListeners: make(map[reflect.Type][]comm.MessageListener),
 		logger:           log.GetLogger(config.Self.Endpoint),
 		lock:             sync.RWMutex{},
 		toDieChan:        make(chan struct{}),
@@ -52,6 +49,14 @@ func New(config *Config, server *rpc.Server, mcs crypto.MessageCryptoService) *N
 		stopSignal:       sync.WaitGroup{},
 		mcs:              mcs,
 	}
+
+	// init notary manager
+	node.NotaryManager = notary.New(node)
+	for _, peer := range config.Notaries {
+		node.NotaryManager.Discover(peer)
+	}
+	node.RegisterListener(&proto.NotarySignReqMessage{}, notary.NewNotarySignReqMessageListener(node.mcs, node, config.Self))
+	node.RegisterListener(&proto.NotarySignRespMessage{}, notary.NewNotarySignRespMessageListener(node.NotaryManager))
 
 	go node.start()
 
@@ -122,7 +127,7 @@ func (n *Node) SendToPeers(msg *proto.Message, peers ...*proto.RemotePeer) {
 // RegisterListener
 //
 //	@Description: register listener to node
-func (n *Node) RegisterListener(content any, listener MessageListener) {
+func (n *Node) RegisterListener(content any, listener comm.MessageListener) {
 	n.lock.Lock()
 	defer n.lock.Unlock()
 
@@ -131,7 +136,7 @@ func (n *Node) RegisterListener(content any, listener MessageListener) {
 	contentType := reflect.TypeOf(content)
 	listeners := n.messageListeners[contentType]
 	if listeners == nil {
-		listeners = make([]MessageListener, 0)
+		listeners = make([]comm.MessageListener, 0)
 	}
 	n.messageListeners[contentType] = append(listeners, listener)
 }
@@ -154,7 +159,7 @@ func (n *Node) acceptMessages(messages <-chan *proto.ReceivedMessage) {
 		case <-n.toDieChan:
 			return
 		case msg := <-messages:
-			n.logger.Info(fmt.Sprintf("get the message from: %s, msg payload type: %T", msg.Sender.Endpoint, msg.Envelope.Payload.Content))
+			// n.logger.Info(fmt.Sprintf("get the message from: %s, msg payload type: %T", msg.Sender.Endpoint, msg.Envelope.Payload.Content))
 			n.handleMessage(msg)
 		}
 	}

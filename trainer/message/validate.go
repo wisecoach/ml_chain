@@ -1,7 +1,7 @@
 package message
 
 import (
-	"github.com/wisecoach/ml_chain/comm/node"
+	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer/model/validate"
 )
@@ -10,7 +10,7 @@ type ValidateRequestMessageListener struct {
 	validator validate.Validator
 }
 
-func NewValidateRequestMessageListener(validator validate.Validator) node.MessageListener {
+func NewValidateRequestMessageListener(validator validate.Validator) comm.MessageListener {
 	return &ValidateRequestMessageListener{
 		validator: validator,
 	}

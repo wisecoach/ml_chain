@@ -2,7 +2,7 @@ package message
 
 import (
 	"github.com/wisecoach/ml_chain/block/consensus"
-	"github.com/wisecoach/ml_chain/comm/node"
+	"github.com/wisecoach/ml_chain/comm/comm"
 	"github.com/wisecoach/ml_chain/proto"
 )
 
@@ -10,7 +10,7 @@ type BlockMessageListener struct {
 	consensus consensus.Consensus
 }
 
-func NewBlockMessageListener(consensus consensus.Consensus) node.MessageListener {
+func NewBlockMessageListener(consensus consensus.Consensus) comm.MessageListener {
 	return &BlockMessageListener{consensus: consensus}
 }
 
@@ -23,7 +23,7 @@ type TransactionMessageListener struct {
 	consensus consensus.Consensus
 }
 
-func NewTransactionMessageListener(consensus consensus.Consensus) node.MessageListener {
+func NewTransactionMessageListener(consensus consensus.Consensus) comm.MessageListener {
 	return &TransactionMessageListener{consensus: consensus}
 }
 

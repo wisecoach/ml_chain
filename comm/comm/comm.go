@@ -24,3 +24,7 @@ type Comm interface {
 
 // MessageAcceptor 判断是否接收该消息的函数
 type MessageAcceptor func(message *proto.ReceivedMessage) bool
+
+type MessageListener interface {
+	HandleMessage(message *proto.ReceivedMessage)
+}
