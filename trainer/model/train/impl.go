@@ -1,7 +1,6 @@
 package train
 
 import (
-	"encoding/base64"
 	"fmt"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
@@ -132,7 +131,7 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	}
 
 	l.logger.Info(fmt.Sprintf("have colllected %d validate response, begin to send to the aggregator: %s",
-		l.config.ValidatorNum, base64.StdEncoding.EncodeToString(aggregatorPk)))
+		l.config.ValidatorNum, aggregator.Endpoint))
 
 	l.node.SendToPeers(localModelSubmitMsg, aggregator)
 	l.localModel = nil

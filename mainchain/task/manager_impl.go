@@ -10,7 +10,7 @@ import (
 )
 
 type taskManager struct {
-	lock   sync.Mutex
+	lock   sync.RWMutex
 	logger *zap.Logger
 
 	self         *proto.RemotePeer
@@ -21,13 +21,26 @@ type taskManager struct {
 
 func NewTaskManager(self *proto.RemotePeer) Manager {
 	return &taskManager{
-		lock:         sync.Mutex{},
+		lock:         sync.RWMutex{},
 		logger:       log.GetLogger(self.Endpoint),
 		self:         self,
 		managers:     make(map[string]struct{}),
 		tasks:        make(map[string]*Task),
 		taskFinished: make(map[string]*FinishedTask),
 	}
+}
+
+func (t *taskManager) GetManagers() [][]byte {
+	t.lock.RLock()
+	defer t.lock.RUnlock()
+
+	managers := make([][]byte, len(t.managers))
+	i := 0
+	for manager, _ := range t.managers {
+		managers[i], _ = base64.StdEncoding.DecodeString(manager)
+		i += 1
+	}
+	return managers
 }
 
 func (t *taskManager) CreateTask(task *proto.TaskGenesis) {

@@ -84,7 +84,7 @@ func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) error {
 
 func (a *aggregatorImpl) StartAggregate() {
 	peers := a.node.Peers()
-	trainerNum := len(peers) + 1
+	trainerNum := len(peers)
 	a.logger.Info(fmt.Sprintf("wait for %d trainer's local model to aggregate", trainerNum))
 	a.trainerWaitGroup.Add(trainerNum)
 

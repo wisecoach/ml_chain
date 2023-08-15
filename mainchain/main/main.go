@@ -58,17 +58,23 @@ func main() {
 				GenesisBlock:      genesis,
 				ChainId:           "main",
 				HashInterval:      time.Millisecond * 1,
-				MaxInterval:       time.Second * 1,
+				MaxInterval:       time.Millisecond * 1,
 				MaxTxNum:          1,
 				NumToConfirm:      3,
 				DefaultDifficulty: 1 << 55,
 			}
 			peer := mainchain.New(config)
 			peer.RegisterManager(bootstrapPeers[i].PublicKey)
+			select {
+			case <-time.After(time.Second * 5):
+			}
 			peer.CreateTask(&task.Task{TaskGenesis: &proto.TaskGenesis{
 				TaskId:         fmt.Sprintf("task%d", i),
 				ModelStructure: nil,
-				InitWeight:     nil,
+				InitWeight: &proto.Envelope[*proto.GlobalWeight]{
+					Payload:   &proto.GlobalWeight{},
+					Signature: nil,
+				},
 			}})
 		}()
 	}

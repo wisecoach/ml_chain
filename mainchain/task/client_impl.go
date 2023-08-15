@@ -14,22 +14,25 @@ import (
 type taskClient struct {
 	config *Config
 
-	mcs    crypto.MessageCryptoService
-	node   *node.Node
-	logger *zap.Logger
+	taskManager Manager
+	mcs         crypto.MessageCryptoService
+	node        *node.Node
+	logger      *zap.Logger
 }
 
-func NewTaskClient(config *Config, mcs crypto.MessageCryptoService, node *node.Node) Client {
+func NewTaskClient(config *Config, taskManager Manager, mcs crypto.MessageCryptoService, node *node.Node) Client {
 	return &taskClient{
-		config: config,
-		mcs:    mcs,
-		node:   node,
-		logger: log.GetLogger(node.Self().Endpoint),
+		config:      config,
+		taskManager: taskManager,
+		mcs:         mcs,
+		node:        node,
+		logger:      log.GetLogger(node.Self().Endpoint),
 	}
 }
 
 func (t *taskClient) CreateTask(task *Task) {
 	genesis := task.TaskGenesis
+	genesis.ManagerList = t.taskManager.GetManagers()
 	transaction := &proto.Transaction{
 		Parent: nil,
 		Header: &proto.Header{

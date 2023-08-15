@@ -46,7 +46,6 @@ func New(config *Config, blockManager manager.BlockManager, node *node.Node, mcs
 		orphanBlocks:     make(map[string]*proto.Block),
 		orphanLock:       sync.RWMutex{},
 		txPool:           make(map[string]*proto.Envelope[*proto.Transaction]),
-		enoughTxChan:     make(chan struct{}),
 		poolLock:         sync.RWMutex{},
 		stopPoWChan:      make(chan struct{}),
 		changeBranchChan: make(chan struct{}),
@@ -67,7 +66,6 @@ type MainChainConsensus struct {
 	orphanBlocks  map[string]*proto.Block // prevHash to orphanBlock
 	orphanLock    sync.RWMutex
 	txPool        map[string]*proto.Envelope[*proto.Transaction]
-	enoughTxChan  chan struct{}
 	poolLock      sync.RWMutex
 
 	needRestartPow   atomic.Bool
@@ -85,10 +83,6 @@ func (m *MainChainConsensus) Order(transaction *proto.Envelope[*proto.Transactio
 	m.logger.Debug(fmt.Sprintf("receive transaction, %T", transaction.Payload.Payload))
 	m.txPool[transaction.Payload.Header.TxId] = transaction
 	m.poolLock.Unlock()
-
-	if len(m.txPool) >= m.config.MaxTxNum {
-		m.enoughTxChan <- struct{}{}
-	}
 }
 
 func (m *MainChainConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
@@ -314,8 +308,6 @@ func (m *MainChainConsensus) start() {
 		select {
 		case <-time.After(m.config.MaxInterval):
 			block = m.createBlock()
-		case <-m.enoughTxChan:
-			block = m.createBlock()
 		case <-m.changeBranchChan:
 			m.needRestartPow.Store(true)
 		}
@@ -357,7 +349,6 @@ func (m *MainChainConsensus) createBlock() *proto.Block {
 		// don't exceed maxTxNum and transaction in branch, when selected, remove from txPool
 		if _, exists := m.longestBranch.txs[txId]; !exists && len(transactions) < m.config.MaxTxNum {
 			transactions = append(transactions, tx)
-			delete(m.txPool, txId)
 		}
 	}
 	dataBytes, err := json.Marshal(transactions)
@@ -384,14 +375,6 @@ func (m *MainChainConsensus) createBlock() *proto.Block {
 	m.lock.Unlock()
 
 	minedBlock := m.pow(block)
-	m.poolLock.Lock()
-	// when mining failed, revert the transactions
-	if minedBlock == nil {
-		for _, tx := range block.Data.Transactions {
-			m.txPool[tx.Payload.Header.TxId] = tx
-		}
-	}
-	m.poolLock.Unlock()
 
 	return minedBlock
 }

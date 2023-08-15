@@ -4,6 +4,11 @@ import "github.com/wisecoach/ml_chain/proto"
 
 type Manager interface {
 	//
+	// GetManagers
+	//  @Description: get all the managers
+	//
+	GetManagers() [][]byte
+	//
 	// CreateTask
 	//  @Description: create a task, when handle the TaskGenesisTransaction
 	//  @param task

@@ -80,7 +80,7 @@ func New(config *Config) *Peer {
 	// init task client
 	p.taskClient = task.NewTaskClient(&task.Config{
 		ChainId: p.config.ChainId,
-	}, p.mcs, p.node)
+	}, p.taskManager, p.mcs, p.node)
 
 	// register the message listener to the node
 	p.registerNodeListener()
@@ -115,7 +115,7 @@ func New(config *Config) *Peer {
 
 func (p *Peer) registerNodeListener() {
 	// register the PeerRegisterMessage
-	p.node.RegisterListener(&proto.PeerRegisterMessage{}, message.NewPeerRegisterListener(p.node.GetDiscovery()))
+	p.node.RegisterListener(&proto.PeerRegisterMessage{}, message.NewPeerRegisterListener(p.node.GetDiscovery(), p.node))
 	// register the BlockMessage and TransactionMessage
 	p.node.RegisterListener(&proto.BlockMessage{}, message.NewBlockMessageListener(p.consensus))
 	p.node.RegisterListener(&proto.TransactionMessage{}, message.NewTransactionMessageListener(p.consensus))

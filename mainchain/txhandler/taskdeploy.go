@@ -166,6 +166,7 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			go trainer.New(config)
 			t.logger.Info(fmt.Sprintf("bootstrap trainer peer: %s", bootstrapPeers[i+mgrNum].Endpoint))
 		}
+
 	}
 }
 

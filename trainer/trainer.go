@@ -82,7 +82,7 @@ func New(config *Config) *Trainer {
 
 	// wait for discovery
 	select {
-	case <-time.After(time.Second * 1):
+	case <-time.After(time.Second * 3):
 	}
 	t.logger.Info("init trainer success, and begin to handle the task")
 
@@ -98,7 +98,7 @@ func New(config *Config) *Trainer {
 
 func (t *Trainer) registerNodeListener() {
 	// register the PeerRegisterMessage
-	t.node.RegisterListener(&proto.PeerRegisterMessage{}, message.NewPeerRegitserListener(t.node.GetDiscovery()))
+	t.node.RegisterListener(&proto.PeerRegisterMessage{}, message.NewPeerRegisterListener(t.node.GetDiscovery(), t.node))
 }
 
 func (t *Trainer) registerBlockchainHandlers() {
