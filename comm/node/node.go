@@ -167,10 +167,12 @@ func (n *Node) acceptMessages(messages <-chan *proto.ReceivedMessage) {
 
 func (n *Node) handleMessage(msg *proto.ReceivedMessage) {
 	n.lock.RLock()
-	defer n.lock.RUnlock()
 
 	contentType := reflect.TypeOf(msg.Envelope.Payload.Content)
 	listeners := n.messageListeners[contentType]
+
+	n.lock.RUnlock()
+
 	for _, listener := range listeners {
 		listener.HandleMessage(msg)
 	}

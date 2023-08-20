@@ -5,7 +5,7 @@ import "github.com/wisecoach/ml_chain/proto"
 type Aggregator interface {
 	// HandleLocalModel
 	//  @Description: handle the local model sent from trainer
-	HandleLocalModel(weight *proto.LocalityWeight) error
+	HandleLocalModel(weight *proto.LocalityWeight)
 
 	// StartAggregate
 	//  @Description: start aggregate:

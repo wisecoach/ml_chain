@@ -52,10 +52,9 @@ func (v *validatorImpl) Validate(weight *proto.LocalityWeight) {
 			Loss:      nil,
 		},
 	}
-	select {
-	case <-time.After(time.Millisecond * 500):
-	}
-	v.logger.Info(fmt.Sprintf("validating finished, %d", weight.Iteration))
+	// select {
+	// case <-time.After(time.Millisecond * 1):
+	// }
 
 	loss := lossResp.Loss
 	loss.Validator = v.self.PublicKey
@@ -102,5 +101,6 @@ func (v *validatorImpl) Validate(weight *proto.LocalityWeight) {
 		},
 	}
 
+	v.logger.Debug(fmt.Sprintf("validating finished, %d, send to trainer: %s", weight.Iteration, trainer.Endpoint))
 	v.node.SendToPeers(msg, trainer)
 }

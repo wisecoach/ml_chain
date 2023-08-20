@@ -71,9 +71,9 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 			Losses:             nil,
 		},
 	}
-	select {
-	case <-time.After(time.Second * 1):
-	}
+	// select {
+	// case <-time.After(time.Millisecond * 1):
+	// }
 
 	l.logger.Info(fmt.Sprintf("trainnging finished, %d", trainResponse.LocalModel.Iteration))
 	l.lock.Lock()
@@ -87,7 +87,11 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 
 	// send request to the validators, and wait for the validate response
 	l.validateWaitGroup.Add(l.config.ValidatorNum)
-	l.logger.Info(fmt.Sprintf("begin to send loss request to %d validators", l.config.ValidatorNum))
+	logStr := fmt.Sprintf("begin to send loss request to %d validators: ", l.config.ValidatorNum)
+	for _, winner := range validatorSelection.Winners {
+		logStr += winner.Endpoint + ","
+	}
+	l.logger.Info(logStr)
 	lossReqMsg := &proto.Message{
 		Content: &proto.RequestLossMessage{
 			Iteration:          l.localModel.Iteration,
@@ -109,7 +113,6 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	l.validateWaitGroup.Wait()
 
 	l.lock.Lock()
-	defer l.lock.Unlock()
 
 	localModelSubmitMsg := &proto.Message{
 		Content: &proto.SubmitLocalityWeightMessage{
@@ -128,14 +131,16 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	aggregator := l.node.Lookup(aggregatorPk)
 	if aggregator == nil {
 		l.logger.Error("cannot found aggregator")
+		fmt.Println("cannot found aggregator, self: " + l.self.Endpoint)
 	}
 
-	l.logger.Info(fmt.Sprintf("have colllected %d validate response, begin to send to the aggregator: %s",
+	l.logger.Info(fmt.Sprintf("have collected %d validate response, begin to send to the aggregator: %s",
 		l.config.ValidatorNum, aggregator.Endpoint))
 
 	l.node.SendToPeers(localModelSubmitMsg, aggregator)
 	l.localModel = nil
 
+	l.lock.Unlock()
 }
 
 func (l *localTrainerImpl) CollectionLoss(loss *proto.Envelope[*proto.ValidateLoss]) {

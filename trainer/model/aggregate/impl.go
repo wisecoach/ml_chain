@@ -1,9 +1,7 @@
 package aggregate
 
 import (
-	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/wisecoach/ml_chain/comm/crypto"
@@ -24,6 +22,7 @@ type IterationMgrAdapter interface {
 type aggregatorImpl struct {
 	lock             sync.Mutex
 	trainerWaitGroup sync.WaitGroup
+	waitAggregate    sync.WaitGroup
 	logger           *zap.Logger
 	config           *Config
 
@@ -49,37 +48,42 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 		roleManager:      roleManager,
 		localModels:      make(map[string]*proto.LocalityWeight),
 	}
+	a.waitAggregate.Add(1)
 	return a
 }
 
-func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) error {
+func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) {
+	// wait aggregate process to start, note: wait before lock
+	a.waitAggregate.Wait()
+
 	a.lock.Lock()
 	defer a.lock.Unlock()
 
-	a.logger.Info(fmt.Sprintf("%s receive local model, iteration: %d, from: %s",
-		base64.StdEncoding.EncodeToString(a.node.Self().PublicKey), weight.Iteration, base64.StdEncoding.EncodeToString(weight.Trainer)))
+	a.logger.Info(fmt.Sprintf("have received %d local model, %s receive local model, iteration: %d, from: %s",
+		len(a.localModels), a.node.Self().Endpoint, weight.Iteration, a.node.Lookup(weight.Trainer).Endpoint))
 	// now, we don't receive new model from same trainer
 	_, exist := a.localModels[string(weight.Trainer)]
 	if exist {
-		return errors.New("receive duplicated model")
+		a.logger.Error("receive duplicated model")
+		return
 	}
 	if a.iterationManager.GetIteration() > weight.Iteration {
-		return errors.New("receive expired model")
+		a.logger.Error("receive expired model")
+		return
 	}
 	if a.iterationManager.GetIteration() != weight.Iteration {
-		return errors.New("receive model whose global model newer than us")
+		a.logger.Error(fmt.Sprintf("receive model %d whose global model newer than us %d", weight.Iteration, a.iterationManager.GetIteration()))
+		return
 	}
 	// validate the local model
 	err := a.validateLocalModel(weight)
 	if err != nil {
-		return errors.New("local model is invalid: " + err.Error())
+		a.logger.Error("local model is invalid: " + err.Error())
+		return
 	}
+	a.trainerWaitGroup.Done()
 	// set the local model
 	a.localModels[string(weight.Trainer)] = weight
-
-	a.trainerWaitGroup.Done()
-
-	return nil
 }
 
 func (a *aggregatorImpl) StartAggregate() {
@@ -87,7 +91,7 @@ func (a *aggregatorImpl) StartAggregate() {
 	trainerNum := len(peers)
 	a.logger.Info(fmt.Sprintf("wait for %d trainer's local model to aggregate", trainerNum))
 	a.trainerWaitGroup.Add(trainerNum)
-
+	a.waitAggregate.Done()
 	a.trainerWaitGroup.Wait()
 	a.logger.Info(fmt.Sprintf("all %d local model were received, begin to aggregate", trainerNum))
 
@@ -156,8 +160,9 @@ func (a *aggregatorImpl) StartAggregate() {
 	}
 	a.node.SendToPeers(msg, a.node.Self())
 
-	// clear the local modela
+	// clear the local model
 	a.lock.Lock()
+	a.waitAggregate.Add(1)
 	a.localModels = make(map[string]*proto.LocalityWeight)
 	a.lock.Unlock()
 }

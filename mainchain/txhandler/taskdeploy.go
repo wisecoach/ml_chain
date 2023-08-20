@@ -1,6 +1,7 @@
 package txhandler
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/wisecoach/ml_chain/bccsp"
 	"github.com/wisecoach/ml_chain/bccsp/sw"
@@ -51,16 +52,20 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			Signature: nil,
 		})
 
+		blockData := &proto.BlockData{
+			Transactions: transactions,
+		}
+		marshal, _ := json.Marshal(blockData)
+		dataHash, _ := t.mcs.Hash(marshal)
+
 		genesis := &proto.Block{
 			Header: &proto.BlockHeader{
-				DataHash:    nil,
-				PrevHash:    nil,
+				DataHash:    dataHash,
+				PrevHash:    dataHash,
 				BlockNumber: 0,
 				Miner:       nil,
 			},
-			Data: &proto.BlockData{
-				Transactions: transactions,
-			},
+			Data: blockData,
 		}
 
 		id, _ := strconv.ParseInt(taskGenesis.TaskId[4:], 10, 32)
@@ -137,16 +142,20 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			Signature: nil,
 		})
 
+		blockData := &proto.BlockData{
+			Transactions: transactions,
+		}
+		marshal, _ := json.Marshal(blockData)
+		dataHash, _ := t.mcs.Hash(marshal)
+
 		genesis := &proto.Block{
 			Header: &proto.BlockHeader{
-				DataHash:    nil,
-				PrevHash:    nil,
+				DataHash:    dataHash,
+				PrevHash:    dataHash,
 				BlockNumber: 0,
 				Miner:       nil,
 			},
-			Data: &proto.BlockData{
-				Transactions: transactions,
-			},
+			Data: blockData,
 		}
 
 		for i := 0; i < trainerNumber; i++ {

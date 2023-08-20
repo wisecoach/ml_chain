@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/wisecoach/ml_chain/block/consensus"
 	"github.com/wisecoach/ml_chain/block/manager"
 	"github.com/wisecoach/ml_chain/comm/crypto"
@@ -95,6 +96,7 @@ func (t *TaskConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
 	}
 	latestBlock, err := t.blockManager.GetLatestBlock()
 	if err != nil {
+		t.logger.Error("get latest block failed" + err.Error())
 		return
 	}
 	// check prev hash and data hash
@@ -111,6 +113,7 @@ func (t *TaskConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
 		return
 	}
 	// confirm block to blockManager
+	t.logger.Debug(fmt.Sprintf("receive block %d, and confirm it", block.Payload.Header.BlockNumber))
 	err = t.blockManager.ConfirmBlock(block.Payload)
 	if err != nil {
 		t.logger.Error("confirm block failed" + err.Error())
@@ -154,11 +157,6 @@ func (t *TaskConsensus) processTransaction(transaction *proto.Envelope[*proto.Tr
 			Timestamp: time.Time{},
 		},
 	}
-	err = t.blockManager.ConfirmBlock(block)
-	if err != nil {
-		t.logger.Error("confirm block failed, err: " + err.Error())
-		return
-	}
 	t.node.SendWithFilter(blockMsg, func(peer *proto.RemotePeer) bool { return true })
 }
 
@@ -180,7 +178,7 @@ func (t *TaskConsensus) createBlock(txs ...*proto.Envelope[*proto.Transaction]) 
 		Header: &proto.BlockHeader{
 			DataHash:    dataHash,
 			PrevHash:    latestBlock.Header.DataHash,
-			BlockNumber: 0,
+			BlockNumber: latestBlock.Header.BlockNumber + 1,
 			Miner:       t.node.Self().PublicKey,
 		},
 		Data: blockData,

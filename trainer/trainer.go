@@ -82,7 +82,7 @@ func New(config *Config) *Trainer {
 
 	// wait for discovery
 	select {
-	case <-time.After(time.Second * 3):
+	case <-time.After(time.Second * 1):
 	}
 	t.logger.Info("init trainer success, and begin to handle the task")
 

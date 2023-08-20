@@ -26,8 +26,10 @@ type subscription struct {
 //	@receiver mh
 //	@param message
 //	@param reply	it's always be nil, and shouldn't be operated
-func (mh *MessageHandler) HandleMessage(message *proto.ReceivedMessage, reply *proto.ReceivedMessage) error {
+func (mh *MessageHandler) HandleMessage(message *proto.ReceivedMessage, reply *string) error {
 	mh.comm.HandleMessage(message)
+	str := "s"
+	reply = &str
 	return nil
 }
 
@@ -89,6 +91,7 @@ func (c *commImpl) deMultiplex(message *proto.ReceivedMessage) {
 				c.deMuxInProgress.Done()
 				return
 			case sub.ch <- message:
+				// c.logger.Debug(fmt.Sprintf("send msg %T to subscription", message.Envelope.Payload.Content))
 			}
 		}
 	}
@@ -117,14 +120,16 @@ func (c *commImpl) sendToEndpoint(peer *proto.RemotePeer, msg *proto.Envelope[*p
 	defer c.sendInProgress.Done()
 	conn, err := rpc.Dial("tcp", peer.Endpoint)
 	if err != nil {
-		c.logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error())
-		return
+		c.logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error() + ", and begin to retry")
+		for conn == nil {
+			conn, err = rpc.Dial("tcp", peer.Endpoint)
+		}
 	}
 	var msgToSend = &proto.ReceivedMessage{
 		Envelope: msg,
 		Sender:   c.self,
 	}
-	var reply proto.ReceivedMessage
+	var reply string
 
 	defer func(conn *rpc.Client) {
 		_ = conn.Close()
@@ -136,6 +141,7 @@ func (c *commImpl) sendToEndpoint(peer *proto.RemotePeer, msg *proto.Envelope[*p
 
 	select {
 	case err = <-errChan:
+		// c.logger.Debug(fmt.Sprintf("msg %T, reply is: %s", msg.Payload.Content, reply))
 		if err != nil {
 			c.logger.Error("rpc failed, err: " + err.Error())
 		}
@@ -146,7 +152,7 @@ func (c *commImpl) sendToEndpoint(peer *proto.RemotePeer, msg *proto.Envelope[*p
 }
 
 func (c *commImpl) Accept(acceptor MessageAcceptor) <-chan *proto.ReceivedMessage {
-	messageChan := make(chan *proto.ReceivedMessage, 10)
+	messageChan := make(chan *proto.ReceivedMessage, 100)
 
 	if c.isStopping() {
 		fmt.Printf("return an empty channel because of the comm is stopped")

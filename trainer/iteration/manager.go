@@ -18,6 +18,7 @@ import (
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"sync"
+	"time"
 )
 
 // Manager
@@ -136,6 +137,11 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	}
 	i.roleManager.SelectValidators(i.node.Peers(), latestBlock.Header.DataHash, i.config.ValidatorNum)
 
+	// wait for other trainer init iteration manager
+	select {
+	case <-time.After(time.Second):
+	}
+
 	// start consensus
 	go i.consensus.Start()
 
@@ -159,6 +165,7 @@ func (i *iterationManagerImpl) NextIteration(iteration *proto.ModelIteration) {
 	i.locker.Lock()
 	// add the iteration
 	i.iteration++
+	i.logger.Info(fmt.Sprintf("start iteration %d", i.iteration))
 	i.locker.Unlock()
 
 	// select new validator for the new iteration

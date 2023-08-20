@@ -18,8 +18,5 @@ func NewLocalWightMessageListener(aggregator aggregate.Aggregator) comm.MessageL
 
 func (l *LocalWightMessageListener) HandleMessage(message *proto.ReceivedMessage) {
 	weight := message.Envelope.Payload.GetSubmitLocalityWeight()
-	err := l.aggregator.HandleLocalModel(weight.LocalityWeight)
-	if err != nil {
-		return
-	}
+	l.aggregator.HandleLocalModel(weight.LocalityWeight)
 }
