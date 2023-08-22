@@ -14,10 +14,10 @@ type ManagerRevoke struct {
 
 // TaskGenesis represent the genesis transaction of a taskchain
 type TaskGenesis struct {
-	TaskId         string
-	ModelStructure *ModelStructure
-	ManagerList    [][]byte
-	InitWeight     *Envelope[*GlobalWeight]
+	TaskId         string                   `json:"task_id"`
+	ModelStructure *ModelStructure          `json:"model_structure"`
+	ManagerList    [][]byte                 `json:"manager_list"`
+	InitWeight     *Envelope[*GlobalWeight] `json:"init_weight"`
 }
 
 // TaskResult represent the finish transaction of a task
@@ -33,5 +33,19 @@ type ModelIteration struct {
 }
 
 type ModelStructure struct {
-	// TODO
+	Dataset      string  `json:"dataset"`
+	NumClasses   int     `json:"num_classes"`
+	Agent        int     `json:"agent"`
+	TrainerNum   int     `json:"trainer_num"`
+	ValidatorNum int     `json:"validator_num"`
+	LearningRate float64 `json:"learning_rate"`
+	Momentum     float64 `json:"momentum"`
+	Dp           bool    `json:"dp"`
+	DpEpsilon    float64 `json:"dp_epsilon"`
+	DpEpsilon1   float64 `json:"dp_epsilon_1"`
+	DpDelta      float64 `json:"dp_delta"`
+	DpClip       float64 `json:"dp_clip"`
+	BatchSize    int     `json:"batch_size"`
+	Round        int     `json:"round"`
+	Lambda       float64 `json:"lambda"`
 }

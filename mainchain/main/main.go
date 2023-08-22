@@ -61,21 +61,41 @@ func main() {
 				MaxInterval:       time.Millisecond * 1,
 				MaxTxNum:          1,
 				NumToConfirm:      3,
-				DefaultDifficulty: 1 << 55,
+				DefaultDifficulty: 1 << 57,
 			}
 			peer := mainchain.New(config)
 			peer.RegisterManager(bootstrapPeers[i].PublicKey)
 			select {
-			case <-time.After(time.Second * 5):
+			case <-time.After(time.Second * 2):
 			}
-			peer.CreateTask(&task.Task{TaskGenesis: &proto.TaskGenesis{
-				TaskId:         fmt.Sprintf("task%d", i),
-				ModelStructure: nil,
-				InitWeight: &proto.Envelope[*proto.GlobalWeight]{
-					Payload:   &proto.GlobalWeight{},
-					Signature: nil,
-				},
-			}})
+			if i == 0 {
+				peer.CreateTask(&task.Task{TaskGenesis: &proto.TaskGenesis{
+					TaskId: fmt.Sprintf("task%d", i),
+					ModelStructure: &proto.ModelStructure{
+						Dataset:      "mnist",
+						NumClasses:   10,
+						Agent:        1,
+						TrainerNum:   4,
+						ValidatorNum: 1,
+						LearningRate: 0.01,
+						Momentum:     0.5,
+						Dp:           false,
+						DpEpsilon:    0.4,
+						DpEpsilon1:   0.4,
+						DpDelta:      1e-5,
+						DpClip:       300,
+						BatchSize:    64,
+						Round:        100,
+						Lambda:       1,
+					},
+					InitWeight: &proto.Envelope[*proto.GlobalWeight]{
+						Payload: &proto.GlobalWeight{
+							WeightVector: make([]float64, 656080),
+						},
+						Signature: nil,
+					},
+				}})
+			}
 		}()
 	}
 

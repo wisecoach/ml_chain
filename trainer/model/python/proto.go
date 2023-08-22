@@ -11,17 +11,18 @@ type AggregateResponse struct {
 }
 
 type ValidateRequest struct {
-	Model *proto.LocalityWeight
+	Model *proto.LocalityWeight `json:"model"`
 }
 
 type ValidateResponse struct {
-	Loss *proto.ValidateLoss
+	Loss *proto.ValidateLoss `json:"loss"`
 }
 
 type TrainRequest struct {
-	GlobalModel *proto.GlobalWeight
+	TrainerId   string              `json:"trainer_id"`
+	GlobalModel *proto.GlobalWeight `json:"global_model"`
 }
 
 type TrainResponse struct {
-	LocalModel *proto.LocalityWeight
+	LocalModel *proto.LocalityWeight `json:"local_model"`
 }

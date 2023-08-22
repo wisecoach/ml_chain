@@ -10,6 +10,7 @@ import (
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer"
+	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
 	"reflect"
@@ -84,12 +85,14 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 				PublicKey: pkBytes,
 			})
 		}
+		apiPort := strconv.Itoa(basePort + 99)
+		apiBaseUrl := "http://localhost:" + apiPort
 
 		taskConfig := &trainer.Config{
 			TaskId:         taskGenesis.TaskId,
 			ValidatorNum:   1,
 			GenesisBlock:   genesis,
-			ApiBaseUrl:     "http://localhost:8999",
+			ApiBaseUrl:     apiBaseUrl,
 			Sk:             t.config.Sk,
 			KeyImportOpts:  &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
 			HashOpts:       &bccsp.SHA256Opts{},
@@ -103,7 +106,9 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 		t.logger.Info(fmt.Sprintf("bootstrap manager peer: %s", self.Endpoint))
 	}
 
-	// if self is the first manager, need to bootstrap trainer for the task, it's just for test, in product environment, trainer will bootstrap by other user
+	// if self is the first manager, need to bootstrap trainer for the task, it's just for test, in product environment,
+	// trainer will bootstrap by other user
+	// otherwise, it also need to bootstrap python server and init task
 	if index == 0 {
 		csp, _ := sw.NewBCCSP()
 		trainerNumber := t.config.TrainerNum
@@ -157,13 +162,25 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			},
 			Data: blockData,
 		}
+		apiPort := strconv.Itoa(basePort + 99)
+		apiBaseUrl := "http://localhost:" + apiPort
+
+		client := python.New(&python.Config{
+			ApiBaseUrl: apiBaseUrl,
+			TaskId:     taskGenesis.TaskId,
+		})
+
+		err := client.Init(taskGenesis)
+		if err != nil {
+			return
+		}
 
 		for i := 0; i < trainerNumber; i++ {
 			config := &trainer.Config{
 				TaskId:         taskGenesis.TaskId,
 				ValidatorNum:   1,
 				GenesisBlock:   genesis,
-				ApiBaseUrl:     "http://localhost:8999",
+				ApiBaseUrl:     apiBaseUrl,
 				Sk:             t.config.Sk,
 				KeyImportOpts:  &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
 				HashOpts:       &bccsp.SHA256Opts{},
@@ -174,7 +191,18 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			}
 			go trainer.New(config)
 			t.logger.Info(fmt.Sprintf("bootstrap trainer peer: %s", bootstrapPeers[i+mgrNum].Endpoint))
+
 		}
+
+		//command := exec.Command("./ML/venv/bin/python", "./ML/main.py", "--port="+apiPort)
+		//err := command.Start()
+		//if err != nil {
+		//	t.logger.Error(err.Error())
+		//	return
+		//}
+		//select {
+		//case <-time.After(time.Second):
+		//}
 
 	}
 }

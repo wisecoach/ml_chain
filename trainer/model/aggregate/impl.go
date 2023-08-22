@@ -103,19 +103,19 @@ func (a *aggregatorImpl) StartAggregate() {
 	a.lock.Unlock()
 
 	// aggregate the local model by python client
-	// request := &python.AggregateRequest{LocalModels: localModels}
-	// response, err := a.client.Aggregate(request)
-	// if err != nil {
-	// 	a.logger.Error("python aggregate failed" + err.Error())
-	// 	return
-	// }
-	response := &python.AggregateResponse{
-		GlobalModel: &proto.GlobalWeight{
-			Iteration:    a.iterationManager.GetIteration(),
-			WeightVector: nil,
-			Aggregator:   nil,
-		},
+	request := &python.AggregateRequest{LocalModels: localModels}
+	response, err := a.client.Aggregate(request)
+	if err != nil {
+		a.logger.Error("python aggregate failed" + err.Error())
+		return
 	}
+	//response := &python.AggregateResponse{
+	//	GlobalModel: &proto.GlobalWeight{
+	//		Iteration:    a.iterationManager.GetIteration(),
+	//		WeightVector: nil,
+	//		Aggregator:   nil,
+	//	},
+	//}
 
 	// package the global model to transaction, send to consensus model
 	globalModel := response.GlobalModel
@@ -165,25 +165,6 @@ func (a *aggregatorImpl) StartAggregate() {
 	a.waitAggregate.Add(1)
 	a.localModels = make(map[string]*proto.LocalityWeight)
 	a.lock.Unlock()
-}
-
-func (a *aggregatorImpl) sumLosses(losses []*proto.Envelope[*proto.ValidateLoss]) []float64 {
-	if len(losses) == 0 {
-		return make([]float64, 0)
-	}
-	lossMatrix := make([][]float64, 0)
-	for _, loss := range losses {
-		lossMatrix = append(lossMatrix, loss.Payload.Loss)
-	}
-	dimension := len(lossMatrix[0])
-	sum := make([]float64, dimension)
-	for _, loss := range lossMatrix {
-		for i, x := range loss {
-			sum[i] += x
-		}
-	}
-
-	return sum
 }
 
 func (a *aggregatorImpl) validateLocalModel(model *proto.LocalityWeight) error {

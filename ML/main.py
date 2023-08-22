@@ -1,76 +1,67 @@
-import tornado.ioloop
-import tornado.web
-import json
-import train
-import validate
-import aggregate
+import argparse
+import task as t
+from typing import Any
 
-class MainHandler(tornado.web.RequestHandler):
+import tornado.ioloop
+import tornado
+import json
+
+from tornado import httputil
+
+
+class TaskHandler(tornado.web.RequestHandler):
+
+    task_dict = {}
+
     # 10Task
     # 10个client
-    def get(self):
-        # wt_1, losst_1 = clients[task].train_one_epoch(Wt)
-        self.write("wt_1, losst_1")
+    def post(self, path):
+        print(path)
+        task_id = path.split("/")[-1]
+        if path.__contains__("init"):
+            self.init(task_id)
+        if path.__contains__("train"):
+            self.train(task_id)
+        if path.__contains__("validate"):
+            self.validate(task_id)
+        if path.__contains__("aggregate"):
+            self.aggregate(task_id)
 
+    def init(self, task_id):
+        genesis = json.loads(self.request.body)
+        new_task = t.Task(genesis)
+        TaskHandler.task_dict[task_id] = new_task
+        print("init success")
 
-class UserHandler(tornado.web.RequestHandler):
-    users = [
-        {"id": 1, "name": "Alice"},
-        {"id": 2, "name": "Bob"},
-        {"id": 3, "name": "Charlie"}
-    ]
+    def train(self, task_id):
+        req = json.loads(self.request.body)
+        resp = TaskHandler.task_dict[task_id].train(req)
+        print("train success")
+        self.write(json.dumps(resp))
 
-    def get(self, user_id=None):
-        if user_id:
-            for user in self.users:
-                if user["id"] == int(user_id):
-                    self.write(json.dumps(user))
-                    return
-            self.set_status(404)
-        else:
-            self.write(json.dumps(self.users))
+    def validate(self, task_id):
+        req = json.loads(self.request.body)
+        resp = TaskHandler.task_dict[task_id].validate(req)
+        print("validate success")
+        self.write(json.dumps(resp))
 
-    def post(self):
-        user = json.loads(self.request.body)
-        user["id"] = len(self.users) + 1
-        self.users.append(user)
-        self.write(json.dumps(user))
-
-    def put(self, user_id=None):
-        if user_id:
-            for user in self.users:
-                if user["id"] == int(user_id):
-                    updated_user = json.loads(self.request.body)
-                    updated_user["id"] = user_id
-                    self.users[self.users.index(user)] = updated_user
-                    self.write(json.dumps(updated_user))
-                    return
-            self.set_status(404)
-        else:
-            self.set_status(400)
-
-    def delete(self, user_id=None):
-        if user_id:
-            for user in self.users:
-                if user["id"] == int(user_id):
-                    self.users.remove(user)
-                    self.write("User with id %s deleted" % user_id)
-                    return
-            self.set_status(404)
-        else:
-            self.set_status(400)
+    def aggregate(self, task_id):
+        req = json.loads(self.request.body)
+        resp = TaskHandler.task_dict[task_id].aggregate(req)
+        print("aggregate success")
+        self.write(json.dumps(resp))
 
 
 def make_app():
     return tornado.web.Application([
-        (r"/", MainHandler),
-        (r"/train/(.*)", train.TrainHandler),
-        (r"/validate/(.*)", validate.ValidateHandler),
-        (r"/aggregate/(.*)", aggregate.AggregateHandler),
+        (r"/(.*)", TaskHandler,),
     ])
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, default=10099, help="port we use")
+    args = parser.parse_args()
     app = make_app()
-    app.listen(8888)
+    app.listen(args.port)
     tornado.ioloop.IOLoop.current().start()

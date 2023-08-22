@@ -57,20 +57,19 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	// train the global model
 	l.logger.Info(fmt.Sprintf("begin to train the global model, iteration: %d", weight.Iteration))
 
-	// TODO first just for test
-	// trainResponse, err := l.client.Train(&python.TrainRequest{GlobalModel: weight})
-	// if err != nil {
-	// 	return
-	// }
-	trainResponse := &python.TrainResponse{
-		LocalModel: &proto.LocalityWeight{
-			Iteration:          0,
-			WeightVector:       nil,
-			Trainer:            l.self.PublicKey,
-			ValidatorSelection: nil,
-			Losses:             nil,
-		},
+	trainResponse, err := l.client.Train(&python.TrainRequest{TrainerId: l.self.Endpoint, GlobalModel: weight})
+	if err != nil {
+		return
 	}
+	//trainResponse := &python.TrainResponse{
+	//	LocalModel: &proto.LocalityWeight{
+	//		Iteration:          0,
+	//		WeightVector:       nil,
+	//		Trainer:            l.self.PublicKey,
+	//		ValidatorSelection: nil,
+	//		Losses:             nil,
+	//	},
+	//}
 	// select {
 	// case <-time.After(time.Millisecond * 1):
 	// }
@@ -78,6 +77,7 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	l.logger.Info(fmt.Sprintf("trainnging finished, %d", trainResponse.LocalModel.Iteration))
 	l.lock.Lock()
 	l.localModel = trainResponse.LocalModel
+	l.localModel.Trainer = l.self.PublicKey
 	l.localModel.Iteration = l.iterationManager.GetIteration()
 	l.localModel.Losses = make([]*proto.Envelope[*proto.ValidateLoss], l.config.ValidatorNum)
 

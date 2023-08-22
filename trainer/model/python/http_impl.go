@@ -3,6 +3,8 @@ package python
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/wisecoach/ml_chain/proto"
+	"io"
 	"net/http"
 )
 
@@ -19,6 +21,18 @@ func New(config *Config) Client {
 		httpClient: &http.Client{},
 	}
 	return client
+}
+
+func (h *httpPythonClient) Init(genesis *proto.TaskGenesis) error {
+	marshal, err := json.Marshal(genesis)
+	if err != nil {
+		return err
+	}
+	_, err = h.post("/init/"+h.TaskId, marshal)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (h *httpPythonClient) Aggregate(request *AggregateRequest) (*AggregateResponse, error) {
@@ -84,10 +98,5 @@ func (h *httpPythonClient) post(uri string, requestBody []byte) ([]byte, error) 
 	if err != nil {
 		return nil, err
 	}
-	body := &bytes.Buffer{}
-	_, err = body.ReadFrom(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return body.Bytes(), nil
+	return io.ReadAll(resp.Body)
 }

@@ -1,6 +1,9 @@
 package python
 
+import "github.com/wisecoach/ml_chain/proto"
+
 type Client interface {
+	Init(genesis *proto.TaskGenesis) error
 	//
 	// Aggregate
 	//  @Description: call python to aggregate the local models in request, and get the global model in response

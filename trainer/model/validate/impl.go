@@ -38,20 +38,20 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 
 func (v *validatorImpl) Validate(weight *proto.LocalityWeight) {
 	v.logger.Info(fmt.Sprintf("begin to validate the local model, iteration: %d", weight.Iteration))
-	// lossResp, err := v.client.Validate(&python.ValidateRequest{Model: weight})
-	// if err != nil {
-	// 	v.logger.Error("cannot validate the model from: " + string(weight.Trainer))
-	// 	return
-	// }
-	lossResp := &python.ValidateResponse{
-		Loss: &proto.ValidateLoss{
-			Iteration: 0,
-			Trainer:   nil,
-			Validator: nil,
-			ModelHash: nil,
-			Loss:      nil,
-		},
+	lossResp, err := v.client.Validate(&python.ValidateRequest{Model: weight})
+	if err != nil {
+		v.logger.Error("cannot validate the model from: " + string(weight.Trainer) + ", " + err.Error())
+		return
 	}
+	//lossResp := &python.ValidateResponse{
+	//	Loss: &proto.ValidateLoss{
+	//		Iteration: 0,
+	//		Trainer:   nil,
+	//		Validator: nil,
+	//		ModelHash: nil,
+	//		Loss:      nil,
+	//	},
+	//}
 	// select {
 	// case <-time.After(time.Millisecond * 1):
 	// }

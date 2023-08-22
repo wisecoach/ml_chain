@@ -99,6 +99,9 @@ func (m *MainChainConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
 //	@Description: consensus the validated block
 func (m *MainChainConsensus) consensus(block *proto.Block) {
 	blockNum := block.Header.BlockNumber
+	if blockNum > 50 {
+		return
+	}
 	confirmHeight := m.blockManager.GetHeight()
 	// if block is older than confirm block
 	if blockNum <= confirmHeight-1 {

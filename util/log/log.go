@@ -39,10 +39,10 @@ func GetLogger(id string) *zap.Logger {
 	// 设置日志级别
 	atom := zap.NewAtomicLevelAt(zap.DebugLevel)
 	outputs := make([]string, 0)
-	if id == "127.0.0.1:10000" {
-		// if firstPeer == id {
-		outputs = append(outputs, "stdout")
-	}
+	//if id == "127.0.0.1:10000" {
+	// if firstPeer == id {
+	outputs = append(outputs, "stdout")
+	//}
 	outputs = append(outputs, fmt.Sprintf("./logs/%s/%s.log", startTime, id[10:]))
 
 	config := zap.Config{

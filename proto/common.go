@@ -11,6 +11,6 @@ type Header struct {
 
 // Envelope envelope represent a message with a signature and the payload will have the PublicKey for verify the signature
 type Envelope[T any] struct {
-	Payload   T
-	Signature []byte
+	Payload   T      `json:"payload"`
+	Signature []byte `json:"signature"`
 }
