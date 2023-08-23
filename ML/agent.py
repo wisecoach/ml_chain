@@ -89,7 +89,7 @@ def cal_agg_weight(diff_list, loss_list, data_num_list):
 
     Si_list = []
     for i in range(trainer_num):
-        Si_list[i] = Di_list[i] * Li_list[i]
+        Si_list.append(Di_list[i] * Li_list[i])
 
     weighted_data_num_sum = 0
     for i in range(trainer_num):

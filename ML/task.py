@@ -32,8 +32,9 @@ class Task:
 
     def train(self, req):
         trainer_id = req['trainer_id']
+        local_model = copy.deepcopy(self.global_model)
         if not(trainer_id in self.trainer_dict):
-            trainer = trainers.Trainer(self.model_structure, self.global_model, self.dataset_train, self.dataset_test)
+            trainer = trainers.Trainer(self.model_structure, local_model, self.dataset_train, self.dataset_test)
             self.trainer_dict[trainer_id] = trainer
         trainer = self.trainer_dict[trainer_id]
         w, acc, loss, data_num = trainer.local_update(device, self.iteration)
@@ -47,7 +48,7 @@ class Task:
                 'weight_vector': flat_w.tolist(),
                 'acc': acc,
                 'loss': loss,
-                'data_num': len(data_num)
+                'data_num': data_num
             },
         }
         return train_resp
@@ -114,10 +115,10 @@ class Task:
 
         flat_new_global_weight = []
         for value in new_global_weight.values():
-            flat_new_global_weight.append(value)
+            flat_new_global_weight = numpy.append(flat_new_global_weight, value.reshape(-1).data.numpy())
         return {
-            'global_weight': {
-                'weight_vector': flat_new_global_weight
+            'global_model': {
+                'weight_vector': flat_new_global_weight.tolist()
             }
         }
 

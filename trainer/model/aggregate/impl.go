@@ -109,16 +109,18 @@ func (a *aggregatorImpl) StartAggregate() {
 		a.logger.Error("python aggregate failed" + err.Error())
 		return
 	}
-	//response := &python.AggregateResponse{
+	// response := &python.AggregateResponse{
 	//	GlobalModel: &proto.GlobalWeight{
 	//		Iteration:    a.iterationManager.GetIteration(),
 	//		WeightVector: nil,
 	//		Aggregator:   nil,
 	//	},
-	//}
+	// }
 
 	// package the global model to transaction, send to consensus model
 	globalModel := response.GlobalModel
+	globalModel.Aggregator = a.node.Self().PublicKey
+	globalModel.Iteration = a.iterationManager.GetIteration()
 	transaction := &proto.Transaction{
 		Parent: nil,
 		Header: &proto.Header{

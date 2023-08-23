@@ -115,7 +115,7 @@ class Trainer(object):
             acc = 100.0 * (float(correct) / float(data_size))
             train_loss = train_loss / data_size
 
-        return local_model.state_dict(), acc, train_loss, self.train_indices
+        return local_model.state_dict(), acc, train_loss, len(self.train_indices)
 
     def clip_gradients(self, model):
         torch.nn.utils.clip_grad_norm_(model.parameters(), self.args['dp_clip'])
