@@ -59,6 +59,7 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 
 	trainResponse, err := l.client.Train(&python.TrainRequest{TrainerId: l.self.Endpoint, GlobalModel: weight})
 	if err != nil {
+		l.logger.Error("train failed, err: " + err.Error())
 		return
 	}
 	// trainResponse := &python.TrainResponse{

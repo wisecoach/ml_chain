@@ -10,9 +10,9 @@ import (
 	"github.com/wisecoach/ml_chain/comm/node"
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/trainer"
-	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
+	"os/exec"
 	"reflect"
 	"strconv"
 	"time"
@@ -85,8 +85,15 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 				PublicKey: pkBytes,
 			})
 		}
-		apiPort := strconv.Itoa(basePort + 99)
+		apiPort := strconv.Itoa(port + 50)
 		apiBaseUrl := "http://localhost:" + apiPort
+		if index != 0 {
+			cmd := exec.Command("./ML/venv/bin/python", "./ML/main.py", apiPort)
+			err := cmd.Start()
+			if err != nil {
+				return
+			}
+		}
 
 		taskConfig := &trainer.Config{
 			TaskId:         taskGenesis.TaskId,
@@ -135,10 +142,17 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 				return
 			}
 			privateKeys = append(privateKeys, sk)
+			port := basePort + i + mgrNum
+			apiPort := strconv.Itoa(port + 50)
 			bootstrapPeers = append(bootstrapPeers, &proto.RemotePeer{
-				Endpoint:  "127.0.0.1:" + strconv.Itoa(basePort+i+mgrNum),
+				Endpoint:  "127.0.0.1:" + strconv.Itoa(port),
 				PublicKey: pkBytes,
 			})
+			cmd := exec.Command("./ML/venv/bin/python", "./ML/main.py", apiPort)
+			err = cmd.Start()
+			if err != nil {
+				return
+			}
 		}
 
 		transactions := make([]*proto.Envelope[*proto.Transaction], 0)
@@ -162,20 +176,11 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			},
 			Data: blockData,
 		}
-		apiPort := strconv.Itoa(basePort + 99)
-		apiBaseUrl := "http://localhost:" + apiPort
-
-		client := python.New(&python.Config{
-			ApiBaseUrl: apiBaseUrl,
-			TaskId:     taskGenesis.TaskId,
-		})
-
-		err := client.Init(taskGenesis)
-		if err != nil {
-			return
-		}
 
 		for i := 0; i < trainerNumber; i++ {
+			port := basePort + i + mgrNum
+			apiPort := strconv.Itoa(port + 50)
+			apiBaseUrl := "http://127.0.0.1:" + apiPort
 			config := &trainer.Config{
 				TaskId:         taskGenesis.TaskId,
 				ValidatorNum:   1,
@@ -194,15 +199,15 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 
 		}
 
-		//command := exec.Command("./ML/venv/bin/python", "./ML/main.py", "--port="+apiPort)
-		//err := command.Start()
-		//if err != nil {
+		// command := exec.Command("./ML/venv/bin/python", "./ML/main.py", "--port="+apiPort)
+		// err := command.Start()
+		// if err != nil {
 		//	t.logger.Error(err.Error())
 		//	return
-		//}
-		//select {
-		//case <-time.After(time.Second):
-		//}
+		// }
+		// select {
+		// case <-time.After(time.Second):
+		// }
 
 	}
 }

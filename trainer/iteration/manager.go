@@ -137,6 +137,12 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	}
 	i.roleManager.SelectValidators(i.node.Peers(), latestBlock.Header.DataHash, i.config.ValidatorNum)
 
+	// init python server
+	err = i.client.Init(genesis)
+	if err != nil {
+		return
+	}
+
 	// wait for other trainer init iteration manager
 	select {
 	case <-time.After(time.Second):

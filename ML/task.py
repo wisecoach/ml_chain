@@ -32,9 +32,15 @@ class Task:
 
     def train(self, req):
         trainer_id = req['trainer_id']
-        local_model = copy.deepcopy(self.global_model)
+        weight = req['global_model']['weight_vector']
+        layers = self.global_model.reshape(weight)
+        layer = 0
+        for name, param in self.global_model.named_parameters():
+            if param.requires_grad:
+                param.data = layers[layer]
+                layer += 1
         if not(trainer_id in self.trainer_dict):
-            trainer = trainers.Trainer(self.model_structure, local_model, self.dataset_train, self.dataset_test)
+            trainer = trainers.Trainer(self.model_structure, self.global_model, self.dataset_train, self.dataset_test)
             self.trainer_dict[trainer_id] = trainer
         trainer = self.trainer_dict[trainer_id]
         w, acc, loss, data_num = trainer.local_update(device, self.iteration)
@@ -107,11 +113,6 @@ class Task:
         agg_weights, test_di, test_li, Si_list = agent.cal_agg_weight(diff_list, train_loss_list, data_num_list)
         # 聚合模型
         new_global_weight = aggregate_model(w, agg_weights)
-
-        # 导入新的全局模型
-        for name, param in self.global_model.named_parameters():
-            if param.requires_grad:
-                param.data = new_global_weight[name]
 
         flat_new_global_weight = []
         for value in new_global_weight.values():

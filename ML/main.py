@@ -1,4 +1,5 @@
 import argparse
+import sys
 import time
 
 import task as t
@@ -35,7 +36,7 @@ class TaskHandler(tornado.web.RequestHandler):
         if path.__contains__("init"):
             yield self.init(task_id)
         if path.__contains__("train"):
-            yield self.train(task_id)
+            self.train(task_id)
         if path.__contains__("validate"):
             yield self.validate(task_id)
         if path.__contains__("aggregate"):
@@ -49,7 +50,6 @@ class TaskHandler(tornado.web.RequestHandler):
         TaskHandler.task_dict[task_id] = new_task
         print("init success")
 
-    @tornado.concurrent.run_on_executor
     def train(self, task_id):
         print("train begin")
         print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
@@ -81,9 +81,11 @@ def make_app():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, default=10099, help="port we use")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--port', type=int, default=10099, help="port we use")
+    # args = parser.parse_args()
+    port = sys.argv[1]
+    print("python server listen at: " + str(port))
     app = make_app()
-    app.listen(args.port)
+    app.listen(port)
     tornado.ioloop.IOLoop.current().start()
