@@ -7,28 +7,33 @@ import (
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
+	"sync"
 	"time"
 )
 
 type PeerRegisterListener struct {
-	disc   discovery.Discovery
-	node   *node.Node
-	logger *zap.Logger
+	disc      discovery.Discovery
+	node      *node.Node
+	logger    *zap.Logger
+	waitGroup sync.WaitGroup
 }
 
-func NewPeerRegisterListener(disc discovery.Discovery, node *node.Node) *PeerRegisterListener {
-	return &PeerRegisterListener{
+func NewPeerRegisterListener(numToWait int, disc discovery.Discovery, node *node.Node) *PeerRegisterListener {
+	listener := &PeerRegisterListener{
 		disc:   disc,
 		node:   node,
 		logger: log.GetLogger(node.Self().Endpoint),
 	}
+	listener.waitGroup.Add(numToWait)
+	return listener
 }
 
 func (t *PeerRegisterListener) HandleMessage(message *proto.ReceivedMessage) {
 	peerRegister := message.Envelope.Payload.GetPeerRegitser()
 	if t.disc.Lookup(peerRegister.Peer.PublicKey) == nil {
-		t.logger.Debug(fmt.Sprintf("register peer: %s", peerRegister.Peer.Endpoint))
+		t.logger.Info(fmt.Sprintf("register peer: %s", peerRegister.Peer.Endpoint))
 		t.disc.Register(peerRegister.Peer)
+		t.waitGroup.Done()
 		msg := &proto.Message{
 			Content: &proto.PeerRegisterMessage{Peer: t.node.Self()},
 			Header: &proto.Header{
@@ -40,4 +45,8 @@ func (t *PeerRegisterListener) HandleMessage(message *proto.ReceivedMessage) {
 		}
 		t.node.SendToPeers(msg, message.Sender)
 	}
+}
+
+func (t *PeerRegisterListener) WaitForDiscover() {
+	t.waitGroup.Wait()
 }

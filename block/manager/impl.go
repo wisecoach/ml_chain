@@ -57,6 +57,7 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	b.bcLock.Lock()
 	// add block to blockchain
 	b.bc.AddBlock(block)
+
 	b.bcLock.Unlock()
 
 	// handle the block and txs in the block
@@ -86,26 +87,12 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 
 }
 
-func (b *blockMgr) validateBlock(block *proto.Block) error {
-	err := b.blockValidator.ValidateBlock(block)
-	if err != nil {
-		return err
-	}
-	for _, signedTransaction := range block.Data.Transactions {
-		err := b.txValidator.ValidateTx(signedTransaction)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (b *blockMgr) GetBlock(number int) (*proto.Block, error) {
 	b.bcLock.RLock()
 	defer b.bcLock.RUnlock()
 
-	block := b.bc.GetBlock(number)
-	if block == nil {
+	block, err := b.bc.GetBlock(number)
+	if err != nil {
 		return nil, errors.New(fmt.Sprintf("the height of blockchain is just %d, but you want get %d", b.bc.Number, number))
 	}
 	return block, nil
@@ -128,4 +115,18 @@ func (b *blockMgr) RegisterTxHandler(handler TxHandler) {
 
 	txHandlers := b.txHandlers[handler.TxType()]
 	b.txHandlers[handler.TxType()] = append(txHandlers, handler)
+}
+
+func (b *blockMgr) validateBlock(block *proto.Block) error {
+	err := b.blockValidator.ValidateBlock(block)
+	if err != nil {
+		return err
+	}
+	for _, signedTransaction := range block.Data.Transactions {
+		err := b.txValidator.ValidateTx(signedTransaction)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -23,12 +23,13 @@ type Trainer struct {
 	config *Config
 	taskId string
 
-	iterationManager iteration.Manager
-	blockManager     manager.BlockManager
-	blockchain       *chain.BlockChain
-	node             *node.Node
-	server           *rpc.Server
-	mcs              crypto.MessageCryptoService
+	iterationManager     iteration.Manager
+	blockManager         manager.BlockManager
+	blockchain           *chain.BlockChain
+	node                 *node.Node
+	server               *rpc.Server
+	mcs                  crypto.MessageCryptoService
+	peerRegisterListener *message.PeerRegisterListener
 
 	logger *zap.Logger
 }
@@ -41,7 +42,7 @@ func New(config *Config) *Trainer {
 		logger: log.GetLogger(config.Self.Endpoint),
 	}
 	t.server = rpc.NewServer()
-	t.blockchain = chain.NewBlockChain()
+	t.blockchain = chain.NewBlockChain(&chain.Config{MaxBlockNumInMemory: config.MaxBlockNumInMemory})
 	t.config = config
 	t.taskId = config.TaskId
 
@@ -68,6 +69,7 @@ func New(config *Config) *Trainer {
 	}, t.blockManager, t.node, t.mcs)
 
 	// register the message listener to the node
+	t.peerRegisterListener = message.NewPeerRegisterListener(t.config.TrainerNum-1, t.node.GetDiscovery(), t.node)
 	t.registerNodeListener()
 	// register block handler and tx handler
 	t.registerBlockchainHandlers()
@@ -75,15 +77,9 @@ func New(config *Config) *Trainer {
 	// begin to listen the messages
 	go t.messageListener(t.server)
 	// wait for launch up
-	select {
-	case <-time.After(time.Second * 1):
-	}
-	go t.announceToNetwork()
+	// <-time.After(time.Second * 10)
+	t.announceToNetwork()
 
-	// wait for discovery
-	select {
-	case <-time.After(time.Second * 2):
-	}
 	t.logger.Info("init trainer success, and begin to handle the task")
 
 	// confirm genesis block to start the task
@@ -98,7 +94,7 @@ func New(config *Config) *Trainer {
 
 func (t *Trainer) registerNodeListener() {
 	// register the PeerRegisterMessage
-	t.node.RegisterListener(&proto.PeerRegisterMessage{}, message.NewPeerRegisterListener(t.node.GetDiscovery(), t.node))
+	t.node.RegisterListener(&proto.PeerRegisterMessage{}, t.peerRegisterListener)
 }
 
 func (t *Trainer) registerBlockchainHandlers() {
@@ -143,4 +139,5 @@ func (t *Trainer) announceToNetwork() {
 	}
 
 	t.node.SendToPeers(peerRegisterMsg, peersToSend...)
+	t.peerRegisterListener.WaitForDiscover()
 }

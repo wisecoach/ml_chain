@@ -1,9 +1,7 @@
-import argparse
 import sys
 import time
 
 import task as t
-import tornado.gen as gen
 import tornado.ioloop
 import tornado
 import json
@@ -27,23 +25,24 @@ class TaskHandler(tornado.web.RequestHandler):
     task_dict = {}
     executor = Executor()
 
+    def prepare(self):
+        self.request.connection.set_max_body_size(9999999999999)
+
     # 10Task
     # 10个client
-    @gen.coroutine
     def post(self, path):
         print(path)
         task_id = path.split("/")[-1]
         if path.__contains__("init"):
-            yield self.init(task_id)
+            self.init(task_id)
         if path.__contains__("train"):
             self.train(task_id)
         if path.__contains__("validate"):
-            yield self.validate(task_id)
+            self.validate(task_id)
         if path.__contains__("aggregate"):
-            yield self.aggregate(task_id)
+            self.aggregate(task_id)
         print("ok")
 
-    @tornado.concurrent.run_on_executor
     def init(self, task_id):
         genesis = json.loads(self.request.body)
         new_task = t.Task(genesis)
@@ -59,14 +58,12 @@ class TaskHandler(tornado.web.RequestHandler):
         print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
         self.write(json.dumps(resp))
 
-    @tornado.concurrent.run_on_executor
     def validate(self, task_id):
         req = json.loads(self.request.body)
         resp = TaskHandler.task_dict[task_id].validate(req)
         print("validate success")
         self.write(json.dumps(resp))
 
-    @tornado.concurrent.run_on_executor
     def aggregate(self, task_id):
         req = json.loads(self.request.body)
         resp = TaskHandler.task_dict[task_id].aggregate(req)
@@ -87,5 +84,6 @@ if __name__ == "__main__":
     port = sys.argv[1]
     print("python server listen at: " + str(port))
     app = make_app()
-    app.listen(port)
+    server = tornado.httpserver.HTTPServer(app, max_body_size=9999999999)
+    server.listen(port)
     tornado.ioloop.IOLoop.current().start()

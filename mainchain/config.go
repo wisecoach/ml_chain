@@ -7,6 +7,11 @@ import (
 )
 
 type Config struct {
+	// --------------- task config ------------------------------------------------------
+	TrainerNum   int
+	ValidatorNum int
+	NumSharePy   int // num of trainer to share a python server
+
 	// --------------- crypto config ----------------------------------------------------
 	// private key for trainer
 	Sk bccsp.Key
@@ -31,8 +36,10 @@ type Config struct {
 	TimeoutRPC time.Duration
 
 	// --------------- chain config -----------------------------------------------------
-	GenesisBlock *proto.Block
-	ChainId      string
+
+	GenesisBlock        *proto.Block // main chain genesis block
+	ChainId             string       // chain id of main chain
+	MaxBlockNumInMemory int          // block number can be resident in memory
 
 	// --------------- consensus config -------------------------------------------------
 	HashInterval      time.Duration

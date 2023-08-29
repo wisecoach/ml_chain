@@ -1,6 +1,7 @@
 package role
 
 import (
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"github.com/coniks-sys/coniks-go/crypto/vrf"
@@ -59,6 +60,13 @@ func (rs *Selector) selectValidatorByProve(trainers []*proto.RemotePeer, prove [
 
 	i := 0
 	for len(validators) < numRequested {
+
+		if i >= (len(prove) - 1) {
+			hash := sha256.Sum256(prove)
+			prove = hash[:]
+			i = 0
+		}
+
 		index := (int(prove[i])*256 + int(prove[i+1])) % len(trainers)
 
 		if !nodeMap[index] {

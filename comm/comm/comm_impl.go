@@ -123,6 +123,14 @@ func (c *commImpl) sendToEndpoint(peer *proto.RemotePeer, msg *proto.Envelope[*p
 		c.logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error() + ", and begin to retry")
 		for conn == nil {
 			conn, err = rpc.Dial("tcp", peer.Endpoint)
+			select {
+			case <-time.After(time.Millisecond * 1000):
+			}
+			if err != nil {
+				c.logger.Error("failed to dial peer " + peer.Endpoint + ", err = " + err.Error() + ", and begin to retry")
+			} else {
+				break
+			}
 		}
 	}
 	var msgToSend = &proto.ReceivedMessage{

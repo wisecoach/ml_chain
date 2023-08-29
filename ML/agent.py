@@ -8,11 +8,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Agent(object):
     def __init__(self, args, eva_dataset, global_model):
-        if args.dataset == 'mnist':
+        if args['dataset'] == 'mnist':
             self.model = model_2.MNIST_CNN_Net()
         else:
             self.model = model_2.CIFAR_CNN_Net()
-        self.eva_loader = torch.utils.data.DataLoader(eva_dataset, batch_size=args.bs, shuffle=True)
+        self.eva_loader = torch.utils.data.DataLoader(eva_dataset, batch_size=args['batch_size'], shuffle=True)
         # self.model.load_state_dict(torch.load(model_path))
         self.model.load_state_dict(global_model)
         self.model.to(device)

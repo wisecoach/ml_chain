@@ -23,6 +23,7 @@ func (t *PeerRegisterListener) HandleMessage(message *proto.ReceivedMessage) {
 	peerRegister := message.Envelope.Payload.GetPeerRegitser()
 	if t.disc.Lookup(peerRegister.Peer.PublicKey) == nil {
 		t.disc.Register(peerRegister.Peer)
+
 		msg := &proto.Message{
 			Content: &proto.PeerRegisterMessage{Peer: t.node.Self()},
 			Header: &proto.Header{

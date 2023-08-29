@@ -4,6 +4,7 @@ type GlobalWeight struct {
 	Iteration    int       `json:"iteration"`
 	WeightVector []float64 `json:"weight_vector"`
 	Aggregator   []byte    `json:"aggregator"`
+	TotalAcc     float64   `json:"total_acc"`
 }
 
 type LocalityWeight struct {

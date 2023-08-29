@@ -58,7 +58,7 @@ class Trainer(object):
         data_size = 0
         Loss = torch.nn.CrossEntropyLoss()
 
-        if round < 1:
+        if round < 0:
             # start local training
             for _ in range(5):
                 # Define trigger pattern and target label for backdoor attack

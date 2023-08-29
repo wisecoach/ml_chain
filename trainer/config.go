@@ -10,6 +10,8 @@ type Config struct {
 	// --------------- task config ------------------------------------------------------
 	// task id for trainer
 	TaskId string
+	// trainer number
+	TrainerNum int
 	// validator number for a local model
 	ValidatorNum int
 	// task genesis block
@@ -39,4 +41,8 @@ type Config struct {
 	// --------------- rpc config -------------------------------------------------------
 	// timeout for rpc
 	TimeoutRPC time.Duration
+
+	// --------------- chain config -----------------------------------------------------
+	// block number can be resident in memory
+	MaxBlockNumInMemory int
 }

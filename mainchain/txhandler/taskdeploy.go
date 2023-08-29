@@ -44,6 +44,7 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			index = i
 		}
 	}
+	MaxBlockNumInMemory := 2
 	// if self is a manager for the task, bootstrap trainer with self sk
 	if index != -1 {
 		bootstrapPeers := make([]*proto.RemotePeer, 0)
@@ -85,28 +86,30 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 				PublicKey: pkBytes,
 			})
 		}
-		apiPort := strconv.Itoa(port + 50)
+		apiPort := strconv.Itoa(basePort + 50 + index/t.config.NumSharePy)
 		apiBaseUrl := "http://localhost:" + apiPort
-		if index != 0 {
+		if index%t.config.NumSharePy == 0 {
 			cmd := exec.Command("./ML/venv/bin/python", "./ML/main.py", apiPort)
 			err := cmd.Start()
 			if err != nil {
 				return
 			}
 		}
-
 		taskConfig := &trainer.Config{
-			TaskId:         taskGenesis.TaskId,
-			ValidatorNum:   1,
-			GenesisBlock:   genesis,
-			ApiBaseUrl:     apiBaseUrl,
-			Sk:             t.config.Sk,
-			KeyImportOpts:  &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
-			HashOpts:       &bccsp.SHA256Opts{},
-			SignerOpts:     nil,
-			Self:           self,
-			BootstrapPeers: bootstrapPeers,
-			TimeoutRPC:     time.Second * 1000,
+			TaskId:              taskGenesis.TaskId,
+			TrainerNum:          t.config.TrainerNum,
+			ValidatorNum:        t.config.ValidatorNum,
+			GenesisBlock:        genesis,
+			ApiBaseUrl:          apiBaseUrl,
+			Sk:                  t.config.Sk,
+			KeyImportOpts:       &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
+			HashOpts:            &bccsp.SHA256Opts{},
+			SignerOpts:          nil,
+			Self:                self,
+			BootstrapPeers:      bootstrapPeers,
+			Notaries:            make([]*proto.RemotePeer, 0),
+			TimeoutRPC:          time.Second * 1000,
+			MaxBlockNumInMemory: MaxBlockNumInMemory,
 		}
 		go trainer.New(taskConfig)
 
@@ -118,12 +121,12 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 	// otherwise, it also need to bootstrap python server and init task
 	if index == 0 {
 		csp, _ := sw.NewBCCSP()
-		trainerNumber := t.config.TrainerNum
 		bootstrapPeers := make([]*proto.RemotePeer, 0)
 		privateKeys := make([]bccsp.Key, 0)
 		id, _ := strconv.ParseInt(taskGenesis.TaskId[4:], 10, 32)
 		basePort := 10000 + int(id*100)
 		mgrNum := len(taskGenesis.ManagerList)
+		trainerNumber := t.config.TrainerNum - mgrNum
 		// add all manager
 		for i, pkBytes := range taskGenesis.ManagerList {
 			bootstrapPeers = append(bootstrapPeers, &proto.RemotePeer{
@@ -143,15 +146,17 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			}
 			privateKeys = append(privateKeys, sk)
 			port := basePort + i + mgrNum
-			apiPort := strconv.Itoa(port + 50)
+			apiPort := strconv.Itoa(basePort + 50 + (i+mgrNum)/t.config.NumSharePy)
 			bootstrapPeers = append(bootstrapPeers, &proto.RemotePeer{
 				Endpoint:  "127.0.0.1:" + strconv.Itoa(port),
 				PublicKey: pkBytes,
 			})
-			cmd := exec.Command("./ML/venv/bin/python", "./ML/main.py", apiPort)
-			err = cmd.Start()
-			if err != nil {
-				return
+			if (i+mgrNum)%t.config.NumSharePy == 0 {
+				cmd := exec.Command("./ML/venv/bin/python", "./ML/main.py", apiPort)
+				err := cmd.Start()
+				if err != nil {
+					return
+				}
 			}
 		}
 
@@ -178,37 +183,28 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 		}
 
 		for i := 0; i < trainerNumber; i++ {
-			port := basePort + i + mgrNum
-			apiPort := strconv.Itoa(port + 50)
+			apiPort := strconv.Itoa(basePort + 50 + (i+mgrNum)/t.config.NumSharePy)
 			apiBaseUrl := "http://127.0.0.1:" + apiPort
 			config := &trainer.Config{
-				TaskId:         taskGenesis.TaskId,
-				ValidatorNum:   1,
-				GenesisBlock:   genesis,
-				ApiBaseUrl:     apiBaseUrl,
-				Sk:             t.config.Sk,
-				KeyImportOpts:  &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
-				HashOpts:       &bccsp.SHA256Opts{},
-				SignerOpts:     nil,
-				Self:           bootstrapPeers[i+mgrNum],
-				BootstrapPeers: bootstrapPeers,
-				TimeoutRPC:     time.Second * 1000,
+				TaskId:              taskGenesis.TaskId,
+				TrainerNum:          t.config.TrainerNum,
+				ValidatorNum:        t.config.ValidatorNum,
+				GenesisBlock:        genesis,
+				ApiBaseUrl:          apiBaseUrl,
+				Sk:                  t.config.Sk,
+				KeyImportOpts:       &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
+				HashOpts:            &bccsp.SHA256Opts{},
+				SignerOpts:          nil,
+				Self:                bootstrapPeers[i+mgrNum],
+				BootstrapPeers:      bootstrapPeers,
+				Notaries:            make([]*proto.RemotePeer, 0),
+				TimeoutRPC:          time.Second * 1000,
+				MaxBlockNumInMemory: MaxBlockNumInMemory,
 			}
 			go trainer.New(config)
 			t.logger.Info(fmt.Sprintf("bootstrap trainer peer: %s", bootstrapPeers[i+mgrNum].Endpoint))
 
 		}
-
-		// command := exec.Command("./ML/venv/bin/python", "./ML/main.py", "--port="+apiPort)
-		// err := command.Start()
-		// if err != nil {
-		//	t.logger.Error(err.Error())
-		//	return
-		// }
-		// select {
-		// case <-time.After(time.Second):
-		// }
-
 	}
 }
 

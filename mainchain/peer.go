@@ -46,7 +46,7 @@ func New(config *Config) *Peer {
 		chainId: config.ChainId,
 	}
 	p.server = rpc.NewServer()
-	p.blockchain = chain.NewBlockChain()
+	p.blockchain = chain.NewBlockChain(&chain.Config{MaxBlockNumInMemory: config.MaxBlockNumInMemory})
 	p.config = config
 
 	// init mcs
@@ -126,8 +126,10 @@ func (p *Peer) registerBlockchainHandlers() {
 	gob.Register(&proto.TaskGenesis{})
 	p.blockManager.RegisterTxHandler(txhandler.NewTaskGenesisTxHandler(p.taskManager))
 	p.blockManager.RegisterTxHandler(txhandler.NewTaskDeployManager(&txhandler.Config{
-		TrainerNum: 2,
-		Sk:         p.config.Sk,
+		ValidatorNum: p.config.ValidatorNum,
+		TrainerNum:   p.config.TrainerNum,
+		Sk:           p.config.Sk,
+		NumSharePy:   p.config.NumSharePy,
 	}, p.node, p.mcs))
 	// register the TaskFinish transaction handler
 	gob.Register(&proto.TaskResult{})

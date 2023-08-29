@@ -12,6 +12,8 @@ import (
 	"github.com/wisecoach/ml_chain/proto"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
+	"math"
+	"math/rand"
 	"reflect"
 	"sync"
 	"sync/atomic"
@@ -99,9 +101,6 @@ func (m *MainChainConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
 //	@Description: consensus the validated block
 func (m *MainChainConsensus) consensus(block *proto.Block) {
 	blockNum := block.Header.BlockNumber
-	if blockNum > 50 {
-		return
-	}
 	confirmHeight := m.blockManager.GetHeight()
 	// if block is older than confirm block
 	if blockNum <= confirmHeight-1 {
@@ -206,7 +205,7 @@ func (m *MainChainConsensus) appendToBranch(branch *Branch, block *proto.Block) 
 	if branch == m.longestBranch {
 		branchLen := len(branch.blocks)
 		if branchLen > m.config.NumToConfirm {
-			m.logger.Info(fmt.Sprintf("confirm block %d", branch.blocks[0].Header.BlockNumber))
+			m.logger.Debug(fmt.Sprintf("confirm block %d", branch.blocks[0].Header.BlockNumber))
 			m.confirm(branch.blocks[0])
 		}
 	}
@@ -306,6 +305,9 @@ func (m *MainChainConsensus) Start() {
 
 func (m *MainChainConsensus) start() {
 	for {
+		if m.blockManager.GetHeight() >= 50 {
+			break
+		}
 		var block *proto.Block
 
 		select {
@@ -338,6 +340,7 @@ func (m *MainChainConsensus) start() {
 					Timestamp: time.Time{},
 				},
 			}
+			m.logger.Debug(fmt.Sprintf("mine the block %d", block.Header.BlockNumber))
 			m.node.SendWithFilter(blockMsg, func(peer *proto.RemotePeer) bool { return true })
 		}
 	}
@@ -392,10 +395,10 @@ func (m *MainChainConsensus) pow(block *proto.Block) *proto.Block {
 	cnt := uint32(0)
 	for !m.needRestartPow.Load() {
 		// init difficulty
-		difficulty := m.config.DefaultDifficulty * uint64(len(block.Data.Transactions)+1)
+		difficulty := m.config.DefaultDifficulty * uint64(math.Log(float64(len(block.Data.Transactions)+1))+1)
 		select {
 		case <-time.After(m.config.HashInterval):
-			block.Header.Nonce = cnt
+			block.Header.Nonce = rand.Uint32()
 			bytes, err := json.Marshal(block)
 			if err != nil {
 				return nil

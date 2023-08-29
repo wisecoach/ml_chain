@@ -59,7 +59,7 @@ func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
 
-	a.logger.Info(fmt.Sprintf("have received %d local model, %s receive local model, iteration: %d, from: %s",
+	a.logger.Debug(fmt.Sprintf("have received %d local model, %s receive local model, iteration: %d, from: %s",
 		len(a.localModels), a.node.Self().Endpoint, weight.Iteration, a.node.Lookup(weight.Trainer).Endpoint))
 	// now, we don't receive new model from same trainer
 	_, exist := a.localModels[string(weight.Trainer)]
@@ -93,7 +93,8 @@ func (a *aggregatorImpl) StartAggregate() {
 	a.trainerWaitGroup.Add(trainerNum)
 	a.waitAggregate.Done()
 	a.trainerWaitGroup.Wait()
-	a.logger.Info(fmt.Sprintf("all %d local model were received, begin to aggregate", trainerNum))
+	a.waitAggregate.Add(1)
+	a.logger.Debug(fmt.Sprintf("all %d local model were received, begin to aggregate", trainerNum))
 
 	a.lock.Lock()
 	localModels := make([]*proto.LocalityWeight, 0)
@@ -106,21 +107,17 @@ func (a *aggregatorImpl) StartAggregate() {
 	request := &python.AggregateRequest{LocalModels: localModels}
 	response, err := a.client.Aggregate(request)
 	if err != nil {
-		a.logger.Error("python aggregate failed" + err.Error())
+		a.logger.Error("python aggregate failed: " + err.Error())
 		return
 	}
-	// response := &python.AggregateResponse{
-	//	GlobalModel: &proto.GlobalWeight{
-	//		Iteration:    a.iterationManager.GetIteration(),
-	//		WeightVector: nil,
-	//		Aggregator:   nil,
-	//	},
-	// }
 
 	// package the global model to transaction, send to consensus model
 	globalModel := response.GlobalModel
 	globalModel.Aggregator = a.node.Self().PublicKey
 	globalModel.Iteration = a.iterationManager.GetIteration()
+
+	a.logger.Info(fmt.Sprintf("aggregate global model success: iteration: %d, acc: %f", globalModel.Iteration, globalModel.TotalAcc))
+
 	transaction := &proto.Transaction{
 		Parent: nil,
 		Header: &proto.Header{
@@ -130,9 +127,9 @@ func (a *aggregatorImpl) StartAggregate() {
 			Timestamp: time.Time{},
 		},
 		Payload: &proto.ModelIteration{
-			Iteration:       a.iterationManager.GetIteration(),
-			GlobalWeight:    globalModel,
-			LocalityWeights: localModels,
+			Iteration:    a.iterationManager.GetIteration(),
+			GlobalWeight: globalModel,
+			// LocalityWeights: localModels,
 		},
 	}
 	txBytes, err := json.Marshal(transaction)
@@ -164,7 +161,6 @@ func (a *aggregatorImpl) StartAggregate() {
 
 	// clear the local model
 	a.lock.Lock()
-	a.waitAggregate.Add(1)
 	a.localModels = make(map[string]*proto.LocalityWeight)
 	a.lock.Unlock()
 }

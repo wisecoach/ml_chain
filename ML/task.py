@@ -113,13 +113,17 @@ class Task:
         agg_weights, test_di, test_li, Si_list = agent.cal_agg_weight(diff_list, train_loss_list, data_num_list)
         # 聚合模型
         new_global_weight = aggregate_model(w, agg_weights)
+        # 导入聚合好的模型
+        verifier = agent.Agent(self.model_structure, self.dataset_test, new_global_weight)
+        total_acc = verifier.evaluate()
 
         flat_new_global_weight = []
         for value in new_global_weight.values():
             flat_new_global_weight = numpy.append(flat_new_global_weight, value.reshape(-1).data.numpy())
         return {
             'global_model': {
-                'weight_vector': flat_new_global_weight.tolist()
+                'weight_vector': flat_new_global_weight.tolist(),
+                'total_acc': total_acc,
             }
         }
 
