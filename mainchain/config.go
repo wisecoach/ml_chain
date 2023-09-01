@@ -11,6 +11,7 @@ type Config struct {
 	TrainerNum   int
 	ValidatorNum int
 	NumSharePy   int // num of trainer to share a python server
+	TaskMgrNum   int // max num of manager per task
 
 	// --------------- crypto config ----------------------------------------------------
 	// private key for trainer

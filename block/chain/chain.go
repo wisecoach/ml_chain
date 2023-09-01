@@ -32,8 +32,8 @@ func (chain *BlockChain) AddBlock(newBlock *proto.Block) error {
 		newBlock.Header.PrevHash = newBlock.Header.DataHash
 	}
 	if chain.Number >= chain.config.MaxBlockNumInMemory {
+		chain.indexInMemory = chain.Blocks[0].Header.BlockNumber + 1
 		chain.Blocks = chain.Blocks[1:]
-		chain.indexInMemory = chain.Blocks[0].Header.BlockNumber
 	}
 	err := chain.persistBlock(newBlock)
 	if err != nil {

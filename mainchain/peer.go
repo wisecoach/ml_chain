@@ -79,7 +79,8 @@ func New(config *Config) *Peer {
 	p.taskManager = task.NewTaskManager(p.config.Self)
 	// init task client
 	p.taskClient = task.NewTaskClient(&task.Config{
-		ChainId: p.config.ChainId,
+		ChainId:    p.config.ChainId,
+		TaskMgrNum: p.config.TaskMgrNum,
 	}, p.taskManager, p.mcs, p.node)
 
 	// register the message listener to the node

@@ -1,5 +1,6 @@
 package task
 
 type Config struct {
-	ChainId string
+	ChainId    string
+	TaskMgrNum int
 }

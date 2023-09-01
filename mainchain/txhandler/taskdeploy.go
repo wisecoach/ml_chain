@@ -44,7 +44,7 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 			index = i
 		}
 	}
-	MaxBlockNumInMemory := 2
+	MaxBlockNumInMemory := 1
 	// if self is a manager for the task, bootstrap trainer with self sk
 	if index != -1 {
 		bootstrapPeers := make([]*proto.RemotePeer, 0)

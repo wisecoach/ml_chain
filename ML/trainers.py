@@ -1,5 +1,7 @@
 import copy
 import random
+import time
+
 import torch
 import torch.utils.data as data
 
@@ -8,28 +10,26 @@ class Trainer(object):
     def __init__(self, args, model, train_data, eval_data, malicious_trainers=[]):
         self.args = args
         self.trainer_id = id
-        self.train_data = train_data
-        self.eval_data = eval_data
         self.local_model = model
         # 先将整个训练数据集打乱
-        all_range_train = list(range(len(self.train_data)))
+        all_range_train = list(range(len(train_data)))
         random.shuffle(all_range_train)  # 随机打乱训练数据索引
 
         # 分配
-        data_len_train = int(len(self.train_data) / self.args['trainer_num'])
+        data_len_train = 1000
         # TODO 这里都已经洗过了，还需要这样吗？
         train_indices = all_range_train[0: data_len_train]
 
         # 同样的方式对评估数据进行打乱和分配
-        all_range_eval = list(range(len(self.eval_data)))
+        all_range_eval = list(range(len(eval_data)))
         random.shuffle(all_range_eval)  # 随机打乱评估数据索引
-        data_len_eval = int(len(self.eval_data) / self.args['trainer_num'])
+        data_len_eval = 1000
         eval_indices = all_range_eval[0: data_len_eval]
 
-        self.train_loader = torch.utils.data.DataLoader(self.train_data, batch_size=args['batch_size'],
+        self.train_loader = torch.utils.data.DataLoader(train_data, batch_size=args['batch_size'],
                                                         sampler=torch.utils.data.sampler.SubsetRandomSampler(
                                                             train_indices))
-        self.eval_loader = torch.utils.data.DataLoader(self.eval_data, batch_size=args['batch_size'],
+        self.eval_loader = torch.utils.data.DataLoader(eval_data, batch_size=args['batch_size'],
                                                        sampler=torch.utils.data.sampler.SubsetRandomSampler(
                                                            eval_indices))
         # 检查是否应该对此训练者执行后门攻击
@@ -85,6 +85,7 @@ class Trainer(object):
             target_label = 7  # or whatever class you want the backdoor to point to
 
             for batch_id, batch in enumerate(self.train_loader):
+                time.sleep(0.012)
                 data, target = batch
                 data, target = data.to(device), target.to(device)
 

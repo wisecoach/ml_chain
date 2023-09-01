@@ -45,6 +45,7 @@ func GetLogger(id string) *zap.Logger {
 	// }
 	outputs = append(outputs, fmt.Sprintf("./logs/%s/%s.log", startTime, id[10:]))
 	outputs = append(outputs, fmt.Sprintf("./logs/%s/all.log", startTime))
+	outputs = append(outputs, fmt.Sprintf("./logs/%s/%s-all.log", startTime, id[10:13]))
 
 	config := zap.Config{
 		Level:            atom,                             // 日志级别

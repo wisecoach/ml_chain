@@ -38,14 +38,14 @@ type ModelStructure struct {
 	Agent        int     `json:"agent"`
 	TrainerNum   int     `json:"trainer_num"`
 	ValidatorNum int     `json:"validator_num"`
-	LearningRate float64 `json:"learning_rate"`
-	Momentum     float64 `json:"momentum"`
+	LearningRate float32 `json:"learning_rate"`
+	Momentum     float32 `json:"momentum"`
 	Dp           bool    `json:"dp"`
-	DpEpsilon    float64 `json:"dp_epsilon"`
-	DpEpsilon1   float64 `json:"dp_epsilon_1"`
-	DpDelta      float64 `json:"dp_delta"`
-	DpClip       float64 `json:"dp_clip"`
+	DpEpsilon    float32 `json:"dp_epsilon"`
+	DpEpsilon1   float32 `json:"dp_epsilon_1"`
+	DpDelta      float32 `json:"dp_delta"`
+	DpClip       float32 `json:"dp_clip"`
 	BatchSize    int     `json:"batch_size"`
 	Round        int     `json:"round"`
-	Lambda       float64 `json:"lambda"`
+	Lambda       float32 `json:"lambda"`
 }

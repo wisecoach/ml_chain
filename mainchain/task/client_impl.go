@@ -32,7 +32,11 @@ func NewTaskClient(config *Config, taskManager Manager, mcs crypto.MessageCrypto
 
 func (t *taskClient) CreateTask(task *Task) {
 	genesis := task.TaskGenesis
-	genesis.ManagerList = t.taskManager.GetManagers()
+	managers := t.taskManager.GetManagers()
+	if len(managers) > t.config.TaskMgrNum {
+		managers = managers[:t.config.TaskMgrNum]
+	}
+	genesis.ManagerList = managers
 	transaction := &proto.Transaction{
 		Parent: nil,
 		Header: &proto.Header{

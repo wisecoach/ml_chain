@@ -35,7 +35,6 @@ func Test_httpPythonClient_Init(t *testing.T) {
 						NumClasses:   10,
 						Agent:        1,
 						TrainerNum:   40,
-						ValidateNum:  20,
 						LearningRate: 0.01,
 						Momentum:     0.5,
 						Dp:           false,
@@ -51,7 +50,7 @@ func Test_httpPythonClient_Init(t *testing.T) {
 					InitWeight: &proto.Envelope[*proto.GlobalWeight]{
 						Payload: &proto.GlobalWeight{
 							Iteration:    0,
-							WeightVector: make([]float64, 656080),
+							WeightVector: make([]float32, 656080),
 							Aggregator:   nil,
 						},
 						Signature: nil,

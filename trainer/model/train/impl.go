@@ -100,8 +100,9 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	l.lock.Unlock()
 
 	l.node.SendToPeers(lossReqMsg, validatorSelection.Winners...)
-	l.logger.Debug(fmt.Sprintf("begin to wait for %d loss response", l.config.ValidatorNum))
+	l.logger.Info(fmt.Sprintf("begin to wait for validate response: num = %d", l.config.ValidatorNum))
 	l.validateWaitGroup.Wait()
+	l.logger.Info(fmt.Sprintf("receive all validate response: num = %d", l.config.ValidatorNum))
 
 	l.lock.Lock()
 

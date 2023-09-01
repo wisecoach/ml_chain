@@ -103,6 +103,8 @@ func (a *aggregatorImpl) StartAggregate() {
 	}
 	a.lock.Unlock()
 
+	a.logger.Info(fmt.Sprintf("aggregate global model begin: iteration = %d", a.iterationManager.GetIteration()))
+
 	// aggregate the local model by python client
 	request := &python.AggregateRequest{LocalModels: localModels}
 	response, err := a.client.Aggregate(request)

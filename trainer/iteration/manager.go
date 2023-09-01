@@ -137,15 +137,14 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	}
 	i.roleManager.SelectValidators(i.node.Peers(), latestBlock.Header.DataHash, i.config.ValidatorNum)
 
+	// wait for other trainer init iteration manager
+	<-time.After(time.Second * 10)
+
 	// init python server
 	err = i.client.Init(genesis)
 	if err != nil {
+		i.logger.Error(err.Error())
 		return
-	}
-
-	// wait for other trainer init iteration manager
-	select {
-	case <-time.After(time.Second):
 	}
 
 	// start consensus

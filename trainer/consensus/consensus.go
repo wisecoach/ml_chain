@@ -121,6 +121,7 @@ func (t *TaskConsensus) Consensus(block *proto.Envelope[*proto.Block]) {
 }
 
 func (t *TaskConsensus) Start() {
+	t.logger.Debug("begin to task consensus")
 	for {
 		select {
 		case <-t.stopChan:

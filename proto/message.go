@@ -72,7 +72,7 @@ type SubmitLocalityWeightMessage struct {
 // @Description: message for aggregator to request the loss，为什么不是trainer自己找validator
 type RequestLossMessage struct {
 	Iteration          int
-	WeightVector       []float64
+	WeightVector       []float32
 	Trainer            []byte
 	ValidatorSelection *SelectionResult
 }

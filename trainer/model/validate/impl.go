@@ -9,6 +9,7 @@ import (
 	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
+	"reflect"
 	"time"
 )
 
@@ -38,10 +39,18 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 
 func (v *validatorImpl) Validate(weight *proto.LocalityWeight) {
 	v.logger.Debug(fmt.Sprintf("begin to validate the local model, iteration: %d", weight.Iteration))
+	isFirst := reflect.DeepEqual(weight.ValidatorSelection.Winners[0].PublicKey, v.self.PublicKey)
+	if isFirst {
+		v.logger.Info(fmt.Sprintf("begin to validate the local model, iteration: %d", weight.Iteration))
+	}
 	lossResp, err := v.client.Validate(&python.ValidateRequest{Model: weight})
 	if err != nil {
 		v.logger.Error("cannot validate the model from: " + string(weight.Trainer) + ", " + err.Error())
 		return
+	}
+	if isFirst {
+		v.logger.Info(fmt.Sprintf("validate the local model success: iteration = %d, acc = %f, loss = %f",
+			weight.Iteration, lossResp.Loss.Acc, lossResp.Loss.Loss))
 	}
 
 	loss := lossResp.Loss
