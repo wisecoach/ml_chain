@@ -27,7 +27,7 @@ class Verifier(object):
         correct = 0
         data_size = 0
         for batch_id, batch in enumerate(self.eval_loader):
-            time.sleep(0.012)
+            time.sleep(0.05)
             data, target = batch
             data, target = data.to(device), target.to(device)
             data_size += data.size()[0]

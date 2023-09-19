@@ -85,7 +85,7 @@ class Trainer(object):
             target_label = 7  # or whatever class you want the backdoor to point to
 
             for batch_id, batch in enumerate(self.train_loader):
-                time.sleep(0.012)
+                time.sleep(0.05)
                 data, target = batch
                 data, target = data.to(device), target.to(device)
 

@@ -94,7 +94,7 @@ func (a *aggregatorImpl) StartAggregate() {
 	a.waitAggregate.Done()
 	a.trainerWaitGroup.Wait()
 	a.waitAggregate.Add(1)
-	a.logger.Debug(fmt.Sprintf("all %d local model were received, begin to aggregate", trainerNum))
+	a.logger.Info(fmt.Sprintf("aggregate global model begin: iteration = %d", a.iterationManager.GetIteration()))
 
 	a.lock.Lock()
 	localModels := make([]*proto.LocalityWeight, 0)
@@ -102,8 +102,6 @@ func (a *aggregatorImpl) StartAggregate() {
 		localModels = append(localModels, value)
 	}
 	a.lock.Unlock()
-
-	a.logger.Info(fmt.Sprintf("aggregate global model begin: iteration = %d", a.iterationManager.GetIteration()))
 
 	// aggregate the local model by python client
 	request := &python.AggregateRequest{LocalModels: localModels}

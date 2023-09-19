@@ -14,9 +14,15 @@ import (
 )
 
 func main() {
-	// test1()
-	// test2()
-	// test3()
+	// testArg := os.Args[1]
+	// switch testArg {
+	// case "1":
+	// 	test1()
+	// case "2":
+	// 	test2()
+	// case "3":
+	// 	test3()
+	// }
 	taskArg := os.Args[1]
 	taskNum, err := strconv.Atoi(taskArg)
 	println("任务数:" + taskArg)
@@ -30,7 +36,7 @@ func main() {
 func test1() {
 	trainerNum := 40
 	validatorNum := 20
-	NumSharePy := 10
+	NumSharePy := 5
 	configFile, err := os.Open("data/init_global_weight.json")
 	if err != nil {
 		return
@@ -41,7 +47,7 @@ func test1() {
 	}
 
 	csp, _ := sw.NewBCCSP()
-	peerNumber := 5
+	peerNumber := 1
 	bootstrapPeers := make([]*proto.RemotePeer, 0)
 	privateKeys := make([]bccsp.Key, 0)
 	for i := 0; i < peerNumber; i++ {
@@ -134,7 +140,7 @@ func test1() {
 	}
 
 	select {
-	case <-time.After(time.Second * 3600):
+	case <-time.After(time.Second * 600):
 	}
 }
 
@@ -142,7 +148,7 @@ func test1() {
 func test2() {
 	trainerNum := 20
 	validatorNum := 10
-	NumSharePy := 10
+	NumSharePy := 5
 	configFile, err := os.Open("data/init_global_weight.json")
 	if err != nil {
 		return
@@ -153,7 +159,7 @@ func test2() {
 	}
 
 	csp, _ := sw.NewBCCSP()
-	peerNumber := 5
+	peerNumber := 1
 	bootstrapPeers := make([]*proto.RemotePeer, 0)
 	privateKeys := make([]bccsp.Key, 0)
 	for i := 0; i < peerNumber; i++ {
@@ -246,7 +252,7 @@ func test2() {
 	}
 
 	select {
-	case <-time.After(time.Second * 3600):
+	case <-time.After(time.Second * 600):
 	}
 }
 
@@ -254,7 +260,7 @@ func test2() {
 func test3() {
 	trainerNum := 10
 	validatorNum := 5
-	NumSharePy := 10
+	NumSharePy := 5
 	configFile, err := os.Open("data/init_global_weight.json")
 	if err != nil {
 		return
@@ -265,7 +271,7 @@ func test3() {
 	}
 
 	csp, _ := sw.NewBCCSP()
-	peerNumber := 5
+	peerNumber := 1
 	bootstrapPeers := make([]*proto.RemotePeer, 0)
 	privateKeys := make([]bccsp.Key, 0)
 	for i := 0; i < peerNumber; i++ {
@@ -358,7 +364,7 @@ func test3() {
 	}
 
 	select {
-	case <-time.After(time.Second * 3600):
+	case <-time.After(time.Second * 600):
 	}
 }
 
@@ -472,6 +478,6 @@ func test4(taskNum int) {
 	}
 
 	select {
-	case <-time.After(time.Second * 300):
+	case <-time.After(time.Second * 180):
 	}
 }
