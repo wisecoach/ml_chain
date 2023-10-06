@@ -14,22 +14,24 @@ import (
 )
 
 func main() {
-	// testArg := os.Args[1]
-	// switch testArg {
-	// case "1":
-	// 	test1()
-	// case "2":
-	// 	test2()
-	// case "3":
-	// 	test3()
-	// }
-	taskArg := os.Args[1]
-	taskNum, err := strconv.Atoi(taskArg)
-	println("任务数:" + taskArg)
-	if err != nil {
-		return
+	testArg := os.Args[1]
+	switch testArg {
+	case "1":
+		test1()
+	case "2":
+		test2()
+	case "3":
+		test3()
+	case "4":
+		taskArg := os.Args[2]
+		taskNum, err := strconv.Atoi(taskArg)
+		println("任务数:" + taskArg)
+		if err != nil {
+			return
+		}
+		test4(taskNum)
 	}
-	test4(taskNum)
+
 }
 
 // 40 trainer 20 validator 5 share 1 task
