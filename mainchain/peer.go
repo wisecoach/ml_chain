@@ -62,7 +62,7 @@ func New(config *Config) *Peer {
 		p.server, p.mcs)
 
 	// init the block manager
-	p.blockManager = manager.New(p.blockchain)
+	p.blockManager = manager.New(p.blockchain, p.mcs)
 
 	// init the consensus
 	p.consensus = consensus2.New(&consensus2.Config{

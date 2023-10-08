@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/wisecoach/ml_chain/block/chain"
+	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/proto"
 	"reflect"
 	"sync"
@@ -20,11 +21,11 @@ type blockMgr struct {
 	bcLock      sync.RWMutex
 }
 
-func New(bc *chain.BlockChain) BlockManager {
+func New(bc *chain.BlockChain, mcs crypto.MessageCryptoService) BlockManager {
 	blockManager := &blockMgr{
 		bc:             bc,
-		blockValidator: NewBlockValidator(),
-		txValidator:    NewTxValidator(),
+		blockValidator: NewBlockValidator(mcs),
+		txValidator:    NewTxValidator(mcs),
 		blockHandlers:  make([]BlockHandler, 0),
 		txHandlers:     make(map[reflect.Type][]TxHandler),
 		handlerLock:    sync.RWMutex{},

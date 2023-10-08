@@ -59,7 +59,7 @@ func New(config *Config) *Trainer {
 		t.server, t.mcs)
 
 	// init the block manager
-	t.blockManager = manager.New(t.blockchain)
+	t.blockManager = manager.New(t.blockchain, t.mcs)
 
 	// init the iteration manager
 	t.iterationManager = iteration.New(&iteration.Config{
