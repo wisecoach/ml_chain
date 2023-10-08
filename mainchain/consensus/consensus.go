@@ -357,7 +357,10 @@ func (m *MainChainConsensus) createBlock() *proto.Block {
 			transactions = append(transactions, tx)
 		}
 	}
-	dataBytes, err := json.Marshal(transactions)
+	blockData := &proto.BlockData{
+		Transactions: transactions,
+	}
+	dataBytes, err := json.Marshal(blockData)
 	if err != nil {
 		return nil
 	}
@@ -374,9 +377,7 @@ func (m *MainChainConsensus) createBlock() *proto.Block {
 			Miner:       m.node.Self().PublicKey,
 			Nonce:       0,
 		},
-		Data: &proto.BlockData{
-			Transactions: transactions,
-		},
+		Data: blockData,
 	}
 	m.lock.Unlock()
 

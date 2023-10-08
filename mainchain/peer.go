@@ -46,7 +46,7 @@ func New(config *Config) *Peer {
 		chainId: config.ChainId,
 	}
 	p.server = rpc.NewServer()
-	p.blockchain = chain.NewBlockChain(&chain.Config{MaxBlockNumInMemory: config.MaxBlockNumInMemory})
+	p.blockchain = chain.NewBlockChain(&chain.Config{ChainId: config.ChainId, MaxBlockNumInMemory: config.MaxBlockNumInMemory})
 	p.config = config
 
 	// init mcs

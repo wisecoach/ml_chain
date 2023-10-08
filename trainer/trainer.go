@@ -42,7 +42,7 @@ func New(config *Config) *Trainer {
 		logger: log.GetLogger(config.Self.Endpoint),
 	}
 	t.server = rpc.NewServer()
-	t.blockchain = chain.NewBlockChain(&chain.Config{MaxBlockNumInMemory: config.MaxBlockNumInMemory})
+	t.blockchain = chain.NewBlockChain(&chain.Config{ChainId: config.TaskId, MaxBlockNumInMemory: config.MaxBlockNumInMemory})
 	t.config = config
 	t.taskId = config.TaskId
 

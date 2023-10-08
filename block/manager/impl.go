@@ -52,6 +52,7 @@ func (b *blockMgr) ConfirmBlock(block *proto.Block) error {
 	// validate the block
 	err := b.blockValidator.ValidateBlock(block)
 	if err != nil {
+		println(err.Error())
 		return err
 	}
 
@@ -121,11 +122,13 @@ func (b *blockMgr) RegisterTxHandler(handler TxHandler) {
 func (b *blockMgr) validateBlock(block *proto.Block) error {
 	err := b.blockValidator.ValidateBlock(block)
 	if err != nil {
+		println(err.Error())
 		return err
 	}
 	for _, signedTransaction := range block.Data.Transactions {
 		err := b.txValidator.ValidateTx(signedTransaction)
 		if err != nil {
+			println(err.Error())
 			return err
 		}
 	}
