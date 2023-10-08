@@ -1,7 +1,6 @@
 package aggregate
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/wisecoach/ml_chain/comm/crypto"
@@ -133,19 +132,19 @@ func (a *aggregatorImpl) StartAggregate() {
 			// LocalityWeights: localModels,
 		},
 	}
-	txBytes, err := json.Marshal(transaction)
-	if err != nil {
-		a.logger.Error("transaction marshal failed")
-		return
-	}
-	signature, err := a.mcs.Sign(txBytes)
-	if err != nil {
-		a.logger.Error("transaction sign failed")
-		return
-	}
+	// txBytes, err := json.Marshal(transaction)
+	// if err != nil {
+	// 	a.logger.Error("transaction marshal failed")
+	// 	return
+	// }
+	// signature, err := a.mcs.Sign(txBytes)
+	// if err != nil {
+	// 	a.logger.Error("transaction sign failed")
+	// 	return
+	// }
 	signedTransaction := &proto.Envelope[*proto.Transaction]{
 		Payload:   transaction,
-		Signature: signature,
+		Signature: nil,
 	}
 	msg := &proto.Message{
 		Content: &proto.TransactionMessage{

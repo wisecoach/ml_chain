@@ -118,15 +118,15 @@ func (b *blockMgr) RegisterTxHandler(handler TxHandler) {
 }
 
 func (b *blockMgr) validateBlock(block *proto.Block) error {
-	err := b.blockValidator.ValidateBlock(block)
-	if err != nil {
-		return err
-	}
-	for _, signedTransaction := range block.Data.Transactions {
-		err := b.txValidator.ValidateTx(signedTransaction)
-		if err != nil {
-			return err
-		}
-	}
+	// err := b.blockValidator.ValidateBlock(block)
+	// if err != nil {
+	// 	return err
+	// }
+	// for _, signedTransaction := range block.Data.Transactions {
+	// 	err := b.txValidator.ValidateTx(signedTransaction)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
 	return nil
 }

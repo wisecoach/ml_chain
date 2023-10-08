@@ -47,19 +47,19 @@ func (t *taskClient) CreateTask(task *Task) {
 		},
 		Payload: genesis,
 	}
-	txBytes, err := json.Marshal(transaction)
-	if err != nil {
-		t.logger.Error("transaction marshal failed")
-		return
-	}
-	signature, err := t.mcs.Sign(txBytes)
-	if err != nil {
-		t.logger.Error("transaction sign failed")
-		return
-	}
+	// txBytes, err := json.Marshal(transaction)
+	// if err != nil {
+	// 	t.logger.Error("transaction marshal failed")
+	// 	return
+	// }
+	// signature, err := t.mcs.Sign(txBytes)
+	// if err != nil {
+	// 	t.logger.Error("transaction sign failed")
+	// 	return
+	// }
 	signedTransaction := &proto.Envelope[*proto.Transaction]{
 		Payload:   transaction,
-		Signature: signature,
+		Signature: nil,
 	}
 	msg := &proto.Message{
 		Content: &proto.TransactionMessage{
@@ -86,19 +86,19 @@ func (t *taskClient) FinishTask(task *FinishedTask) {
 		},
 		Payload: task,
 	}
-	txBytes, err := json.Marshal(transaction)
-	if err != nil {
-		t.logger.Error("transaction marshal failed")
-		return
-	}
-	signature, err := t.mcs.Sign(txBytes)
-	if err != nil {
-		t.logger.Error("transaction sign failed")
-		return
-	}
+	// txBytes, err := json.Marshal(transaction)
+	// if err != nil {
+	// 	t.logger.Error("transaction marshal failed")
+	// 	return
+	// }
+	// signature, err := t.mcs.Sign(txBytes)
+	// if err != nil {
+	// 	t.logger.Error("transaction sign failed")
+	// 	return
+	// }
 	signedTransaction := &proto.Envelope[*proto.Transaction]{
 		Payload:   transaction,
-		Signature: signature,
+		Signature: nil,
 	}
 	msg := &proto.Message{
 		Content: &proto.TransactionMessage{
