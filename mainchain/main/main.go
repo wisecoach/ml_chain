@@ -142,7 +142,7 @@ func test1() {
 	}
 
 	select {
-	case <-time.After(time.Second * 600):
+	case <-time.After(time.Second * 60000):
 	}
 }
 
@@ -254,7 +254,7 @@ func test2() {
 	}
 
 	select {
-	case <-time.After(time.Second * 600):
+	case <-time.After(time.Second * 60000):
 	}
 }
 
@@ -366,7 +366,7 @@ func test3() {
 	}
 
 	select {
-	case <-time.After(time.Second * 600):
+	case <-time.After(time.Second * 60000):
 	}
 }
 

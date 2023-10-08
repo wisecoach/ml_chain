@@ -1,7 +1,7 @@
 import sys
 import time
 
-import task as t
+import task_normal as t
 import tornado.ioloop
 import tornado
 import json

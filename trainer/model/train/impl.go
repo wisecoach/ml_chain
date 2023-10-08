@@ -70,41 +70,41 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 
 	l.lock.Lock()
 	l.localModel = localModel
-	l.localModel.Losses = make([]*proto.Envelope[*proto.ValidateLoss], l.config.ValidatorNum)
-
-	// get the validator selected by iterationManager
-	validatorSelection := l.roleManager.GetValidators()
-	l.localModel.ValidatorSelection = validatorSelection
-
-	// send request to the validators, and wait for the validate response
-	l.validateWaitGroup.Add(l.config.ValidatorNum)
-	logStr := fmt.Sprintf("begin to send loss request to %d validators: ", l.config.ValidatorNum)
-	for _, winner := range validatorSelection.Winners {
-		logStr += winner.Endpoint + ","
-	}
-	l.logger.Debug(logStr)
-	lossReqMsg := &proto.Message{
-		Content: &proto.RequestLossMessage{
-			Iteration:          l.localModel.Iteration,
-			WeightVector:       l.localModel.WeightVector,
-			Trainer:            l.localModel.Trainer,
-			ValidatorSelection: validatorSelection,
-		},
-		Header: &proto.Header{
-			Creator:   l.self.PublicKey,
-			ChainId:   l.taskId,
-			TxId:      "",
-			Timestamp: time.Now(),
-		},
-	}
-	l.lock.Unlock()
-
-	l.node.SendToPeers(lossReqMsg, validatorSelection.Winners...)
-	l.logger.Info(fmt.Sprintf("begin to wait for validate response: num = %d", l.config.ValidatorNum))
-	l.validateWaitGroup.Wait()
-	l.logger.Info(fmt.Sprintf("receive all validate response: num = %d", l.config.ValidatorNum))
-
-	l.lock.Lock()
+	// l.localModel.Losses = make([]*proto.Envelope[*proto.ValidateLoss], l.config.ValidatorNum)
+	//
+	// // get the validator selected by iterationManager
+	// validatorSelection := l.roleManager.GetValidators()
+	// l.localModel.ValidatorSelection = validatorSelection
+	//
+	// // send request to the validators, and wait for the validate response
+	// l.validateWaitGroup.Add(l.config.ValidatorNum)
+	// logStr := fmt.Sprintf("begin to send loss request to %d validators: ", l.config.ValidatorNum)
+	// for _, winner := range validatorSelection.Winners {
+	// 	logStr += winner.Endpoint + ","
+	// }
+	// l.logger.Debug(logStr)
+	// lossReqMsg := &proto.Message{
+	// 	Content: &proto.RequestLossMessage{
+	// 		Iteration:          l.localModel.Iteration,
+	// 		WeightVector:       l.localModel.WeightVector,
+	// 		Trainer:            l.localModel.Trainer,
+	// 		ValidatorSelection: validatorSelection,
+	// 	},
+	// 	Header: &proto.Header{
+	// 		Creator:   l.self.PublicKey,
+	// 		ChainId:   l.taskId,
+	// 		TxId:      "",
+	// 		Timestamp: time.Now(),
+	// 	},
+	// }
+	// l.lock.Unlock()
+	//
+	// l.node.SendToPeers(lossReqMsg, validatorSelection.Winners...)
+	// l.logger.Info(fmt.Sprintf("begin to wait for validate response: num = %d", l.config.ValidatorNum))
+	// l.validateWaitGroup.Wait()
+	// l.logger.Info(fmt.Sprintf("receive all validate response: num = %d", l.config.ValidatorNum))
+	//
+	// l.lock.Lock()
 
 	localModelSubmitMsg := &proto.Message{
 		Content: &proto.SubmitLocalityWeightMessage{

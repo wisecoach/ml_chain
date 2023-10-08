@@ -116,7 +116,8 @@ func (a *aggregatorImpl) StartAggregate() {
 	globalModel.Aggregator = a.node.Self().PublicKey
 	globalModel.Iteration = a.iterationManager.GetIteration()
 
-	a.logger.Info(fmt.Sprintf("aggregate global model success: iteration: %d, acc: %f", globalModel.Iteration, globalModel.TotalAcc))
+	a.logger.Info(fmt.Sprintf("aggregate global model success: iteration: %d, acc: %f, loss: %f",
+		globalModel.Iteration, globalModel.TotalAcc, globalModel.Loss))
 
 	transaction := &proto.Transaction{
 		Parent: nil,

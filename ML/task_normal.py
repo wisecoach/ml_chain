@@ -107,7 +107,7 @@ class Task:
         new_global_weight = aggregate_model(w, agg_weights)
         # 导入聚合好的模型
         verifier = agent.Agent(self.model_structure, self.dataset_test, new_global_weight)
-        total_acc = verifier.evaluate()
+        total_acc, loss = verifier.evaluate()
 
         flat_new_global_weight = []
         for value in new_global_weight.values():
@@ -116,6 +116,7 @@ class Task:
             'global_model': {
                 'weight_vector': flat_new_global_weight.tolist(),
                 'total_acc': total_acc,
+                'loss': loss
             }
         }
 
@@ -139,7 +140,7 @@ class Task:
         new_global_weight = aggregate_model(w, agg_weights)
         # 导入聚合好的模型
         verifier = agent.Agent(self.model_structure, self.dataset_test, new_global_weight)
-        total_acc = verifier.evaluate()
+        total_acc, loss = verifier.evaluate()
 
         flat_new_global_weight = []
         for value in new_global_weight.values():
@@ -148,6 +149,7 @@ class Task:
             'global_model': {
                 'weight_vector': flat_new_global_weight.tolist(),
                 'total_acc': total_acc,
+                'loss': loss,
             }
         }
 

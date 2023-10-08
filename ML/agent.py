@@ -22,6 +22,8 @@ class Agent(object):
         self.model.eval()
         correct = 0
         data_size = 0
+        loss = 0
+        Loss = torch.nn.CrossEntropyLoss()
         for batch_id, batch in enumerate(self.eva_loader):
             data, target = batch
             data_size += data.size()[0]
@@ -29,13 +31,15 @@ class Agent(object):
             target = target.to(device)
 
             output = self.model(data)
+            loss += Loss(output, target)
 
             pred = output.data.max(1)[1]
             correct += pred.eq(target.data.view_as(pred)).cpu().sum().item()
 
         eval_acc = 100.0 * (float(correct) / float(data_size))
+        avg_loss = loss / data_size
 
-        return eval_acc
+        return eval_acc, avg_loss.cpu().item()
 
 
 def cal_diff(validate_loss_list, train_loss):
