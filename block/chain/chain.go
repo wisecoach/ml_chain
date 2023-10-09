@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/wisecoach/ml_chain/proto"
 	"os"
-	"time"
 )
 
 type BlockChain struct {
@@ -72,14 +71,12 @@ func (chain *BlockChain) persistBlock(block *proto.Block) error {
 		return err
 	}
 	path := fmt.Sprintf("data/blocks/%s/", chain.config.ChainId)
-	fileName := path + fmt.Sprintf("%d-%s.block", block.Header.BlockNumber, time.Now().String())
+	fileName := path + fmt.Sprintf("%d.block", block.Header.BlockNumber)
 	err = os.MkdirAll(path, 0666)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(
-		fileName,
-		marshal, 0666)
+	err = os.WriteFile(fileName, marshal, 0666)
 	if err != nil {
 		return err
 	}
