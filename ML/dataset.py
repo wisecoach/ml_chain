@@ -5,6 +5,9 @@ import numpy as np
 
 def get_dataset(args):
 
+    seed = 5
+    torch.manual_seed(seed)
+
     if args['dataset'] == 'cifar10':
         data_path = './data'
         transform_train = transforms.Compose([
@@ -35,7 +38,7 @@ def get_dataset(args):
             # transforms.ToPILImage(),
             transforms.Resize(32),
             transforms.ToTensor(),
-            transforms.Normalize((0.1307, ), (0.3081, ))
+            # transforms.Normalize((0.1307, ), (0.3081, ))
         ])
         train_dataset = datasets.MNIST(data_path, train=True, download=True, transform=transform_train)
         test_dataset = datasets.MNIST(data_path, train=False, download=True, transform=transform_test)
