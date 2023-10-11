@@ -40,7 +40,8 @@ class Task:
                 param.data = layers[layer]
                 layer += 1
         if not(trainer_id in self.trainer_dict):
-            trainer = trainers.Trainer(self.model_structure, self.global_model, self.dataset_train, self.dataset_test)
+            trainer = trainers.Trainer(self.model_structure, self.global_model,
+                                       self.dataset_train, self.dataset_test, trainer_id)
             self.trainer_dict[trainer_id] = trainer
         trainer = self.trainer_dict[trainer_id]
         w, acc, loss, data_num = trainer.local_update(device, self.iteration)

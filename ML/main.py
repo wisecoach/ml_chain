@@ -1,5 +1,8 @@
+import random
 import sys
 import time
+
+import torch
 
 import task_normal as t
 import tornado.ioloop
@@ -81,6 +84,8 @@ if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
     # parser.add_argument('--port', type=int, default=10099, help="port we use")
     # args = parser.parse_args()
+    random.seed(5)
+    torch.manual_seed(5)
     port = sys.argv[1]
     print("python server listen at: " + str(port))
     app = make_app()
