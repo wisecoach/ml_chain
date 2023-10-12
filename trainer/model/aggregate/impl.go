@@ -128,9 +128,9 @@ func (a *aggregatorImpl) StartAggregate() {
 			Timestamp: time.Time{},
 		},
 		Payload: &proto.ModelIteration{
-			Iteration:    a.iterationManager.GetIteration(),
-			GlobalWeight: globalModel,
-			// LocalityWeights: localModels,
+			Iteration:       a.iterationManager.GetIteration(),
+			GlobalWeight:    globalModel,
+			LocalityWeights: localModels,
 		},
 	}
 	txBytes, err := json.Marshal(transaction)
