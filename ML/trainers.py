@@ -4,6 +4,7 @@ import time
 
 import torch
 import torch.utils.data as data
+from torch.utils.data import Subset
 
 
 class Trainer(object):
@@ -21,6 +22,7 @@ class Trainer(object):
         # 分配
         data_len_train = 1000
         train_indices = all_range_train[index * data_len_train: (index+1) * data_len_train]
+        train_subset = Subset(train_data, train_indices)
 
         # 同样的方式对评估数据进行打乱和分配
         all_range_eval = list(range(len(eval_data)))
@@ -28,13 +30,14 @@ class Trainer(object):
         data_len_eval = 1000
         index = int(trainer_id[-5:]) % 10
         eval_indices = all_range_eval[index * data_len_eval: (index+1) * data_len_eval]
+        eval_subset = Subset(eval_data, eval_indices)
 
-        self.train_loader = torch.utils.data.DataLoader(train_data, batch_size=args['batch_size'],
-                                                        sampler=torch.utils.data.sampler.SubsetRandomSampler(
-                                                            train_indices), shuffle=False)
-        self.eval_loader = torch.utils.data.DataLoader(eval_data, batch_size=args['batch_size'],
-                                                       sampler=torch.utils.data.sampler.SubsetRandomSampler(
-                                                           eval_indices), shuffle=False)
+        self.train_loader = torch.utils.data.DataLoader(train_subset, batch_size=args['batch_size'],
+                                                    sampler=torch.utils.data.sampler.SequentialSampler(train_subset)
+                                                    , shuffle=False)
+        self.eval_loader = torch.utils.data.DataLoader(eval_subset, batch_size=args['batch_size'],
+                                                       sampler=torch.utils.data.sampler.SequentialSampler(eval_subset)
+                                                       , shuffle=False)
         # 检查是否应该对此训练者执行后门攻击
         self.backdoor_attack = id in malicious_trainers
 
