@@ -1,11 +1,9 @@
 package chain
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/wisecoach/ml_chain/proto"
-	"os"
 )
 
 type BlockChain struct {
@@ -66,20 +64,20 @@ func (chain *BlockChain) GetNumber() int {
 }
 
 func (chain *BlockChain) persistBlock(block *proto.Block) error {
-	marshal, err := json.Marshal(block)
-	if err != nil {
-		return err
-	}
-	path := fmt.Sprintf("data/blocks/%s/", chain.config.ChainId)
-	fileName := path + fmt.Sprintf("%d.block", block.Header.BlockNumber)
-	err = os.MkdirAll(path, 0666)
-	if err != nil {
-		return err
-	}
-	err = os.WriteFile(fileName, marshal, 0666)
-	if err != nil {
-		return err
-	}
+	// marshal, err := json.Marshal(block)
+	// if err != nil {
+	// 	return err
+	// }
+	// path := fmt.Sprintf("data/blocks/%s/", chain.config.ChainId)
+	// fileName := path + fmt.Sprintf("%d.block", block.Header.BlockNumber)
+	// err = os.MkdirAll(path, 0666)
+	// if err != nil {
+	// 	return err
+	// }
+	// err = os.WriteFile(fileName, marshal, 0666)
+	// if err != nil {
+	// 	return err
+	// }
 	return nil
 }
 

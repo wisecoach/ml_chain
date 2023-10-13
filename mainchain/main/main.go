@@ -36,8 +36,8 @@ func main() {
 
 // 40 trainer 20 validator 5 share 1 task
 func test1() {
-	trainerNum := 40
-	validatorNum := 20
+	trainerNum := 30
+	validatorNum := 15
 	NumSharePy := 5
 	configFile, err := os.Open("data/init_global_weight.json")
 	if err != nil {
