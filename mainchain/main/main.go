@@ -366,7 +366,7 @@ func test3() {
 	}
 
 	select {
-	case <-time.After(time.Second * 1800):
+	case <-time.After(time.Second * 5400):
 	}
 }
 
