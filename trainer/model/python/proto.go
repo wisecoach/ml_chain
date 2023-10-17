@@ -19,7 +19,7 @@ type ValidateResponse struct {
 }
 
 type TrainRequest struct {
-	TrainerId   string              `json:"trainer_id"`
+	Cindex      string              `json:"cindex"`
 	GlobalModel *proto.GlobalWeight `json:"global_model"`
 }
 

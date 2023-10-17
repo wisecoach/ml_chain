@@ -31,7 +31,7 @@ type aggregatorImpl struct {
 	node             *node.Node
 	iterationManager IterationMgrAdapter
 	roleManager      role.Manager
-	localModels      map[string]*proto.LocalityWeight
+	localModels      map[int]*proto.LocalityWeight
 }
 
 func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, node *node.Node,
@@ -46,7 +46,7 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 		node:             node,
 		iterationManager: iterationManager,
 		roleManager:      roleManager,
-		localModels:      make(map[string]*proto.LocalityWeight),
+		localModels:      make(map[int]*proto.LocalityWeight),
 	}
 	a.waitAggregate.Add(1)
 	return a
@@ -59,10 +59,10 @@ func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
 
-	a.logger.Debug(fmt.Sprintf("have received %d local model, %s receive local model, iteration: %d, from: %s",
-		len(a.localModels), a.node.Self().Endpoint, weight.Iteration, a.node.Lookup(weight.Trainer).Endpoint))
+	a.logger.Debug(fmt.Sprintf("have received %d local model, %s receive local model, iteration: %d, from: %d",
+		len(a.localModels), a.node.Self().Endpoint, weight.Iteration, weight.Cindex))
 	// now, we don't receive new model from same trainer
-	_, exist := a.localModels[string(weight.Trainer)]
+	_, exist := a.localModels[weight.Cindex]
 	if exist {
 		a.logger.Error("receive duplicated model")
 		return
@@ -83,7 +83,7 @@ func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) {
 	}
 	a.trainerWaitGroup.Done()
 	// set the local model
-	a.localModels[string(weight.Trainer)] = weight
+	a.localModels[weight.Cindex] = weight
 }
 
 func (a *aggregatorImpl) StartAggregate() {
@@ -162,7 +162,7 @@ func (a *aggregatorImpl) StartAggregate() {
 
 	// clear the local model
 	a.lock.Lock()
-	a.localModels = make(map[string]*proto.LocalityWeight)
+	a.localModels = make(map[int]*proto.LocalityWeight)
 	a.lock.Unlock()
 }
 

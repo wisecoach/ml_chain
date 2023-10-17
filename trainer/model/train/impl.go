@@ -20,6 +20,7 @@ type IterationMgrAdapter interface {
 
 type localTrainerImpl struct {
 	taskId           string
+	cindex           int
 	mcs              crypto.MessageCryptoService
 	self             *proto.RemotePeer
 	client           python.Client
@@ -57,7 +58,7 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	// train the global model
 	l.logger.Info(fmt.Sprintf("begin to train the global model, iteration: %d", weight.Iteration))
 
-	trainResponse, err := l.client.Train(&python.TrainRequest{TrainerId: l.self.Endpoint, GlobalModel: weight})
+	trainResponse, err := l.client.Train(&python.TrainRequest{Cindex: l.self.Endpoint, GlobalModel: weight})
 	if err != nil {
 		l.logger.Error("train failed, err: " + err.Error())
 		return
