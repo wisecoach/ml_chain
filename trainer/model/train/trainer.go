@@ -8,7 +8,7 @@ type LocalTrainer interface {
 	//				  with the prove of validating, send the local model to aggregator committee
 	Train(weight *proto.GlobalWeight)
 
-	// CollectionLoss
-	//  @Description: collect the loss to the local model
-	CollectionLoss(loss *proto.Envelope[*proto.ValidateLoss])
+	// // CollectionLoss
+	// //  @Description: collect the loss to the local model
+	// CollectionLoss(loss *proto.Envelope[*proto.ValidateLoss])
 }

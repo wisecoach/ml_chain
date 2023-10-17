@@ -14,10 +14,8 @@ type ManagerRevoke struct {
 
 // TaskGenesis represent the genesis transaction of a taskchain
 type TaskGenesis struct {
-	TaskId         string                   `json:"task_id"`
-	ModelStructure *ModelStructure          `json:"model_structure"`
-	ManagerList    [][]byte                 `json:"manager_list"`
-	InitWeight     *Envelope[*GlobalWeight] `json:"init_weight"`
+	TaskId     string                   `json:"task_id"`
+	InitWeight *Envelope[*GlobalWeight] `json:"init_weight"`
 }
 
 // TaskResult represent the finish transaction of a task

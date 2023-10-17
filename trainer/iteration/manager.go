@@ -86,8 +86,8 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	i.logger.Info(fmt.Sprintf("start to manage iteration: %d", i.iteration))
 	// init role manager
 	i.roleManager = role.New(&role.Config{
-		Self:            i.node.Self(),
-		TaskManagerList: genesis.ManagerList,
+		Self:       i.node.Self(),
+		Aggregator: i.config.Aggregator,
 	})
 
 	// init consensus
@@ -103,8 +103,8 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 
 	// init trainer
 	i.trainer = train.New(&train.Config{
-		ValidatorNum: i.config.ValidatorNum,
-		TaskId:       i.config.TaskId,
+		TaskId: i.config.TaskId,
+		Cindex: i.config.Cindex,
 	}, i.mcs, i.roleManager, i, i.node, i.client)
 
 	// init validator
@@ -130,18 +130,11 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 	gob.Register(&proto.ModelIteration{})
 	i.node.RegisterListener(&proto.TransactionMessage{}, message.NewTransactionMessageListener(i.consensus))
 
-	// select validators
-	latestBlock, err := i.blockManager.GetLatestBlock()
-	if err != nil {
-		i.logger.Error(err.Error())
-	}
-	i.roleManager.SelectValidators(i.node.Peers(), latestBlock.Header.DataHash, i.config.ValidatorNum)
-
 	// wait for other trainer init iteration manager
 	<-time.After(time.Second * 10)
 
 	// init python server
-	err = i.client.Init(genesis)
+	err := i.client.Init(genesis)
 	if err != nil {
 		i.logger.Error(err.Error())
 		return
@@ -172,14 +165,6 @@ func (i *iterationManagerImpl) NextIteration(iteration *proto.ModelIteration) {
 	i.iteration++
 	i.logger.Info(fmt.Sprintf("start iteration %d", i.iteration))
 	i.locker.Unlock()
-
-	// select new validator for the new iteration
-	latestBlock, err := i.blockManager.GetLatestBlock()
-	if err != nil {
-		i.logger.Error(err.Error())
-	}
-
-	i.roleManager.SelectValidators(i.node.Peers(), latestBlock.Header.DataHash, i.config.ValidatorNum)
 
 	// load new global model in the new iteration
 	go i.trainer.Train(iteration.GlobalWeight)

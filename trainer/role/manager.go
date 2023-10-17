@@ -44,11 +44,11 @@ type Manager interface {
 
 func New(config *Config) Manager {
 	r := &roleMgr{
-		lock:            sync.RWMutex{},
-		config:          config,
-		self:            config.Self,
-		taskManagerList: config.TaskManagerList,
-		selector:        &Selector{},
+		lock:       sync.RWMutex{},
+		config:     config,
+		self:       config.Self,
+		aggregator: config.Aggregator,
+		selector:   &Selector{},
 	}
 	r.selector.init()
 	return r
@@ -57,9 +57,9 @@ func New(config *Config) Manager {
 type roleMgr struct {
 	lock sync.RWMutex
 
-	self            *proto.RemotePeer
-	taskManagerList [][]byte
-	config          *Config
+	self       *proto.RemotePeer
+	aggregator []byte
+	config     *Config
 
 	validatorSelectionResult *proto.SelectionResult
 	validatorSet             set.Set[*proto.RemotePeer]
@@ -72,8 +72,7 @@ func (r *roleMgr) AmAggregator(iteration int) bool {
 }
 
 func (r *roleMgr) GetAggregator(iteration int) []byte {
-	num := len(r.taskManagerList)
-	return r.taskManagerList[iteration%num]
+	return r.aggregator
 }
 
 func (r *roleMgr) SelectValidators(candidates []*proto.RemotePeer, input []byte, number int) {

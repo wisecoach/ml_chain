@@ -1,7 +1,8 @@
 package iteration
 
 type Config struct {
-	ValidatorNum int
-	TaskId       string
-	ApiBaseUrl   string
+	TaskId     string
+	Cindex     int
+	Aggregator []byte
+	ApiBaseUrl string
 }

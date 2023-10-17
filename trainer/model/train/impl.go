@@ -1,6 +1,7 @@
 package train
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/wisecoach/ml_chain/comm/crypto"
 	"github.com/wisecoach/ml_chain/comm/node"
@@ -9,7 +10,6 @@ import (
 	"github.com/wisecoach/ml_chain/trainer/role"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
-	"reflect"
 	"sync"
 	"time"
 )
@@ -39,6 +39,7 @@ func New(config *Config, mcs crypto.MessageCryptoService, roleManager role.Manag
 	node *node.Node, client python.Client) LocalTrainer {
 	trainer := &localTrainerImpl{
 		taskId:            config.TaskId,
+		cindex:            config.Cindex,
 		mcs:               mcs,
 		self:              node.Self(),
 		client:            client,
@@ -64,48 +65,13 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 		return
 	}
 	localModel := trainResponse.LocalModel
-	localModel.Trainer = l.self.PublicKey
+	localModel.Cindex = l.cindex
 	localModel.Iteration = l.iterationManager.GetIteration()
-	l.logger.Info(fmt.Sprintf("trainnging finished, iteration = %d, acc = %f, loss = %f, data size = %d",
-		localModel.Iteration, localModel.Acc, localModel.Loss, localModel.DataNum))
+	l.logger.Info(fmt.Sprintf("trainnging finished, iteration = %d, n_samples = %d, model_hash = %s",
+		localModel.Iteration, localModel.NSamples, base64.StdEncoding.EncodeToString(localModel.ModelHash)))
 
 	l.lock.Lock()
 	l.localModel = localModel
-	// l.localModel.Losses = make([]*proto.Envelope[*proto.ValidateLoss], l.config.ValidatorNum)
-	//
-	// // get the validator selected by iterationManager
-	// validatorSelection := l.roleManager.GetValidators()
-	// l.localModel.ValidatorSelection = validatorSelection
-	//
-	// // send request to the validators, and wait for the validate response
-	// l.validateWaitGroup.Add(l.config.ValidatorNum)
-	// logStr := fmt.Sprintf("begin to send loss request to %d validators: ", l.config.ValidatorNum)
-	// for _, winner := range validatorSelection.Winners {
-	// 	logStr += winner.Endpoint + ","
-	// }
-	// l.logger.Debug(logStr)
-	// lossReqMsg := &proto.Message{
-	// 	Content: &proto.RequestLossMessage{
-	// 		Iteration:          l.localModel.Iteration,
-	// 		WeightVector:       l.localModel.WeightVector,
-	// 		Trainer:            l.localModel.Trainer,
-	// 		ValidatorSelection: validatorSelection,
-	// 	},
-	// 	Header: &proto.Header{
-	// 		Creator:   l.self.PublicKey,
-	// 		ChainId:   l.taskId,
-	// 		TxId:      "",
-	// 		Timestamp: time.Now(),
-	// 	},
-	// }
-	// l.lock.Unlock()
-	//
-	// l.node.SendToPeers(lossReqMsg, validatorSelection.Winners...)
-	// l.logger.Info(fmt.Sprintf("begin to wait for validate response: num = %d", l.config.ValidatorNum))
-	// l.validateWaitGroup.Wait()
-	// l.logger.Info(fmt.Sprintf("receive all validate response: num = %d", l.config.ValidatorNum))
-	//
-	// l.lock.Lock()
 
 	localModelSubmitMsg := &proto.Message{
 		Content: &proto.SubmitLocalityWeightMessage{
@@ -134,25 +100,4 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	l.localModel = nil
 
 	l.lock.Unlock()
-}
-
-func (l *localTrainerImpl) CollectionLoss(loss *proto.Envelope[*proto.ValidateLoss]) {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
-	losses := l.localModel.Losses
-	// make loss's index is equal to validator's index in vrf selection
-	index := -1
-	for i, validator := range l.localModel.ValidatorSelection.Winners {
-		if reflect.DeepEqual(validator.PublicKey, loss.Payload.Validator) {
-			index = i
-		}
-	}
-	if index == -1 {
-		l.logger.Error("the validator of loss is not in vrf selection")
-		return
-	}
-	losses[index] = loss
-	l.localModel.Losses = losses
-	l.validateWaitGroup.Done()
 }
