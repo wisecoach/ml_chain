@@ -2,7 +2,7 @@ package proto
 
 type GlobalWeight struct {
 	Iteration int    `json:"iteration"`
-	ModelHash []byte `json:"model_hash"`
+	ModelHash string `json:"model_hash"`
 	// WeightVector []float32 `json:"weight_vector"`
 	// Aggregator   []byte    `json:"aggregator"`
 	// TotalAcc     float32   `json:"total_acc"`
@@ -11,9 +11,9 @@ type GlobalWeight struct {
 
 type LocalityWeight struct {
 	Iteration  int    `json:"iteration"`
-	Cindex     int    `json:"cindex"`
-	ModelHash  []byte `json:"model_hash"`
-	UpdateHash []byte `json:"update_hash"`
+	Cindex     string `json:"cindex"`
+	ModelHash  string `json:"model_hash"`
+	UpdateHash string `json:"update_hash"`
 	NSamples   int    `json:"n_samples"`
 	// WeightVector []float32 `json:"weight_vector"`
 	// Trainer      []byte    `json:"trainer"`

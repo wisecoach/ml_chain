@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/wisecoach/ml_chain/bccsp"
 	"github.com/wisecoach/ml_chain/bccsp/sw"
@@ -18,7 +17,7 @@ func main() {
 	switch testArg {
 	case "1":
 		test1()
-	case "4":
+	case "2":
 		taskArg := os.Args[2]
 		taskNum, err := strconv.Atoi(taskArg)
 		println("任务数:" + taskArg)
@@ -32,17 +31,7 @@ func main() {
 
 // 40 trainer 20 validator 5 share 1 task
 func test1() {
-	trainerNum := 5
-	validatorNum := 1
-	NumSharePy := 5
-	configFile, err := os.Open("data/init_global_weight.json")
-	if err != nil {
-		return
-	}
-	jsonParser := json.NewDecoder(configFile)
-	var initWeight []float32
-	if err = jsonParser.Decode(&initWeight); err != nil {
-	}
+	trainerNum := 6
 
 	csp, _ := sw.NewBCCSP()
 	peerNumber := 1
@@ -81,9 +70,7 @@ func test1() {
 		go func() {
 			config := &mainchain.Config{
 				TrainerNum:          trainerNum,
-				ValidatorNum:        validatorNum,
-				NumSharePy:          NumSharePy,
-				TaskMgrNum:          5,
+				ShardCreator:        bootstrapPeers[0].PublicKey,
 				Sk:                  privateKeys[i],
 				KeyImportOpts:       &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
 				HashOpts:            &bccsp.SHA256Opts{},
@@ -111,8 +98,8 @@ func test1() {
 					TaskId: fmt.Sprintf("task%d", i),
 					InitWeight: &proto.Envelope[*proto.GlobalWeight]{
 						Payload: &proto.GlobalWeight{
-							// TODO 设置初始模型IPFS的hash
-							ModelHash: []byte{},
+							Iteration: 0,
+							ModelHash: "QmUN52MabyZmxGLZZtUF8W6MKm2gSvaxUbAh9BCnS1NPyx",
 						},
 						Signature: nil,
 					},
@@ -128,17 +115,8 @@ func test1() {
 
 // 3 trainer 1 validator 3 share 1-10 task
 func test2(taskNum int) {
-	trainerNum := 3
-	validatorNum := 1
+	trainerNum := 6
 	peerNumber := 1
-	configFile, err := os.Open("data/init_global_weight.json")
-	if err != nil {
-		return
-	}
-	jsonParser := json.NewDecoder(configFile)
-	var initWeight []float32
-	if err = jsonParser.Decode(&initWeight); err != nil {
-	}
 
 	csp, _ := sw.NewBCCSP()
 	bootstrapPeers := make([]*proto.RemotePeer, 0)
@@ -176,9 +154,7 @@ func test2(taskNum int) {
 		go func() {
 			config := &mainchain.Config{
 				TrainerNum:          trainerNum,
-				ValidatorNum:        validatorNum,
-				NumSharePy:          5,
-				TaskMgrNum:          1,
+				ShardCreator:        bootstrapPeers[0].PublicKey,
 				Sk:                  privateKeys[i],
 				KeyImportOpts:       &bccsp.ECDSAPKIXPublicKeyImportOpts{Temporary: false},
 				HashOpts:            &bccsp.SHA256Opts{},
@@ -207,8 +183,8 @@ func test2(taskNum int) {
 						TaskId: fmt.Sprintf("task%d", j),
 						InitWeight: &proto.Envelope[*proto.GlobalWeight]{
 							Payload: &proto.GlobalWeight{
-								// TODO 设置初始模型IPFS的hash
-								ModelHash: []byte{},
+								Iteration: 0,
+								ModelHash: "QmUN52MabyZmxGLZZtUF8W6MKm2gSvaxUbAh9BCnS1NPyx",
 							},
 							Signature: nil,
 						},

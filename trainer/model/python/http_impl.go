@@ -40,7 +40,7 @@ func (h *httpPythonClient) Aggregate(request *AggregateRequest) (*AggregateRespo
 	if err != nil {
 		return nil, err
 	}
-	respBodyBytes, err := h.post("/aggregate/"+h.TaskId, marshal)
+	respBodyBytes, err := h.post("/aggregate", marshal)
 	if err != nil {
 		return nil, err
 	}
@@ -70,11 +70,10 @@ func (h *httpPythonClient) Validate(request *ValidateRequest) (*ValidateResponse
 }
 
 func (h *httpPythonClient) Train(request *TrainRequest) (*TrainResponse, error) {
-	marshal, err := json.Marshal(request)
-	if err != nil {
-		return nil, err
-	}
-	respBodyBytes, err := h.post("/train/"+h.TaskId, marshal)
+	params := make(map[string]string)
+	params["cindex"] = request.Cindex
+	params["model_hash"] = request.GlobalModel.ModelHash
+	respBodyBytes, err := h.get("/train", params)
 	if err != nil {
 		return nil, err
 	}
@@ -84,6 +83,26 @@ func (h *httpPythonClient) Train(request *TrainRequest) (*TrainResponse, error) 
 		return nil, err
 	}
 	return resp, nil
+}
+
+func (h *httpPythonClient) get(uri string, params map[string]string) ([]byte, error) {
+	url := h.ApiBaseUrl + uri
+	isFirst := true
+	for key, value := range params {
+		if isFirst {
+			url += "?" + key + "=" + value
+			isFirst = false
+		} else {
+			url += "&" + key + "=" + value
+		}
+	}
+	req, err := http.NewRequest("get", url, bytes.NewBuffer([]byte{}))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := h.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	return io.ReadAll(resp.Body)
 }
 
 func (h *httpPythonClient) post(uri string, requestBody []byte) ([]byte, error) {

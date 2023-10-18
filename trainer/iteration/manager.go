@@ -13,7 +13,6 @@ import (
 	"github.com/wisecoach/ml_chain/trainer/model/aggregate"
 	"github.com/wisecoach/ml_chain/trainer/model/python"
 	"github.com/wisecoach/ml_chain/trainer/model/train"
-	"github.com/wisecoach/ml_chain/trainer/model/validate"
 	"github.com/wisecoach/ml_chain/trainer/role"
 	"github.com/wisecoach/ml_chain/util/log"
 	"go.uber.org/zap"
@@ -68,7 +67,6 @@ type iterationManagerImpl struct {
 	client      python.Client
 	trainer     train.LocalTrainer
 	aggregator  aggregate.Aggregator
-	validator   validate.Validator
 	roleManager role.Manager
 	consensus   consensus.Consensus
 
@@ -107,23 +105,14 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 		Cindex: i.config.Cindex,
 	}, i.mcs, i.roleManager, i, i.node, i.client)
 
-	// init validator
-	i.validator = validate.New(&validate.Config{
-		TaskId: i.config.TaskId,
-	}, i.client, i.mcs, i.node)
-
 	// init aggregator
 	i.aggregator = aggregate.New(&aggregate.Config{
 		TaskId: i.config.TaskId,
 	}, i.client, i.mcs, i.node, i, i.roleManager)
 
 	// register message listener
-	// trainer
-	i.node.RegisterListener(&proto.ResponseLossMessage{}, message.NewValidateResponseMessageListener(i.trainer))
 	// aggregator
 	i.node.RegisterListener(&proto.SubmitLocalityWeightMessage{}, message.NewLocalWightMessageListener(i.aggregator))
-	// validator
-	i.node.RegisterListener(&proto.RequestLossMessage{}, message.NewValidateRequestMessageListener(i.validator))
 	// consensus
 	i.node.RegisterListener(&proto.BlockMessage{}, message.NewBlockMessageListener(i.consensus))
 	gob.Register(&proto.TaskGenesis{})
@@ -148,7 +137,7 @@ func (i *iterationManagerImpl) Start(genesis *proto.TaskGenesis) {
 
 	// if self is aggregator, start aggregate
 	if i.roleManager.AmAggregator(i.iteration) {
-		go i.aggregator.StartAggregate()
+		go i.aggregator.StartAggregate(genesis.InitWeight.Payload)
 	}
 }
 
@@ -170,6 +159,6 @@ func (i *iterationManagerImpl) NextIteration(iteration *proto.ModelIteration) {
 	go i.trainer.Train(iteration.GlobalWeight)
 
 	if i.roleManager.AmAggregator(i.iteration) {
-		go i.aggregator.StartAggregate()
+		go i.aggregator.StartAggregate(iteration.GlobalWeight)
 	}
 }

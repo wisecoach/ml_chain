@@ -12,5 +12,5 @@ type Aggregator interface {
 	//  				1. wait for local model to aggregate,
 	//  				2. aggregate the new global model
 	//  				3. send ModelIteration transaction to consensus module
-	StartAggregate()
+	StartAggregate(weight *proto.GlobalWeight)
 }

@@ -9,9 +9,7 @@ import (
 type Config struct {
 	// --------------- task config ------------------------------------------------------
 	TrainerNum   int
-	ValidatorNum int
-	NumSharePy   int // num of trainer to share a python server
-	TaskMgrNum   int // max num of manager per task
+	ShardCreator []byte
 
 	// --------------- crypto config ----------------------------------------------------
 	// private key for trainer

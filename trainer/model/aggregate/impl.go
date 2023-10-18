@@ -31,7 +31,7 @@ type aggregatorImpl struct {
 	node             *node.Node
 	iterationManager IterationMgrAdapter
 	roleManager      role.Manager
-	localModels      map[int]*proto.LocalityWeight
+	localModels      map[string]*proto.LocalityWeight
 }
 
 func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, node *node.Node,
@@ -46,7 +46,7 @@ func New(config *Config, client python.Client, mcs crypto.MessageCryptoService, 
 		node:             node,
 		iterationManager: iterationManager,
 		roleManager:      roleManager,
-		localModels:      make(map[int]*proto.LocalityWeight),
+		localModels:      make(map[string]*proto.LocalityWeight),
 	}
 	a.waitAggregate.Add(1)
 	return a
@@ -86,7 +86,7 @@ func (a *aggregatorImpl) HandleLocalModel(weight *proto.LocalityWeight) {
 	a.localModels[weight.Cindex] = weight
 }
 
-func (a *aggregatorImpl) StartAggregate() {
+func (a *aggregatorImpl) StartAggregate(weight *proto.GlobalWeight) {
 	peers := a.node.Peers()
 	trainerNum := len(peers)
 	a.logger.Info(fmt.Sprintf("wait for %d trainer's local model to aggregate", trainerNum))
@@ -97,14 +97,11 @@ func (a *aggregatorImpl) StartAggregate() {
 	a.logger.Info(fmt.Sprintf("aggregate global model begin: iteration = %d", a.iterationManager.GetIteration()))
 
 	a.lock.Lock()
-	localModels := make([]*proto.LocalityWeight, 0)
-	for _, value := range a.localModels {
-		localModels = append(localModels, value)
-	}
-	a.lock.Unlock()
-
 	// aggregate the local model by python client
-	request := &python.AggregateRequest{LocalModels: localModels}
+	request := &python.AggregateRequest{
+		LocalModels:     a.localModels,
+		LastGlobalModel: weight,
+	}
 	response, err := a.client.Aggregate(request)
 	if err != nil {
 		a.logger.Error("python aggregate failed: " + err.Error())
@@ -113,11 +110,10 @@ func (a *aggregatorImpl) StartAggregate() {
 
 	// package the global model to transaction, send to consensus model
 	globalModel := response.GlobalModel
-	globalModel.Aggregator = a.node.Self().PublicKey
 	globalModel.Iteration = a.iterationManager.GetIteration()
 
-	a.logger.Info(fmt.Sprintf("aggregate global model success: iteration: %d, acc: %f, loss: %f",
-		globalModel.Iteration, globalModel.TotalAcc, globalModel.Loss))
+	a.logger.Info(fmt.Sprintf("aggregate global model success: iteration: %d, model_hash: %s",
+		globalModel.Iteration, globalModel.ModelHash))
 
 	transaction := &proto.Transaction{
 		Parent: nil,
@@ -130,9 +126,12 @@ func (a *aggregatorImpl) StartAggregate() {
 		Payload: &proto.ModelIteration{
 			Iteration:       a.iterationManager.GetIteration(),
 			GlobalWeight:    globalModel,
-			LocalityWeights: localModels,
+			LocalityWeights: a.localModels,
+			Contributes:     response.Contributes,
 		},
 	}
+	a.lock.Unlock()
+
 	txBytes, err := json.Marshal(transaction)
 	if err != nil {
 		a.logger.Error("transaction marshal failed")
@@ -162,7 +161,7 @@ func (a *aggregatorImpl) StartAggregate() {
 
 	// clear the local model
 	a.lock.Lock()
-	a.localModels = make(map[int]*proto.LocalityWeight)
+	a.localModels = make(map[string]*proto.LocalityWeight)
 	a.lock.Unlock()
 }
 

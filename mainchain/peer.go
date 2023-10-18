@@ -79,8 +79,7 @@ func New(config *Config) *Peer {
 	p.taskManager = task.NewTaskManager(p.config.Self)
 	// init task client
 	p.taskClient = task.NewTaskClient(&task.Config{
-		ChainId:    p.config.ChainId,
-		TaskMgrNum: p.config.TaskMgrNum,
+		ChainId: p.config.ChainId,
 	}, p.taskManager, p.mcs, p.node)
 
 	// register the message listener to the node
@@ -127,10 +126,9 @@ func (p *Peer) registerBlockchainHandlers() {
 	gob.Register(&proto.TaskGenesis{})
 	p.blockManager.RegisterTxHandler(txhandler.NewTaskGenesisTxHandler(p.taskManager))
 	p.blockManager.RegisterTxHandler(txhandler.NewTaskDeployManager(&txhandler.Config{
-		ValidatorNum: p.config.ValidatorNum,
 		TrainerNum:   p.config.TrainerNum,
 		Sk:           p.config.Sk,
-		NumSharePy:   p.config.NumSharePy,
+		ShardCreator: p.config.ShardCreator,
 	}, p.node, p.mcs))
 	// register the TaskFinish transaction handler
 	gob.Register(&proto.TaskResult{})

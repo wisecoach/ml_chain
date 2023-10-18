@@ -10,10 +10,12 @@ type Config struct {
 	// --------------- task config ------------------------------------------------------
 	// task id for trainer
 	TaskId string
+	// index of client
+	Cindex string
+	// Aggregator
+	Aggregator []byte
 	// trainer number
 	TrainerNum int
-	// validator number for a local model
-	ValidatorNum int
 	// task genesis block
 	GenesisBlock *proto.Block
 	// python server api base

@@ -35,13 +35,11 @@ func main() {
 		Parent: nil,
 		Header: nil,
 		Payload: &proto.TaskGenesis{
-			ModelStructure: nil,
-			ManagerList:    [][]byte{bootstrapPeers[0].PublicKey},
+			TaskId: "task_1",
 			InitWeight: &proto.Envelope[*proto.GlobalWeight]{
 				Payload: &proto.GlobalWeight{
-					Iteration:    0,
-					WeightVector: nil,
-					Aggregator:   nil,
+					Iteration: 0,
+					ModelHash: "QmUN52MabyZmxGLZZtUF8W6MKm2gSvaxUbAh9BCnS1NPyx",
 				},
 				Signature: nil,
 			},
@@ -67,7 +65,6 @@ func main() {
 	for i := 0; i < trainerNumber; i++ {
 		config := &trainer.Config{
 			TaskId:         "task1",
-			ValidatorNum:   1,
 			GenesisBlock:   genesis,
 			ApiBaseUrl:     "http://localhost:8999",
 			Sk:             privateKeys[i],

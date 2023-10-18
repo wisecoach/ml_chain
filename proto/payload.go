@@ -27,7 +27,8 @@ type TaskResult struct {
 type ModelIteration struct {
 	Iteration       int
 	GlobalWeight    *GlobalWeight
-	LocalityWeights []*LocalityWeight
+	LocalityWeights map[string]*LocalityWeight
+	Contributes     map[string]float32
 }
 
 type ModelStructure struct {

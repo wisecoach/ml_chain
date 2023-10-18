@@ -63,9 +63,10 @@ func New(config *Config) *Trainer {
 
 	// init the iteration manager
 	t.iterationManager = iteration.New(&iteration.Config{
-		ValidatorNum: t.config.ValidatorNum,
-		TaskId:       t.config.TaskId,
-		ApiBaseUrl:   t.config.ApiBaseUrl,
+		TaskId:     t.config.TaskId,
+		Cindex:     t.config.Cindex,
+		Aggregator: t.config.Aggregator,
+		ApiBaseUrl: t.config.ApiBaseUrl,
 	}, t.blockManager, t.node, t.mcs)
 
 	// register the message listener to the node

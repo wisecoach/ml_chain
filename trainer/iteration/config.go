@@ -2,7 +2,7 @@ package iteration
 
 type Config struct {
 	TaskId     string
-	Cindex     int
+	Cindex     string
 	Aggregator []byte
 	ApiBaseUrl string
 }
