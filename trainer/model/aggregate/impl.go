@@ -99,6 +99,7 @@ func (a *aggregatorImpl) StartAggregate(weight *proto.GlobalWeight) {
 	a.lock.Lock()
 	// aggregate the local model by python client
 	request := &python.AggregateRequest{
+		Iteration:       a.iterationManager.GetIteration(),
 		LocalModels:     a.localModels,
 		LastGlobalModel: weight,
 	}

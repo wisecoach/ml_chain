@@ -129,6 +129,7 @@ func (p *Peer) registerBlockchainHandlers() {
 		TrainerNum:   p.config.TrainerNum,
 		Sk:           p.config.Sk,
 		ShardCreator: p.config.ShardCreator,
+		ApiBaseUrl:   p.config.ApiBaseUrl,
 	}, p.node, p.mcs))
 	// register the TaskFinish transaction handler
 	gob.Register(&proto.TaskResult{})

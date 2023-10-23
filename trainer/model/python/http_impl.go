@@ -6,6 +6,7 @@ import (
 	"github.com/wisecoach/ml_chain/proto"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 type httpPythonClient struct {
@@ -71,6 +72,7 @@ func (h *httpPythonClient) Validate(request *ValidateRequest) (*ValidateResponse
 
 func (h *httpPythonClient) Train(request *TrainRequest) (*TrainResponse, error) {
 	params := make(map[string]string)
+	params["iteration"] = strconv.Itoa(request.Iteration)
 	params["cindex"] = request.Cindex
 	params["model_hash"] = request.GlobalModel.ModelHash
 	respBodyBytes, err := h.get("/train", params)

@@ -1,11 +1,11 @@
+import argparse
 import copy
-import io
+import logging
+import sys
+import time
+from logging import FileHandler
 
-from flask import Flask, request
-from flask_cors import CORS
-import torch
 from flamby.strategies.utils import DataLoaderWithMemory
-# 2 lines of code to change to switch to another dataset
 from flamby.datasets.fed_isic2019 import (
     BATCH_SIZE,
     LR,
@@ -24,15 +24,23 @@ from flamby.benchmarks.benchmark_utils import set_dataset_specific_config
 from flamby.benchmarks.benchmark_utils import evaluate_model_on_local_and_pooled_tests
 from ipfs import save_model, load_model, save_update, load_update
 
-
+print(sys.path)
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+file_handler = FileHandler(filename=f'/mnt/E/blockchain/ml_chain/logs/python/server-{time.time()}.log')
+formatter = logging.Formatter('%(asctime)s\t%(levelname)s\t%(message)s')
+file_handler.setFormatter(formatter)
+app.logger.setLevel(logging.INFO)
+app.logger.addHandler(file_handler)
 
+local_round = int(sys.argv[1])
 
 @app.route('/train', methods=['GET'])
 def train():
+    iteration = request.args.get("iteration")
     cindex = request.args.get("cindex")
     model_hash = request.args.get("model_hash")
+    app.logger.info(f'begin to train: cindex={cindex}, model_hash={model_hash}, iteration={iteration}')
     print("cindex:", cindex)
     print("model_hash", model_hash)
     train_dataset = FedDataset(center=int(cindex), train=True, pooled=False)
@@ -43,16 +51,17 @@ def train():
     lossfunc = BaselineLoss()
     model = Baseline()
     model.load_state_dict(load_model(model_hash))
+    app.logger.info(f'end to load model: cindex={cindex}, model_hash={model_hash}')
     if torch.cuda.is_available():
         model.cuda()
     optimizer = Optimizer(model.parameters(), lr=LR)
-    
+
     local_previous_state = [
-            param.cpu().detach().clone().numpy() for param in model.parameters()
-        ]
-    
+        param.cpu().detach().clone().numpy() for param in model.parameters()
+    ]
+
     # Traditional pytorch training loop
-    local_train_num = 1
+    local_train_num = local_round
     for epoch in range(0, local_train_num):
         print("本地运行轮次数：", epoch)
         for idx, (X, y) in enumerate(train_dataloader):
@@ -63,23 +72,26 @@ def train():
             loss.backward()
             optimizer.step()
     local_next_state = [
-            param.cpu().detach().clone().numpy() for param in model.parameters()
-        ]
-    
+        param.cpu().detach().clone().numpy() for param in model.parameters()
+    ]
+
     # Recovering updates
     updates = [
         (new - old).tolist() for new, old in zip(local_next_state, local_previous_state)
     ]
+    app.logger.info(f'train model success: cindex={cindex}, model_hash={model_hash}, iteration={iteration}')
     del local_next_state
     new_model_hash = save_model(model.state_dict())
-        
+
     update_hash = save_update(updates)
-    print({"local_model": {"cindex": cindex, "n_samples": size, "model_hash": new_model_hash, "update_hash": update_hash}})
+    app.logger.info(f'save model success: cindex={cindex}, model_hash={model_hash}, iteration={iteration}')
+    # print({"local_model": {"cindex": cindex, "n_samples": size, "model_hash": new_model_hash, "update_hash": update_hash}})
     return {"local_model": {"n_samples": size, "model_hash": new_model_hash, "update_hash": update_hash}}
 
 
 @app.route('/aggregate', methods=['POST'])
 def aggregate():
+    app.logger.info("begin to evaluate")
     evaluate_func, batch_size_test, compute_ensemble_perf = set_dataset_specific_config(
         "fed_isic2019", compute_ensemble_perf=False
     )
@@ -223,6 +235,9 @@ def aggregate():
         contributes[str(i)] = contribute
         contribute_sum += contribute
 
+    app.logger.info(f"end to evaluate, iteration={req['iteration']}")
+    app.logger.info(f"begin to aggregate, iteration={req['iteration']}")
+
     # 根据贡献聚合全局模型
     aggregated_delta_weights = [
         0.0 for _ in range(len(local_updates[0]["updates"]))
@@ -244,7 +259,10 @@ def aggregate():
     for old_param, new_param in zip(global_model_previous.parameters(), aggregated_delta_weights):
         old_param.data += torch.from_numpy(new_param).to(old_param.device)
 
+    app.logger.info(f"end to aggregate, iteration={req['iteration']}")
+    app.logger.info(f"begin to save global model, iteration={req['iteration']}")
     model_hash = save_model(global_model_previous.state_dict())
+    app.logger.info(f"end to save global model, iteration={req['iteration']}")
 
     # 计算贡献全局模型的精度
     (
@@ -263,4 +281,5 @@ def aggregate():
 
 
 if __name__ == "__main__":
-    app.run(port=6006, threaded=False)
+    app.run(port=6006, threaded=False, debug=True)
+    app.logger.info("start app")

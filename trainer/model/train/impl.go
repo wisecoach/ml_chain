@@ -58,7 +58,11 @@ func (l *localTrainerImpl) Train(weight *proto.GlobalWeight) {
 	// train the global model
 	l.logger.Info(fmt.Sprintf("begin to train the global model, iteration: %d", weight.Iteration))
 
-	trainResponse, err := l.client.Train(&python.TrainRequest{Cindex: l.cindex, GlobalModel: weight})
+	trainResponse, err := l.client.Train(&python.TrainRequest{
+		Cindex:      l.cindex,
+		Iteration:   l.iterationManager.GetIteration(),
+		GlobalModel: weight,
+	})
 	if err != nil {
 		l.logger.Error("train failed, err: " + err.Error())
 		return

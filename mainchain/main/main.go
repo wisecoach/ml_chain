@@ -14,9 +14,14 @@ import (
 
 func main() {
 	testArg := os.Args[1]
+	testTime := os.Args[2]
 	switch testArg {
 	case "1":
-		test1()
+		minute, err := strconv.Atoi(testTime)
+		if err != nil {
+			return
+		}
+		test1(minute)
 	case "2":
 		taskArg := os.Args[2]
 		taskNum, err := strconv.Atoi(taskArg)
@@ -30,7 +35,7 @@ func main() {
 }
 
 // 40 trainer 20 validator 5 share 1 task
-func test1() {
+func test1(testMinute int) {
 	trainerNum := 6
 
 	csp, _ := sw.NewBCCSP()
@@ -109,7 +114,7 @@ func test1() {
 	}
 
 	select {
-	case <-time.After(time.Second * 1800):
+	case <-time.After(time.Duration(testMinute) * time.Minute):
 	}
 }
 
@@ -189,7 +194,6 @@ func test2(taskNum int) {
 							Signature: nil,
 						},
 					}})
-
 				}
 			}
 		}()

@@ -88,8 +88,13 @@ func (t *TaskDeployManager) HandleTx(tx *proto.Transaction) {
 		}
 
 		for i := 0; i < trainerNumber; i++ {
-			apiPort := strconv.Itoa(6006)
-			apiBaseUrl := "http://127.0.0.1:" + apiPort
+			taskIndex := taskGenesis.TaskId[4:]
+			index, err := strconv.Atoi(taskIndex)
+			if err != nil {
+				return
+			}
+			apiPort := 6001 + index
+			apiBaseUrl := "http://127.0.0.1:" + strconv.Itoa(apiPort)
 			config := &trainer.Config{
 				TaskId:              taskGenesis.TaskId,
 				Cindex:              strconv.Itoa(i),
