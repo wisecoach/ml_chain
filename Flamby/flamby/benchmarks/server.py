@@ -141,6 +141,7 @@ def aggregate():
     for id in client_id:
         print("id:", id)
         updates = load_update(local_models[id]["update_hash"])
+
         #list转numpy
         nd_updates = []
         for arr in updates:
@@ -281,5 +282,5 @@ def aggregate():
 
 
 if __name__ == "__main__":
-    app.run(port=6006, threaded=False, debug=True)
+    app.run(port=6001, threaded=False, debug=True)
     app.logger.info("start app")

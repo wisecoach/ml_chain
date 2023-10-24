@@ -14,9 +14,9 @@ import (
 
 func main() {
 	testArg := os.Args[1]
-	testTime := os.Args[2]
 	switch testArg {
 	case "1":
+		testTime := os.Args[2]
 		minute, err := strconv.Atoi(testTime)
 		if err != nil {
 			return
@@ -24,12 +24,14 @@ func main() {
 		test1(minute)
 	case "2":
 		taskArg := os.Args[2]
+		testTime := os.Args[3]
 		taskNum, err := strconv.Atoi(taskArg)
+		minute, err := strconv.Atoi(testTime)
 		println("任务数:" + taskArg)
 		if err != nil {
 			return
 		}
-		test2(taskNum)
+		test2(taskNum, minute)
 	}
 
 }
@@ -119,7 +121,7 @@ func test1(testMinute int) {
 }
 
 // 3 trainer 1 validator 3 share 1-10 task
-func test2(taskNum int) {
+func test2(taskNum int, minute int) {
 	trainerNum := 6
 	peerNumber := 1
 
@@ -200,6 +202,6 @@ func test2(taskNum int) {
 	}
 
 	select {
-	case <-time.After(time.Second * 180):
+	case <-time.After(time.Minute * time.Duration(minute)):
 	}
 }

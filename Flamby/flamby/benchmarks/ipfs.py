@@ -43,5 +43,15 @@ def load_update(update_hash):
     return json.load(buffer)
 
 
+def remove_model(model_hash):
+    """
+        删除ipfs中的模型权重
+    """
+    client = connect()
+    model_bytes = client.remove(model_hash)
+    buffer = io.BytesIO(model_bytes)
+    return torch.load(buffer)
+
+
 def connect():
     return ipfsclient.connect('/ip4/0.0.0.0/tcp/5001/http')
