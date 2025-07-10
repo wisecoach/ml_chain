@@ -1,0 +1,119 @@
+1.693637315863016e+09	info	/mnt/E/blockchain/ml_chain/trainer/trainer.go:110	begin to listen 127.0.0.1:10701	{"id": "127.0.0.1:10701"}
+1.6936373158631952e+09	error	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123	failed to dial peer 127.0.0.1:10702, err = dial tcp 127.0.0.1:10702: connect: connection refused, and begin to retry	{"id": "127.0.0.1:10701"}
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).sendToEndpoint
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).Send.func1
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:114
+1.6936373158639343e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10700	{"id": "127.0.0.1:10701"}
+1.6936373168646755e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10702	{"id": "127.0.0.1:10701"}
+1.6936373168649237e+09	info	/mnt/E/blockchain/ml_chain/trainer/trainer.go:83	init trainer success, and begin to handle the task	{"id": "127.0.0.1:10701"}
+1.693637316865055e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:86	start to manage iteration: 1	{"id": "127.0.0.1:10701"}
+1.6936373276235018e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 0	{"id": "127.0.0.1:10701"}
+1.6936373312929337e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 1, acc = 63.799999, loss = 0.016541, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373313665721e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373333032513e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373352183652e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 2	{"id": "127.0.0.1:10701"}
+1.693637335219231e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 1	{"id": "127.0.0.1:10701"}
+1.693637339188885e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 2, acc = 71.500000, loss = 0.013276, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373392381768e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373392516286e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 2	{"id": "127.0.0.1:10701"}
+1.6936373412126431e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 2, acc = 72.000000, loss = 0.012431	{"id": "127.0.0.1:10701"}
+1.6936373412608304e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373441478372e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 3	{"id": "127.0.0.1:10701"}
+1.6936373441483755e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 2	{"id": "127.0.0.1:10701"}
+1.6936373479519176e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 3, acc = 75.800003, loss = 0.011274, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373480037842e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373491470149e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637352849136e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 4	{"id": "127.0.0.1:10701"}
+1.6936373528498619e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 3	{"id": "127.0.0.1:10701"}
+1.693637356777192e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 4, acc = 76.300003, loss = 0.013388, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373568279803e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373568501487e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 4	{"id": "127.0.0.1:10701"}
+1.693637358782376e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 4, acc = 76.199997, loss = 0.013320	{"id": "127.0.0.1:10701"}
+1.6936373598822849e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637361496988e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 5	{"id": "127.0.0.1:10701"}
+1.6936373614977593e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 4	{"id": "127.0.0.1:10701"}
+1.6936373654317844e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 5	{"id": "127.0.0.1:10701"}
+1.693637366314912e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 5, acc = 81.199997, loss = 0.010827, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373663704193e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637367143371e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 5, acc = 81.400002, loss = 0.012232	{"id": "127.0.0.1:10701"}
+1.6936373671943054e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 5	{"id": "127.0.0.1:10701"}
+1.6936373682008295e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 5, acc = 81.900002, loss = 0.011200	{"id": "127.0.0.1:10701"}
+1.6936373682547405e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637369913755e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 6	{"id": "127.0.0.1:10701"}
+1.6936373699146087e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 5	{"id": "127.0.0.1:10701"}
+1.6936373737774677e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 6, acc = 81.699997, loss = 0.011166, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373738275373e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 6	{"id": "127.0.0.1:10701"}
+1.6936373738682623e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373758898969e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 6, acc = 79.000000, loss = 0.013222	{"id": "127.0.0.1:10701"}
+1.6936373769299855e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373786698892e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 7	{"id": "127.0.0.1:10701"}
+1.6936373786706076e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 6	{"id": "127.0.0.1:10701"}
+1.6936373825971107e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 7, acc = 76.000000, loss = 0.016880, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373826725705e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373837993474e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373877767174e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 8	{"id": "127.0.0.1:10701"}
+1.6936373877774088e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 7	{"id": "127.0.0.1:10701"}
+1.693637391669722e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 8, acc = 83.599998, loss = 0.011014, data size = 1000	{"id": "127.0.0.1:10701"}
+1.693637391750265e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373949575958e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936373965783432e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 9	{"id": "127.0.0.1:10701"}
+1.6936373965791736e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 8	{"id": "127.0.0.1:10701"}
+1.693637399152352e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 9, acc = 82.400002, loss = 0.012413, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936373992012641e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374013061242e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374051085675e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 10	{"id": "127.0.0.1:10701"}
+1.693637405109219e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 9	{"id": "127.0.0.1:10701"}
+1.69363740771388e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 10, acc = 85.400002, loss = 0.010330, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936374077630248e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637409967398e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374135925064e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 11	{"id": "127.0.0.1:10701"}
+1.6936374135934522e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 10	{"id": "127.0.0.1:10701"}
+1.693637416252471e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 11	{"id": "127.0.0.1:10701"}
+1.6936374183600137e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 11, acc = 82.699997, loss = 0.014269	{"id": "127.0.0.1:10701"}
+1.693637418472735e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 11, acc = 86.099998, loss = 0.010028, data size = 1000	{"id": "127.0.0.1:10701"}
+1.693637418522457e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637418535597e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 11	{"id": "127.0.0.1:10701"}
+1.6936374202888544e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 11, acc = 85.199997, loss = 0.010329	{"id": "127.0.0.1:10701"}
+1.6936374203397295e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374220224164e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 12	{"id": "127.0.0.1:10701"}
+1.6936374220228534e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 11	{"id": "127.0.0.1:10701"}
+1.6936374259986353e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 12, acc = 86.500000, loss = 0.009422, data size = 1000	{"id": "127.0.0.1:10701"}
+1.69363742604619e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374260621345e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 12	{"id": "127.0.0.1:10701"}
+1.6936374271593592e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 12, acc = 87.699997, loss = 0.008415	{"id": "127.0.0.1:10701"}
+1.6936374272068079e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 12	{"id": "127.0.0.1:10701"}
+1.6936374282283854e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 12, acc = 85.800003, loss = 0.011615	{"id": "127.0.0.1:10701"}
+1.6936374282801304e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 12	{"id": "127.0.0.1:10701"}
+1.6936374293002584e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 12, acc = 86.000000, loss = 0.010534	{"id": "127.0.0.1:10701"}
+1.6936374293652182e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374314373257e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 13	{"id": "127.0.0.1:10701"}
+1.693637431440183e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 12	{"id": "127.0.0.1:10701"}
+1.693637436265568e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 13, acc = 85.900002, loss = 0.010310, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936374363171036e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374382471855e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637439910719e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 14	{"id": "127.0.0.1:10701"}
+1.6936374399112046e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 13	{"id": "127.0.0.1:10701"}
+1.6936374437307494e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 14, acc = 86.099998, loss = 0.009097, data size = 1000	{"id": "127.0.0.1:10701"}
+1.693637443778599e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374447943168e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 14	{"id": "127.0.0.1:10701"}
+1.6936374466361458e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 14, acc = 83.099998, loss = 0.013222	{"id": "127.0.0.1:10701"}
+1.6936374466885068e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374484014254e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 15	{"id": "127.0.0.1:10701"}
+1.6936374484018936e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 14	{"id": "127.0.0.1:10701"}
+1.6936374522091877e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 15, acc = 86.000000, loss = 0.009660, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936374522567847e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374541126914e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637457041696e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 16	{"id": "127.0.0.1:10701"}
+1.6936374570467057e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 15	{"id": "127.0.0.1:10701"}
+1.693637461028049e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 16, acc = 87.900002, loss = 0.008808, data size = 1000	{"id": "127.0.0.1:10701"}
+1.6936374610793233e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:103	begin to wait for validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.693637461091727e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 16	{"id": "127.0.0.1:10701"}
+1.6936374622103174e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 16, acc = 88.000000, loss = 0.010557	{"id": "127.0.0.1:10701"}
+1.6936374622739387e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 16	{"id": "127.0.0.1:10701"}
+1.6936374632731662e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 16, acc = 87.599998, loss = 0.010096	{"id": "127.0.0.1:10701"}
+1.693637463329811e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:44	begin to validate the local model, iteration: 16	{"id": "127.0.0.1:10701"}
+1.6936374643394287e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/validate/impl.go:52	validate the local model success: iteration = 16, acc = 86.800003, loss = 0.010194	{"id": "127.0.0.1:10701"}
+1.6936374643994913e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:105	receive all validate response: num = 1	{"id": "127.0.0.1:10701"}
+1.6936374660752208e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 17	{"id": "127.0.0.1:10701"}
+1.6936374660756147e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 16	{"id": "127.0.0.1:10701"}

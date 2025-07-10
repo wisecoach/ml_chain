@@ -1,0 +1,358 @@
+1.6970265527360392e+09	info	/mnt/E/blockchain/ml_chain/trainer/trainer.go:110	begin to listen 127.0.0.1:10005	{"id": "127.0.0.1:10005"}
+1.6970265527365782e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10003	{"id": "127.0.0.1:10005"}
+1.6970265527360113e+09	error	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123	failed to dial peer 127.0.0.1:10009, err = dial tcp 127.0.0.1:10009: connect: connection refused, and begin to retry	{"id": "127.0.0.1:10005"}
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).sendToEndpoint
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).Send.func1
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:114
+1.6970265527360673e+09	error	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123	failed to dial peer 127.0.0.1:10008, err = dial tcp 127.0.0.1:10008: connect: connection refused, and begin to retry	{"id": "127.0.0.1:10005"}
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).sendToEndpoint
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).Send.func1
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:114
+1.6970265527553208e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10002	{"id": "127.0.0.1:10005"}
+1.6970265527363174e+09	error	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123	failed to dial peer 127.0.0.1:10003, err = dial tcp 127.0.0.1:10003: connect: connection refused, and begin to retry	{"id": "127.0.0.1:10005"}
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).sendToEndpoint
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:123
+github.com/wisecoach/ml_chain/comm/comm.(*commImpl).Send.func1
+	/mnt/E/blockchain/ml_chain/comm/comm/comm_impl.go:114
+1.6970265527652326e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10009	{"id": "127.0.0.1:10005"}
+1.6970265527659037e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10004	{"id": "127.0.0.1:10005"}
+1.6970265527662508e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10006	{"id": "127.0.0.1:10005"}
+1.6970265527665384e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10000	{"id": "127.0.0.1:10005"}
+1.6970265527668e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10008	{"id": "127.0.0.1:10005"}
+1.6970265527670434e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10007	{"id": "127.0.0.1:10005"}
+1.6970265527671964e+09	info	/mnt/E/blockchain/ml_chain/trainer/message/discovery.go:34	register peer: 127.0.0.1:10001	{"id": "127.0.0.1:10005"}
+1.6970265527675393e+09	info	/mnt/E/blockchain/ml_chain/trainer/trainer.go:83	init trainer success, and begin to handle the task	{"id": "127.0.0.1:10005"}
+1.6970265527677186e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:86	start to manage iteration: 1	{"id": "127.0.0.1:10005"}
+1.6970265633148131e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 0	{"id": "127.0.0.1:10005"}
+1.6970265700510044e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 1, acc = 74.400002, loss = 0.023047, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970265721166894e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 2	{"id": "127.0.0.1:10005"}
+1.6970265721171598e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 1	{"id": "127.0.0.1:10005"}
+1.6970265768758438e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 2, acc = 79.800003, loss = 0.016437, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970265800599988e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 3	{"id": "127.0.0.1:10005"}
+1.697026580060673e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 2	{"id": "127.0.0.1:10005"}
+1.697026585951797e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 3, acc = 83.199997, loss = 0.011828, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970265879947774e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 4	{"id": "127.0.0.1:10005"}
+1.6970265879952788e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 3	{"id": "127.0.0.1:10005"}
+1.697026592749974e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 4, acc = 84.199997, loss = 0.009520, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970265959441152e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 5	{"id": "127.0.0.1:10005"}
+1.697026595944915e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 4	{"id": "127.0.0.1:10005"}
+1.697026601832972e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 5, acc = 85.099998, loss = 0.008152, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266038525393e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 6	{"id": "127.0.0.1:10005"}
+1.6970266038533359e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 5	{"id": "127.0.0.1:10005"}
+1.6970266097709033e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 6, acc = 86.099998, loss = 0.007368, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266118291507e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 7	{"id": "127.0.0.1:10005"}
+1.697026611829534e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 6	{"id": "127.0.0.1:10005"}
+1.697026617708739e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 7, acc = 86.599998, loss = 0.006896, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026619762825e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 8	{"id": "127.0.0.1:10005"}
+1.6970266197632298e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 7	{"id": "127.0.0.1:10005"}
+1.6970266256380644e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 8, acc = 86.500000, loss = 0.006610, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026627722518e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 9	{"id": "127.0.0.1:10005"}
+1.697026627723279e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 8	{"id": "127.0.0.1:10005"}
+1.6970266336670978e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 9, acc = 86.300003, loss = 0.006436, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266357107694e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 10	{"id": "127.0.0.1:10005"}
+1.6970266357113616e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 9	{"id": "127.0.0.1:10005"}
+1.6970266416303256e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 10, acc = 86.599998, loss = 0.006308, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026643691689e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 11	{"id": "127.0.0.1:10005"}
+1.6970266436920698e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 10	{"id": "127.0.0.1:10005"}
+1.6970266495764356e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 11, acc = 86.300003, loss = 0.006230, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266516286974e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 12	{"id": "127.0.0.1:10005"}
+1.6970266516294513e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 11	{"id": "127.0.0.1:10005"}
+1.6970266575322535e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 12, acc = 86.800003, loss = 0.006162, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026659594453e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 13	{"id": "127.0.0.1:10005"}
+1.6970266595951831e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 12	{"id": "127.0.0.1:10005"}
+1.6970266654633987e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 13, acc = 86.599998, loss = 0.006091, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266675653753e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 14	{"id": "127.0.0.1:10005"}
+1.6970266675660272e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 13	{"id": "127.0.0.1:10005"}
+1.6970266722926853e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 14, acc = 87.300003, loss = 0.006043, data size = 1000	{"id": "127.0.0.1:10005"}
+1.69702667549141e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 15	{"id": "127.0.0.1:10005"}
+1.6970266754922063e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 14	{"id": "127.0.0.1:10005"}
+1.6970266779582307e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 15, acc = 87.000000, loss = 0.005949, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266834369645e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 16	{"id": "127.0.0.1:10005"}
+1.697026683437431e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 15	{"id": "127.0.0.1:10005"}
+1.697026689304229e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 16, acc = 87.599998, loss = 0.005816, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266913417106e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 17	{"id": "127.0.0.1:10005"}
+1.6970266913425114e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 16	{"id": "127.0.0.1:10005"}
+1.6970266972418365e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 17, acc = 87.599998, loss = 0.005708, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970266992946439e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 18	{"id": "127.0.0.1:10005"}
+1.6970266992950394e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 17	{"id": "127.0.0.1:10005"}
+1.697026705210251e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 18, acc = 88.300003, loss = 0.005552, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267072846303e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 19	{"id": "127.0.0.1:10005"}
+1.6970267072850394e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 18	{"id": "127.0.0.1:10005"}
+1.6970267132282605e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 19, acc = 88.599998, loss = 0.005405, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267152807066e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 20	{"id": "127.0.0.1:10005"}
+1.697026715281115e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 19	{"id": "127.0.0.1:10005"}
+1.6970267200453043e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 20, acc = 89.199997, loss = 0.005224, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267232363114e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 21	{"id": "127.0.0.1:10005"}
+1.6970267232367175e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 20	{"id": "127.0.0.1:10005"}
+1.6970267291523855e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 21, acc = 89.300003, loss = 0.005084, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267312129092e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 22	{"id": "127.0.0.1:10005"}
+1.6970267312133038e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 21	{"id": "127.0.0.1:10005"}
+1.6970267359544804e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 22, acc = 89.900002, loss = 0.004903, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267391484835e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 23	{"id": "127.0.0.1:10005"}
+1.697026739148889e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 22	{"id": "127.0.0.1:10005"}
+1.6970267450388453e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 23, acc = 90.099998, loss = 0.004757, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267471478572e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 24	{"id": "127.0.0.1:10005"}
+1.6970267471482472e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 23	{"id": "127.0.0.1:10005"}
+1.6970267518820076e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 24, acc = 90.400002, loss = 0.004587, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267551028442e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 25	{"id": "127.0.0.1:10005"}
+1.697026755103636e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 24	{"id": "127.0.0.1:10005"}
+1.6970267609779646e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 25, acc = 90.900002, loss = 0.004435, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026763052163e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 26	{"id": "127.0.0.1:10005"}
+1.6970267630525517e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 25	{"id": "127.0.0.1:10005"}
+1.6970267689154096e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 26, acc = 91.400002, loss = 0.004291, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267709820054e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 27	{"id": "127.0.0.1:10005"}
+1.6970267709826097e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 26	{"id": "127.0.0.1:10005"}
+1.6970267769108915e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 27, acc = 91.500000, loss = 0.004180, data size = 1000	{"id": "127.0.0.1:10005"}
+1.69702677893218e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 28	{"id": "127.0.0.1:10005"}
+1.697026778932575e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 27	{"id": "127.0.0.1:10005"}
+1.6970267848563125e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 28, acc = 92.000000, loss = 0.004043, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267868969505e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 29	{"id": "127.0.0.1:10005"}
+1.6970267868975718e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 28	{"id": "127.0.0.1:10005"}
+1.69702679277078e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 29, acc = 92.400002, loss = 0.003933, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970267948148446e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 30	{"id": "127.0.0.1:10005"}
+1.6970267948152492e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 29	{"id": "127.0.0.1:10005"}
+1.6970268007439966e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 30, acc = 92.500000, loss = 0.003828, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268027903206e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 31	{"id": "127.0.0.1:10005"}
+1.6970268027907095e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 30	{"id": "127.0.0.1:10005"}
+1.6970268086748288e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 31, acc = 92.599998, loss = 0.003736, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268107467928e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 32	{"id": "127.0.0.1:10005"}
+1.6970268107471826e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 31	{"id": "127.0.0.1:10005"}
+1.6970268155016742e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 32, acc = 92.800003, loss = 0.003637, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268187218025e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 33	{"id": "127.0.0.1:10005"}
+1.6970268187222567e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 32	{"id": "127.0.0.1:10005"}
+1.697026824591907e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 33, acc = 92.900002, loss = 0.003548, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026826676389e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 34	{"id": "127.0.0.1:10005"}
+1.6970268266771715e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 33	{"id": "127.0.0.1:10005"}
+1.6970268325583863e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 34, acc = 93.000000, loss = 0.003481, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026834644206e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 35	{"id": "127.0.0.1:10005"}
+1.6970268346448216e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 34	{"id": "127.0.0.1:10005"}
+1.697026840541333e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 35, acc = 93.300003, loss = 0.003396, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268425717196e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 36	{"id": "127.0.0.1:10005"}
+1.6970268425729632e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 35	{"id": "127.0.0.1:10005"}
+1.6970268484642348e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 36, acc = 93.300003, loss = 0.003327, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268505017436e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 37	{"id": "127.0.0.1:10005"}
+1.6970268505025566e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 36	{"id": "127.0.0.1:10005"}
+1.6970268563782532e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 37, acc = 93.400002, loss = 0.003250, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268584695177e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 38	{"id": "127.0.0.1:10005"}
+1.6970268584699361e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 37	{"id": "127.0.0.1:10005"}
+1.69702686439354e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 38, acc = 93.400002, loss = 0.003180, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268664276943e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 39	{"id": "127.0.0.1:10005"}
+1.6970268664284205e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 38	{"id": "127.0.0.1:10005"}
+1.6970268723389308e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 39, acc = 93.500000, loss = 0.003114, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026874378813e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 40	{"id": "127.0.0.1:10005"}
+1.6970268743795147e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 39	{"id": "127.0.0.1:10005"}
+1.6970268791225104e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 40, acc = 93.599998, loss = 0.003056, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268824046037e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 41	{"id": "127.0.0.1:10005"}
+1.6970268824049761e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 40	{"id": "127.0.0.1:10005"}
+1.6970268882988112e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 41, acc = 93.699997, loss = 0.003008, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970268903451781e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 42	{"id": "127.0.0.1:10005"}
+1.6970268903458865e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 41	{"id": "127.0.0.1:10005"}
+1.6970268962164953e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 42, acc = 93.699997, loss = 0.002963, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026898317814e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 43	{"id": "127.0.0.1:10005"}
+1.697026898318315e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 42	{"id": "127.0.0.1:10005"}
+1.6970269042583377e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 43, acc = 93.800003, loss = 0.002893, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269063124607e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 44	{"id": "127.0.0.1:10005"}
+1.69702690631313e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 43	{"id": "127.0.0.1:10005"}
+1.697026912211097e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 44, acc = 94.099998, loss = 0.002853, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269142519224e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 45	{"id": "127.0.0.1:10005"}
+1.6970269142526257e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 44	{"id": "127.0.0.1:10005"}
+1.69702691898779e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 45, acc = 94.300003, loss = 0.002797, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026922215371e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 46	{"id": "127.0.0.1:10005"}
+1.6970269222159374e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 45	{"id": "127.0.0.1:10005"}
+1.6970269280904698e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 46, acc = 94.300003, loss = 0.002751, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269301505697e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 47	{"id": "127.0.0.1:10005"}
+1.6970269301512687e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 46	{"id": "127.0.0.1:10005"}
+1.697026936060104e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 47, acc = 94.300003, loss = 0.002710, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269381130059e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 48	{"id": "127.0.0.1:10005"}
+1.697026938113684e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 47	{"id": "127.0.0.1:10005"}
+1.6970269440153801e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 48, acc = 94.400002, loss = 0.002667, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269460942447e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 49	{"id": "127.0.0.1:10005"}
+1.6970269460948617e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 48	{"id": "127.0.0.1:10005"}
+1.6970269520003295e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 49, acc = 94.400002, loss = 0.002633, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269540379608e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 50	{"id": "127.0.0.1:10005"}
+1.6970269540385876e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 49	{"id": "127.0.0.1:10005"}
+1.6970269599067664e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 50, acc = 94.599998, loss = 0.002589, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269619457672e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 51	{"id": "127.0.0.1:10005"}
+1.697026961946483e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 50	{"id": "127.0.0.1:10005"}
+1.6970269678295636e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 51, acc = 94.900002, loss = 0.002561, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269698599694e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 52	{"id": "127.0.0.1:10005"}
+1.697026969860368e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 51	{"id": "127.0.0.1:10005"}
+1.6970269757796278e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 52, acc = 94.900002, loss = 0.002533, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269778136857e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 53	{"id": "127.0.0.1:10005"}
+1.6970269778142395e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 52	{"id": "127.0.0.1:10005"}
+1.6970269802873755e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 53, acc = 94.900002, loss = 0.002504, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697026985776438e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 54	{"id": "127.0.0.1:10005"}
+1.6970269857770345e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 53	{"id": "127.0.0.1:10005"}
+1.6970269917118087e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 54, acc = 95.000000, loss = 0.002481, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970269937427766e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 55	{"id": "127.0.0.1:10005"}
+1.6970269937431588e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 54	{"id": "127.0.0.1:10005"}
+1.6970269985281444e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 55, acc = 95.099998, loss = 0.002451, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270017448452e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 56	{"id": "127.0.0.1:10005"}
+1.6970270017453132e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 55	{"id": "127.0.0.1:10005"}
+1.6970270076377804e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 56, acc = 95.099998, loss = 0.002419, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027009705193e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 57	{"id": "127.0.0.1:10005"}
+1.6970270097058554e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 56	{"id": "127.0.0.1:10005"}
+1.6970270155699186e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 57, acc = 95.099998, loss = 0.002388, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027017622813e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 58	{"id": "127.0.0.1:10005"}
+1.6970270176234248e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 57	{"id": "127.0.0.1:10005"}
+1.6970270235365632e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 58, acc = 95.199997, loss = 0.002365, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027025608829e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 59	{"id": "127.0.0.1:10005"}
+1.6970270256094515e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 58	{"id": "127.0.0.1:10005"}
+1.697027031478743e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 59, acc = 95.300003, loss = 0.002343, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270335876534e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 60	{"id": "127.0.0.1:10005"}
+1.6970270335880406e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 59	{"id": "127.0.0.1:10005"}
+1.6970270394969647e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 60, acc = 95.300003, loss = 0.002316, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270415505602e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 61	{"id": "127.0.0.1:10005"}
+1.6970270415510566e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 60	{"id": "127.0.0.1:10005"}
+1.6970270462880836e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 61, acc = 95.300003, loss = 0.002281, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270495007112e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 62	{"id": "127.0.0.1:10005"}
+1.6970270495013082e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 61	{"id": "127.0.0.1:10005"}
+1.6970270542536538e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 62, acc = 95.300003, loss = 0.002260, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270574461348e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 63	{"id": "127.0.0.1:10005"}
+1.6970270574467819e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 62	{"id": "127.0.0.1:10005"}
+1.6970270633422742e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 63, acc = 95.300003, loss = 0.002236, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270653957841e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 64	{"id": "127.0.0.1:10005"}
+1.6970270653966792e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 63	{"id": "127.0.0.1:10005"}
+1.697027071277153e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 64, acc = 95.300003, loss = 0.002207, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027073336106e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 65	{"id": "127.0.0.1:10005"}
+1.697027073336835e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 64	{"id": "127.0.0.1:10005"}
+1.697027079235038e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 65, acc = 95.300003, loss = 0.002189, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270812962155e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 66	{"id": "127.0.0.1:10005"}
+1.6970270812966046e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 65	{"id": "127.0.0.1:10005"}
+1.6970270871692035e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 66, acc = 95.400002, loss = 0.002159, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270892658412e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 67	{"id": "127.0.0.1:10005"}
+1.6970270892665458e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 66	{"id": "127.0.0.1:10005"}
+1.6970270952318115e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 67, acc = 95.400002, loss = 0.002142, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970270973000832e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 68	{"id": "127.0.0.1:10005"}
+1.6970270973004773e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 67	{"id": "127.0.0.1:10005"}
+1.6970271031747756e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 68, acc = 95.500000, loss = 0.002113, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271053061757e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 69	{"id": "127.0.0.1:10005"}
+1.6970271053069654e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 68	{"id": "127.0.0.1:10005"}
+1.6970271111997468e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 69, acc = 95.599998, loss = 0.002099, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271132664247e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 70	{"id": "127.0.0.1:10005"}
+1.6970271132670612e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 69	{"id": "127.0.0.1:10005"}
+1.6970271180131342e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 70, acc = 95.599998, loss = 0.002077, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271212175572e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 71	{"id": "127.0.0.1:10005"}
+1.6970271212182443e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 70	{"id": "127.0.0.1:10005"}
+1.697027124853978e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 71, acc = 95.500000, loss = 0.002064, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271291578496e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 72	{"id": "127.0.0.1:10005"}
+1.6970271291583028e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 71	{"id": "127.0.0.1:10005"}
+1.6970271339059517e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 72, acc = 95.599998, loss = 0.002042, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271371605542e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 73	{"id": "127.0.0.1:10005"}
+1.6970271371611197e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 72	{"id": "127.0.0.1:10005"}
+1.6970271430492272e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 73, acc = 95.599998, loss = 0.002022, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271451563814e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 74	{"id": "127.0.0.1:10005"}
+1.6970271451567557e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 73	{"id": "127.0.0.1:10005"}
+1.6970271510349846e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 74, acc = 95.599998, loss = 0.002009, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027153058603e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 75	{"id": "127.0.0.1:10005"}
+1.6970271530590277e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 74	{"id": "127.0.0.1:10005"}
+1.6970271589397836e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 75, acc = 95.699997, loss = 0.001983, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027161025749e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 76	{"id": "127.0.0.1:10005"}
+1.697027161026546e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 75	{"id": "127.0.0.1:10005"}
+1.6970271669615104e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 76, acc = 95.800003, loss = 0.001971, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027168991105e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 77	{"id": "127.0.0.1:10005"}
+1.6970271689914896e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 76	{"id": "127.0.0.1:10005"}
+1.6970271737469378e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 77, acc = 95.800003, loss = 0.001957, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271769416323e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 78	{"id": "127.0.0.1:10005"}
+1.697027176942344e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 77	{"id": "127.0.0.1:10005"}
+1.6970271828063874e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 78, acc = 95.800003, loss = 0.001940, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271849290824e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 79	{"id": "127.0.0.1:10005"}
+1.6970271849295092e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 78	{"id": "127.0.0.1:10005"}
+1.6970271896590695e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 79, acc = 95.800003, loss = 0.001931, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970271928410015e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 80	{"id": "127.0.0.1:10005"}
+1.697027192841806e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 79	{"id": "127.0.0.1:10005"}
+1.6970271987427068e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 80, acc = 96.099998, loss = 0.001913, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970272007841969e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 81	{"id": "127.0.0.1:10005"}
+1.6970272007845821e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 80	{"id": "127.0.0.1:10005"}
+1.6970272067051215e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 81, acc = 96.099998, loss = 0.001904, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027208753488e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 82	{"id": "127.0.0.1:10005"}
+1.6970272087538843e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 81	{"id": "127.0.0.1:10005"}
+1.6970272146819313e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 82, acc = 96.099998, loss = 0.001890, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027216754618e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 83	{"id": "127.0.0.1:10005"}
+1.6970272167553468e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 82	{"id": "127.0.0.1:10005"}
+1.6970272226455824e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 83, acc = 96.199997, loss = 0.001875, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970272247576766e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 84	{"id": "127.0.0.1:10005"}
+1.6970272247584555e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 83	{"id": "127.0.0.1:10005"}
+1.697027230671002e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 84, acc = 96.199997, loss = 0.001859, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027232770855e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 85	{"id": "127.0.0.1:10005"}
+1.6970272327716777e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 84	{"id": "127.0.0.1:10005"}
+1.697027238731748e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 85, acc = 96.199997, loss = 0.001854, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970272407732582e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 86	{"id": "127.0.0.1:10005"}
+1.6970272407741272e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 85	{"id": "127.0.0.1:10005"}
+1.6970272467447076e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 86, acc = 96.300003, loss = 0.001855, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027248803032e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 87	{"id": "127.0.0.1:10005"}
+1.697027248803809e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 86	{"id": "127.0.0.1:10005"}
+1.6970272547203138e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 87, acc = 96.300003, loss = 0.001837, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027256774715e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 88	{"id": "127.0.0.1:10005"}
+1.6970272567751598e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 87	{"id": "127.0.0.1:10005"}
+1.6970272627145805e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 88, acc = 96.300003, loss = 0.001831, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970272647450976e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 89	{"id": "127.0.0.1:10005"}
+1.6970272647461681e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 88	{"id": "127.0.0.1:10005"}
+1.6970272706418483e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 89, acc = 96.300003, loss = 0.001821, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970272727483785e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 90	{"id": "127.0.0.1:10005"}
+1.6970272727490466e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 89	{"id": "127.0.0.1:10005"}
+1.697027278655473e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 90, acc = 96.300003, loss = 0.001815, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027280676023e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 91	{"id": "127.0.0.1:10005"}
+1.697027280676422e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 90	{"id": "127.0.0.1:10005"}
+1.6970272865495634e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 91, acc = 96.300003, loss = 0.001807, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027288604441e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 92	{"id": "127.0.0.1:10005"}
+1.6970272886051261e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 91	{"id": "127.0.0.1:10005"}
+1.6970272944719813e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 92, acc = 96.400002, loss = 0.001789, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970272964997442e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 93	{"id": "127.0.0.1:10005"}
+1.6970272965001364e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 92	{"id": "127.0.0.1:10005"}
+1.6970273024064922e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 93, acc = 96.500000, loss = 0.001780, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273044703512e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 94	{"id": "127.0.0.1:10005"}
+1.6970273044707522e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 93	{"id": "127.0.0.1:10005"}
+1.6970273103616536e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 94, acc = 96.500000, loss = 0.001771, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273124329283e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 95	{"id": "127.0.0.1:10005"}
+1.6970273124333549e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 94	{"id": "127.0.0.1:10005"}
+1.6970273183088408e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 95, acc = 96.500000, loss = 0.001761, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273203866239e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 96	{"id": "127.0.0.1:10005"}
+1.6970273203870862e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 95	{"id": "127.0.0.1:10005"}
+1.6970273262757509e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 96, acc = 96.699997, loss = 0.001756, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027328381063e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 97	{"id": "127.0.0.1:10005"}
+1.6970273283814692e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 96	{"id": "127.0.0.1:10005"}
+1.697027330836853e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 97, acc = 96.900002, loss = 0.001753, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273362938628e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 98	{"id": "127.0.0.1:10005"}
+1.697027336294499e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 97	{"id": "127.0.0.1:10005"}
+1.6970273410581133e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 98, acc = 96.800003, loss = 0.001746, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273442698884e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 99	{"id": "127.0.0.1:10005"}
+1.697027344270939e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 98	{"id": "127.0.0.1:10005"}
+1.6970273501352954e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 99, acc = 96.900002, loss = 0.001729, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273522153592e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 100	{"id": "127.0.0.1:10005"}
+1.69702735221604e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 99	{"id": "127.0.0.1:10005"}
+1.6970273580868783e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 100, acc = 96.900002, loss = 0.001731, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273601695688e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 101	{"id": "127.0.0.1:10005"}
+1.697027360169996e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 100	{"id": "127.0.0.1:10005"}
+1.6970273660700948e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 101, acc = 96.900002, loss = 0.001713, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273681161346e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 102	{"id": "127.0.0.1:10005"}
+1.697027368116543e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 101	{"id": "127.0.0.1:10005"}
+1.6970273740515478e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 102, acc = 96.900002, loss = 0.001715, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273761241148e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 103	{"id": "127.0.0.1:10005"}
+1.6970273761245003e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 102	{"id": "127.0.0.1:10005"}
+1.6970273809252105e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 103, acc = 97.000000, loss = 0.001710, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970273841319263e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 104	{"id": "127.0.0.1:10005"}
+1.6970273841323256e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 103	{"id": "127.0.0.1:10005"}
+1.6970273900654814e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 104, acc = 97.000000, loss = 0.001704, data size = 1000	{"id": "127.0.0.1:10005"}
+1.69702739208016e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 105	{"id": "127.0.0.1:10005"}
+1.697027392080746e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 104	{"id": "127.0.0.1:10005"}
+1.697027396805563e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 105, acc = 97.000000, loss = 0.001698, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970274000031621e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 106	{"id": "127.0.0.1:10005"}
+1.6970274000036378e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 105	{"id": "127.0.0.1:10005"}
+1.6970274058784673e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 106, acc = 97.000000, loss = 0.001694, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027407962698e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 107	{"id": "127.0.0.1:10005"}
+1.6970274079630916e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 106	{"id": "127.0.0.1:10005"}
+1.6970274138574626e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 107, acc = 97.000000, loss = 0.001690, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027415943861e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 108	{"id": "127.0.0.1:10005"}
+1.697027415944466e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 107	{"id": "127.0.0.1:10005"}
+1.697027420683733e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 108, acc = 97.000000, loss = 0.001686, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970274238998077e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 109	{"id": "127.0.0.1:10005"}
+1.6970274239005246e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 108	{"id": "127.0.0.1:10005"}
+1.6970274297984436e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 109, acc = 97.000000, loss = 0.001683, data size = 1000	{"id": "127.0.0.1:10005"}
+1.697027431853901e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 110	{"id": "127.0.0.1:10005"}
+1.6970274318542988e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 109	{"id": "127.0.0.1:10005"}
+1.6970274377428002e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:68	trainnging finished, iteration = 110, acc = 97.000000, loss = 0.001677, data size = 1000	{"id": "127.0.0.1:10005"}
+1.6970274398282945e+09	info	/mnt/E/blockchain/ml_chain/trainer/iteration/manager.go:173	start iteration 111	{"id": "127.0.0.1:10005"}
+1.6970274398292437e+09	info	/mnt/E/blockchain/ml_chain/trainer/model/train/impl.go:58	begin to train the global model, iteration: 110	{"id": "127.0.0.1:10005"}
